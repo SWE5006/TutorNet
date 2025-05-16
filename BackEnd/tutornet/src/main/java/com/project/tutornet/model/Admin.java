@@ -5,6 +5,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -19,10 +21,13 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class Rating {
-    @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private String ratingId;
-    private String sessionId;
-    private double rating;
+public class Admin {
+
+@Id
+@GeneratedValue(strategy = GenerationType.UUID)
+private String adminId;
+
+@ManyToOne
+@JoinColumn(name = "userId", insertable = false, updatable = false)
+private String userId;
 }

@@ -1,6 +1,8 @@
 package com.project.tutornet.model;
 
 
+import java.util.Date;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -19,10 +21,17 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class Rating {
+public class TutionSession {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    private String ratingId;
     private String sessionId;
-    private double rating;
+    private String academicTerm;
+    private int academicYear;
+    private Date startTime;
+    private Date endTime;
+    private String sessionType;
+    private String studentId;
+    private String tutorId;
+    private String subjectId;
+    private String tutionLocation;
 }

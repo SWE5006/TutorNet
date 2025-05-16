@@ -1,6 +1,7 @@
 package com.project.tutornet.model;
 
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -19,10 +20,12 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class Rating {
-    @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private String ratingId;
-    private String sessionId;
-    private double rating;
+public class Document {
+
+@Id
+@GeneratedValue(strategy = GenerationType.UUID)
+private String documentId ;
+@Column(columnDefinition = "TEXT")
+private String comment;
+private String filePath;
 }

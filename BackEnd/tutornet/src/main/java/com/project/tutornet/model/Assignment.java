@@ -1,6 +1,9 @@
 package com.project.tutornet.model;
 
 
+import java.util.Date;
+
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -19,10 +22,14 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class Rating {
-    @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private String ratingId;
-    private String sessionId;
-    private double rating;
+public class Assignment {
+
+@Id
+@GeneratedValue(strategy = GenerationType.UUID)
+private String assignmentId;
+private String title;
+@Column(columnDefinition = "TEXT")
+private String assignmentDescription;
+private Date dueDate;
+private String sessionId;
 }
