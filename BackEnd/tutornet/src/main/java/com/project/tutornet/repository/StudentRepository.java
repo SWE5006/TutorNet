@@ -7,5 +7,5 @@ import org.springframework.stereotype.Repository;
 import com.project.tutornet.model.Student;
 @Repository
 public interface StudentRepository extends JpaRepository<Student, UUID>  {
-    boolean existsByUserId(UUID userId);
+    //for custom search
 }

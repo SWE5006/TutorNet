@@ -38,11 +38,11 @@ public class User {
     private String userRole;
 
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "tutorId")
+    @JoinColumn(name = "tutor_id")
     private Tutor tutor;
     
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "studentId")
+    @JoinColumn(name = "student_id")
     private Student student;
 
 

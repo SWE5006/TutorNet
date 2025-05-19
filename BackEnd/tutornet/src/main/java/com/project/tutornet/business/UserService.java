@@ -1,7 +1,9 @@
 package com.project.tutornet.business;
-import java.math.BigDecimal;
+
 
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.project.tutornet.dto.StudentRequest;
@@ -27,10 +29,13 @@ public class UserService {
                              StudentRepository studentRepository,
                              TutorRepository tutorRepository) {
         this.userRepository = userRepository;
-        this.studentRepository = studentRepository;
-        this.tutorRepository = tutorRepository;
+       
     }
 
+    public User findByEmail(String email) {
+        return userRepository.findByEmail(email);
+    }
+    
    @Transactional
     public User createTutor(TutorRequest request) {
         
@@ -38,18 +43,16 @@ public class UserService {
         Tutor tutor = new Tutor();
 
         user.setEmail(request.getEmail());
-        user.setPassword(request.getPassword());
+        user.setPassword(passwordEncoder().encode(request.getPassword()));
         user.setFirstName(request.getFirstName());
         user.setLastName(request.getLastName());
         user.setUserRole("TUTOR");
 
         tutor.setQualification(request.getQualification());
         tutor.setExperienceYears(request.getExperienceYears());
-        tutor.setHourlyRate((Double) request.getHourlyRate());
+        tutor.setHourlyRate(request.getHourlyRate());
         tutor.setAvailableId(request.getAvailabilityId());
         tutor.setActive(true);
-
-        tutor.setUser(user);
         user.setTutor(tutor);
 
         try {
@@ -69,15 +72,13 @@ public class UserService {
         Student student = new Student();
 
         user.setEmail(request.getEmail());
-        user.setPassword(request.getPassword());
+        user.setPassword(passwordEncoder().encode(request.getPassword()));
         user.setFirstName(request.getFirstName());
         user.setLastName(request.getLastName());
         user.setUserRole("STUDENT");
 
         student.setAge(request.getAge());
         student.setClassLevel(request.getClassLevel());
-
-        student.setUser(user);
         user.setStudent(student);
 
         try {
@@ -89,5 +90,9 @@ public class UserService {
         }
     }
     
+    
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
 
 }

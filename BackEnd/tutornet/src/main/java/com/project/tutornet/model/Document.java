@@ -1,6 +1,8 @@
 package com.project.tutornet.model;
 
 
+import java.util.UUID;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -22,9 +24,9 @@ import lombok.Setter;
 @Builder
 public class Document {
 
-@Id
-@GeneratedValue(strategy = GenerationType.UUID)
-private String documentId ;
+ @Id
+@GeneratedValue(strategy= GenerationType.AUTO)
+private UUID documentId ;
 @Column(columnDefinition = "TEXT")
 private String comment;
 private String filePath;

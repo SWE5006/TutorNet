@@ -2,6 +2,7 @@ package com.project.tutornet.model;
 
 
 import java.util.Date;
+import java.util.UUID;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -25,8 +26,8 @@ import lombok.Setter;
 public class Assignment {
 
 @Id
-@GeneratedValue(strategy = GenerationType.UUID)
-private String assignmentId;
+@GeneratedValue(strategy= GenerationType.AUTO)
+private UUID assignmentId;
 private String title;
 @Column(columnDefinition = "TEXT")
 private String assignmentDescription;

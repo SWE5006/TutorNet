@@ -1,6 +1,8 @@
 package com.project.tutornet.model;
 
 
+import java.util.UUID;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -21,8 +23,8 @@ import lombok.Setter;
 @Builder
 public class Rating {
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private String ratingId;
+    @GeneratedValue(strategy= GenerationType.AUTO)
+    private UUID ratingId;
     private String sessionId;
     private double rating;
 }

@@ -1,7 +1,14 @@
 package com.project.tutornet.model;
 
 
+import java.util.UUID;
+
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -17,6 +24,17 @@ import lombok.Setter;
 @NoArgsConstructor
 @Builder
 public class StudentSubject {
-    private String studentId;
-    private String subjectId;
+    @Id
+    @GeneratedValue(strategy= GenerationType.AUTO)
+    private UUID studentSubjectId;
+
+
+    @ManyToOne
+    @JoinColumn(name = "student_id")
+    private Student student;
+
+    @ManyToOne
+    @JoinColumn(name = "subject_id")
+    private Subject subject;
+
 }

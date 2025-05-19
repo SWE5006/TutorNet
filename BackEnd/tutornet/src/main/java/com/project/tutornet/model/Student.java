@@ -8,10 +8,10 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.MapsId;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -22,18 +22,18 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
+
 public class Student {
 
 @Id
 @GeneratedValue(strategy = GenerationType.AUTO)
 private UUID studentId;
-
-@Id
-@OneToOne
-@JoinColumn(name = "userId") // Foreign key column in Student table
-private User user;
-
 private int age;
 private String classLevel;
+
+@OneToOne
+@JoinColumn(name = "student_id", referencedColumnName = "user_id")
+@MapsId
+private User user;
+
 }

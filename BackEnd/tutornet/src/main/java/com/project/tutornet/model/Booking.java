@@ -2,6 +2,7 @@ package com.project.tutornet.model;
 
 
 import java.util.Date;
+import java.util.UUID;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -23,8 +24,9 @@ import lombok.Setter;
 @Builder
 public class Booking {
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private String bookingId;
+    @GeneratedValue(strategy= GenerationType.AUTO)
+    private UUID bookingId;
+    
     private String studentId;
     private String tutorId;
     private Date bookingDate;

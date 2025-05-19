@@ -2,6 +2,7 @@ package com.project.tutornet.model;
 
 
 import java.util.Date;
+import java.util.UUID;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -23,8 +24,8 @@ import lombok.Setter;
 @Builder
 public class AvailableSlot {
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private String availableId;
+    @GeneratedValue(strategy= GenerationType.AUTO)
+    private UUID availableId;
     private Date scheduleStart;
     private Date scheduleEnd;
     private String tutorId;

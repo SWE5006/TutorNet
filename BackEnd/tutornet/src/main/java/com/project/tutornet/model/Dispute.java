@@ -2,6 +2,7 @@ package com.project.tutornet.model;
 
 
 import java.util.Date;
+import java.util.UUID;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -24,8 +25,8 @@ import lombok.Setter;
 @Builder
 public class Dispute {
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private String disputeId;
+    @GeneratedValue(strategy= GenerationType.AUTO)
+    private UUID disputeId;
     private String bookingId;
     private String claimuserId;
     private String adminId;
