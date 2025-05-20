@@ -8,6 +8,9 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -26,10 +29,18 @@ public class Booking {
     @GeneratedValue(strategy= GenerationType.AUTO)
     private UUID bookingId;
     
-    private String studentId;
-    private String tutorId;
+  
     private Date bookingDate;
     private Date scheduleStart;
     private Date scheduleEnd;
     private String bookingStatus;
+
+   
+    @OneToOne
+    @JoinColumn(name = "slot_id")
+    private AvailableSlot slot;
+
+    @ManyToOne
+    @JoinColumn(name = "student_id")
+    private Student student;
 }

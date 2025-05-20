@@ -13,6 +13,7 @@ public abstract class UserRequest {
     private String firstName;
     @NotNull
     private String lastName;
+     private boolean isActive;
 
    
     // Getters and setters
@@ -24,6 +25,14 @@ public abstract class UserRequest {
     public void setFirstName(String firstName) { this.firstName = firstName; }
     public String getLastName() { return lastName; }
     public void setLastName(String lastName) { this.lastName = lastName; }
+
+    public boolean isIsActive() {
+        return isActive;
+    }
+
+    public void setIsActive(boolean isActive) {
+        this.isActive = isActive;
+    }
 }
 
 

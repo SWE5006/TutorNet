@@ -9,8 +9,10 @@ public class TutorRequest extends UserRequest {
     @Min(0)
     private int experienceYears;
     private Double hourlyRate;
-    private String availabilityId;
-
+    // private Set<Subject> subjects;
+   
+    // private List<AvailableSlot> availableSlots;
+    
     // Getters and setters
     public String getQualification() { return qualification; }
     public void setQualification(String qualification) { this.qualification = qualification; }
@@ -18,6 +20,17 @@ public class TutorRequest extends UserRequest {
     public void setExperienceYears(int experienceYears) { this.experienceYears = experienceYears; }
     public Double getHourlyRate() { return hourlyRate; }
     public void setHourlyRate(Double hourlyRate) { this.hourlyRate = hourlyRate; }
-    public String getAvailabilityId() { return availabilityId; }
-    public void setAvailabilityId(String availabilityId) { this.availabilityId = availabilityId; }
+    // public Set<Subject> getSubjects() {
+    //     return subjects;
+    // }
+    // public List<AvailableSlot> getAvailableSlots() {
+    //     return availableSlots;
+    // }
+    // public void setSubjects(Set<Subject> subjects) {
+    //     this.subjects = subjects;
+    // }
+    // public void setAvailableSlots(List<AvailableSlot> availableSlots) {
+    //     this.availableSlots = availableSlots;
+    // }
+   
 }

@@ -43,7 +43,6 @@ public class UserService {
         tutor.setQualification(request.getQualification());
         tutor.setExperienceYears(request.getExperienceYears());
         tutor.setHourlyRate(request.getHourlyRate());
-        tutor.setAvailableId(request.getAvailabilityId());
         tutor.setActive(true);
        
         try {
