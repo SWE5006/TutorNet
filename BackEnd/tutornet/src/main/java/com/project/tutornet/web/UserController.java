@@ -16,7 +16,6 @@ import com.project.tutornet.business.UserService;
 import com.project.tutornet.dto.ErrorResponse;
 import com.project.tutornet.dto.LoginRequest;
 import com.project.tutornet.dto.LoginResponse;
-import com.project.tutornet.dto.StudentRequest;
 import com.project.tutornet.dto.TutorRequest;
 import com.project.tutornet.model.User;
 
@@ -41,12 +40,7 @@ public class UserController {
         return ResponseEntity.ok(user);
     }
 
-    @PostMapping("/students")
-    public ResponseEntity<User> createStudent(@RequestBody StudentRequest request) {
-        User user = userService.createStudent(request);
-        return ResponseEntity.ok(user);
-    }
-
+ 
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();

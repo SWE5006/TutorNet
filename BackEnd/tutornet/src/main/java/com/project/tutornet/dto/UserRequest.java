@@ -5,7 +5,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 public abstract class UserRequest {
-@NotNull @Email
+    @NotNull @Email
     private String email;
     @NotNull @Size(min = 8)
     private String password;
