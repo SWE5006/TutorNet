@@ -64,7 +64,7 @@ public class TutorController {
         AvailableSlot slot = new AvailableSlot();
         slot.setScheduleStart(dto.getScheduleStart());
         slot.setScheduleEnd(dto.getScheduleEnd());
-        slot.setTutor(tutor);
+        slot.setTutors(tutor);
         slot.setSlotStatus(dto.getSlotStatus());
         slotRepository.save(slot);
 
