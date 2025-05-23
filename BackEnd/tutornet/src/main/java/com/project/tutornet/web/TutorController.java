@@ -72,6 +72,11 @@ public class TutorController {
     }
     
     //View Tutor Detail
-    //FindTutorById
+    //FindTutorByName
+    @GetMapping("/by-name")
+    public ResponseEntity<List<Tutor>> searchTutorsByName(@RequestParam String name) {
+        List<Tutor> result = tutorService.searchTutorsByName(name);
+        return ResponseEntity.ok(result);
+    }
 
 }
