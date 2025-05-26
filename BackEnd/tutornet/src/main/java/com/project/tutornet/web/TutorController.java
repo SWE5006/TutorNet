@@ -45,7 +45,7 @@ public class TutorController {
         return tutorService.getTutorsBySubject(subject);
     }
 
-     @PostMapping("/{id}/subjects")
+     @PostMapping("/{tutorid}/subjects")
     public ResponseEntity<?> addSubject(@PathVariable UUID id, @RequestBody SubjectRequest dto) {
         Tutor tutor = tutorRepository.findById(id).orElseThrow(() -> new RuntimeException("Tutor not found"));
 
@@ -57,7 +57,7 @@ public class TutorController {
         return ResponseEntity.ok("Subject added");
     }
 
-    @PostMapping("/{id}/slots")
+    @PostMapping("/{tutorid}/slots")
     public ResponseEntity<?> addSlot(@PathVariable UUID id, @RequestBody AvailableSlotRequest dto) {
         Tutor tutor = tutorRepository.findById(id).orElseThrow(() -> new RuntimeException("Tutor not found"));
 

@@ -1,16 +1,55 @@
 package com.project.tutornet.dto;
 
 import java.util.Date;
+import java.util.UUID;
 
-import com.project.tutornet.model.Tutor;
+import com.project.tutornet.model.AvailableSlot;
+
+
 
 public class AvailableSlotRequest {
    
-   
+   private UUID availableId;
+
     private Date scheduleStart;
     private Date scheduleEnd;
     private String slotStatus;
-    private Tutor tutor;
+    private UUID tutorId;
+    private String tutorName;
+
+// Constructors
+    public AvailableSlotRequest() {}
+    
+    public AvailableSlotRequest(AvailableSlot slot) {
+        this.availableId = slot.getAvailableId();
+        this.scheduleStart = slot.getScheduleStart();
+        this.scheduleEnd = slot.getScheduleEnd();
+        this.slotStatus = slot.getSlotStatus();
+        this.tutorId = slot.getTutors().getUserId();
+        this.tutorName = slot.getTutors().getFirstName() + " " + slot.getTutors().getLastName();
+    }
+
+
+    public void setAvailableId(UUID availableId) {
+        this.availableId = availableId;
+    }
+    
+        public UUID getAvailableId() {
+        return availableId;
+    }
+    public void setTutorId(UUID tutorId) {
+        this.tutorId = tutorId;
+    }
+    public void setTutorName(String tutorName) {
+        this.tutorName = tutorName;
+    }
+    public UUID getTutorId() {
+        return tutorId;
+    }
+    public String getTutorName() {
+        return tutorName;
+    }
+    
    
 
     public void setScheduleStart(Date scheduleStart) {
@@ -22,9 +61,7 @@ public class AvailableSlotRequest {
     public void setSlotStatus(String slotStatus) {
         this.slotStatus = slotStatus;
     }
-    public void setTutor(Tutor tutor) {
-        this.tutor = tutor;
-    }
+   
   
     public Date getScheduleStart() {
         return scheduleStart;
@@ -35,9 +72,7 @@ public class AvailableSlotRequest {
     public String getSlotStatus() {
         return slotStatus;
     }
-    public Tutor getTutor() {
-        return tutor;
-    }
+   
    
     
 }

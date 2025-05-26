@@ -23,7 +23,7 @@ public List<Tutor> getTutorsBySubject(String subjectName)
     return tutorRepository.findBySubjects_Name(subjectName);
 }
 
- public List<Tutor> searchTutorsByName(String name) {
+public List<Tutor> searchTutorsByName(String name) {
         return tutorRepository.searchTutorsByName(name);
     }
 }
