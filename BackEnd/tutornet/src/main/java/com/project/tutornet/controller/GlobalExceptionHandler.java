@@ -22,6 +22,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
    * @return http response
    */
  
+  @SuppressWarnings("null")
   @ExceptionHandler(NoSuchElementException.class)
   public final ResponseEntity<Object> handleNoSuchElementException(NoSuchElementException ex, WebRequest request) {
     
@@ -37,6 +38,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
    * @return http response
    */
 
+  @SuppressWarnings("null")
   @ExceptionHandler(ConstraintViolationException.class)
   public final ResponseEntity<Object> handleConstraintViolationException(
       ConstraintViolationException ex, WebRequest request) {
@@ -52,7 +54,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
    * @param request
    * @return
    */
- 
+  @SuppressWarnings("null")
   @ExceptionHandler(Exception.class)
   public final ResponseEntity<Object> handleNoSuchElementException(Exception ex, WebRequest request) {
     ProblemDetail pd = ProblemDetail.forStatusAndDetail(HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage());

@@ -25,9 +25,9 @@ public class AvailableSlot {
     private Date scheduleEnd;
     private String slotStatus;
 
-    @ManyToOne
-    @JoinColumn(name = "tutor_id")
-    private Tutor tutors;
+//    @ManyToOne
+//    @JoinColumn(name = "tutor_id")
+//    private Tutor tutors;
 
    
 }

@@ -7,6 +7,7 @@ import {
   Box,
   Container,
   Paper,
+  Typography,
 } from "@mui/material";
 import { useLoginMutation } from "../services/auth.service";
 import { selectAuthSlice } from "../state/auth/slice";
@@ -15,7 +16,7 @@ import { navigate } from "gatsby";
 
 const authUrl = process.env.GATSBY_BACKEND_API_URL;
 const Login = () => {
-  const [requestLogin] = useLoginMutation();
+  const [requestLogin, result] = useLoginMutation();
   const { isLoggedIn } = useSelector((state) => selectAuthSlice(state));
   const [emailAddress, setEmailAddress] = useState("");
   const [password, setPassword] = useState("");
@@ -48,12 +49,7 @@ const Login = () => {
           borderRadius: 2,
         }}
       >
-        <Box
-          component="form"
-          onSubmit={onLogin}
-          noValidate
-          sx={{ mt: 1, width: "100%" }}
-        >
+        <Box component="form" noValidate sx={{ mt: 1, width: "100%" }}>
           <TextField
             margin="normal"
             required
@@ -81,13 +77,18 @@ const Login = () => {
             sx={{ mb: 3 }}
           />
           <Button
-            type="submit"
             fullWidth
             variant="contained"
+            onClick={onLogin}
             sx={{ mt: 1, mb: 2, py: 1.5 }}
           >
             Login
           </Button>
+          {result.isError && (
+            <Typography color="error" sx={{ mt: 1 }}>
+              Login failed. Please try again.
+            </Typography>
+          )}
           <Divider sx={{ my: 3 }}>OR</Divider>
           <Button
             fullWidth

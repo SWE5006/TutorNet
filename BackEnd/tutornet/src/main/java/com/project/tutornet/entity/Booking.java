@@ -27,6 +27,7 @@ public class Booking {
     private Date scheduleStart;
     private Date scheduleEnd;
     private String bookingStatus;
+    private String subjectName;
 
    
     @OneToOne
