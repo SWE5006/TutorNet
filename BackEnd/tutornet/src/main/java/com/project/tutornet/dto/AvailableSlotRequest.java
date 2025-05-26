@@ -1,8 +1,9 @@
 package com.project.tutornet.dto;
 
+import com.project.tutornet.entity.Tutor;
+
 import java.util.Date;
 
-import com.project.tutornet.model.Tutor;
 
 public class AvailableSlotRequest {
    

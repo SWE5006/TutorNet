@@ -1,16 +1,34 @@
 package com.project.tutornet.repository;
 
 
+import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
-import org.springframework.data.jpa.repository.JpaRepository;
+import com.project.tutornet.entity.UserInfoEntity;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.ListCrudRepository;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import com.project.tutornet.model.User;
+import org.springframework.transaction.annotation.Transactional;
 
 @Repository
-public interface UserRepository extends JpaRepository<User, UUID> {
-    boolean existsByEmail(String email);
-    User findByEmail(String email);
+public interface UserRepository extends ListCrudRepository<UserInfoEntity, UUID> {
+    Optional<UserInfoEntity> findByEmailAddress(String email);
+
+    List<UserInfoEntity> findAll();
+
+    @Modifying
+    @Transactional
+    @Query("UPDATE UserInfoEntity u " +
+            "SET u.username = :username, " +
+            "u.mobileNumber = :mobileNumber, " +
+            "u.roles = :roles, " +
+            "u.activeStatus = :activeStatus " +
+            "WHERE u.id = :userId")
+    Integer updateUser(
+            @Param("userId") UUID userId, @Param("username") String username, @Param("mobileNumber") String mobileNumber, @Param("roles") String roles, @Param("activeStatus") String activeStatus);
 }
 
