@@ -1,24 +1,7 @@
 package com.project.tutornet.config;
 
-import com.nimbusds.jose.jwk.JWK;
-import com.nimbusds.jose.jwk.JWKSet;
-import com.nimbusds.jose.jwk.RSAKey;
-import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
-import com.nimbusds.jose.jwk.source.JWKSource;
-import com.nimbusds.jose.proc.SecurityContext;
+import java.util.List;
 
-import com.project.tutornet.component.AuthLoggingFilter;
-import com.project.tutornet.component.CustomAuthProvider;
-import com.project.tutornet.component.CustomAuthSuccessHandler;
-import com.project.tutornet.config.jwtConfig.JwtAccessTokenFilter;
-import com.project.tutornet.config.jwtConfig.JwtRefreshTokenFilter;
-import com.project.tutornet.repository.RefreshTokenRepo;
-import com.project.tutornet.service.impl.LogoutHandlerServiceImpl;
-import com.project.tutornet.utils.JwtTokenUtils;
-import jakarta.servlet.SessionCookieConfig;
-import jakarta.servlet.http.HttpServletResponse;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.tomcat.util.http.Rfc6265CookieProcessor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -28,6 +11,7 @@ import org.springframework.boot.web.servlet.ServletContextInitializer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
+import static org.springframework.security.config.Customizer.withDefaults;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -51,9 +35,25 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-import java.util.List;
+import com.nimbusds.jose.jwk.JWK;
+import com.nimbusds.jose.jwk.JWKSet;
+import com.nimbusds.jose.jwk.RSAKey;
+import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
+import com.nimbusds.jose.jwk.source.JWKSource;
+import com.nimbusds.jose.proc.SecurityContext;
+import com.project.tutornet.component.AuthLoggingFilter;
+import com.project.tutornet.component.CustomAuthProvider;
+import com.project.tutornet.component.CustomAuthSuccessHandler;
+import com.project.tutornet.config.jwtConfig.JwtAccessTokenFilter;
+import com.project.tutornet.config.jwtConfig.JwtRefreshTokenFilter;
+import com.project.tutornet.repository.RefreshTokenRepo;
+import com.project.tutornet.service.impl.LogoutHandlerServiceImpl;
+import com.project.tutornet.utils.JwtTokenUtils;
 
-import static org.springframework.security.config.Customizer.withDefaults;
+import jakarta.servlet.SessionCookieConfig;
+import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Configuration
 @EnableWebSecurity
@@ -111,6 +111,8 @@ public class SpringSecurityConfig {
         urlBasedCorsConfigurationSource.registerCorsConfiguration("/**", configuration);
         return urlBasedCorsConfigurationSource;
     }
+
+    
 
     @Bean
     public ServletContextInitializer servletContextInitializer() {

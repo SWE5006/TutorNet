@@ -2,13 +2,13 @@ package com.project.tutornet.service;
 
 
 
+import java.util.List;
+import java.util.Optional;
+
 import com.project.tutornet.dto.CreateUserRequest;
 import com.project.tutornet.dto.ManageUserRequest;
 import com.project.tutornet.dto.UserResponse;
 import com.project.tutornet.entity.UserInfoEntity;
-
-import java.util.List;
-import java.util.Optional;
 
 public interface ManageUserService {
     List<UserResponse> getAllUsers();
@@ -18,4 +18,8 @@ public interface ManageUserService {
     void saveUser(UserInfoEntity userInfo);
     void deleteUser(String userId);
     String updateUser(ManageUserRequest userRequest);
+
+
+
+    
 }
