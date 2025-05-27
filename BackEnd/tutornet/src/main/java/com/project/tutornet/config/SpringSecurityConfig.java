@@ -31,6 +31,8 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.security.web.util.matcher.OrRequestMatcher;
+import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -172,14 +174,28 @@ public class SpringSecurityConfig {
     @Order(3)
     @Bean
     public SecurityFilterChain registerSecurityFilterChain(HttpSecurity httpSecurity) throws Exception {
+        RequestMatcher signUpMatcher = new AntPathRequestMatcher("/api/auth/sign-up/**");
+        RequestMatcher studentCreateMatcher = new AntPathRequestMatcher("/api/students/create");
+        RequestMatcher tutorCreateMatcher = new AntPathRequestMatcher("/api/tutors/create");
+
         return httpSecurity
-                .securityMatcher(new AntPathRequestMatcher("/api/auth/sign-up/**"))
-                .cors(cors -> cors.configurationSource(corsConfigurationSource(new String[] { "POST"  })))
+                .securityMatcher(new OrRequestMatcher(signUpMatcher, studentCreateMatcher, tutorCreateMatcher))
+                .cors(cors -> cors.configurationSource(corsConfigurationSource(new String[] { "POST" })))
                 .csrf(csrf -> csrf.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()).disable())
                 .authorizeHttpRequests(auth -> auth.anyRequest().permitAll())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .build();
     }
+
+    // public SecurityFilterChain registerSecurityFilterChain(HttpSecurity httpSecurity) throws Exception {
+    //     return httpSecurity
+    //             .securityMatcher(new AntPathRequestMatcher("/api/auth/sign-up/**"))
+    //             .cors(cors -> cors.configurationSource(corsConfigurationSource(new String[] { "POST"  })))
+    //             .csrf(csrf -> csrf.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()).disable())
+    //             .authorizeHttpRequests(auth -> auth.anyRequest().permitAll())
+    //             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+    //             .build();
+    // }
 
     @Order(4)
     @Bean

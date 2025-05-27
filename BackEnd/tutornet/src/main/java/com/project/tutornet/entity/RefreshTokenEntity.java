@@ -1,5 +1,6 @@
 package com.project.tutornet.entity;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
@@ -22,7 +23,8 @@ public class RefreshTokenEntity {
     @Id
     @GeneratedValue
     private Long id;
-   
+    
+    @Column(columnDefinition = "TEXT")
     private String refreshToken;
 
   
