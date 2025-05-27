@@ -1,87 +1,90 @@
-// package com.project.tutornet.service;
+package com.project.tutornet.service;
 
-// import com.project.tutornet.controller.BookingException;
-// import com.project.tutornet.dto.AvailableSlotRequest;
-// import com.project.tutornet.dto.UpdateSlotStatusDto;
-// import com.project.tutornet.entity.AvailableSlot;
-// import com.project.tutornet.repository.AvailableSlotRepository;
-// import java.util.List;
-// import java.util.Optional;
-// import java.util.UUID;
-// import lombok.extern.slf4j.Slf4j;
-// import org.springframework.beans.factory.annotation.Autowired;
-// import org.springframework.stereotype.Service;
-// import org.springframework.transaction.annotation.Transactional;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
-// @Service
-// @Slf4j
-// @Transactional
-// public class AvailableSlotService {
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-//   @Autowired
-//   private AvailableSlotRepository availableSlotRepository;
+import com.project.tutornet.controller.BookingException;
+import com.project.tutornet.dto.AvailableSlotRequest;
+import com.project.tutornet.dto.UpdateSlotStatusDto;
+import com.project.tutornet.entity.AvailableSlot;
+import com.project.tutornet.repository.AvailableSlotRepository;
 
-//   public List<AvailableSlot> getAvailableSlotsByTutorId(UUID tutorId) {
-//     return availableSlotRepository.findByTutors_UserId(tutorId);
-//   }
+import lombok.extern.slf4j.Slf4j;
 
-//   public List<AvailableSlot> getAvailableSlotsByTutorIdAndStatus(
-//     UUID tutorId,
-//     String status
-//   ) {
-//     return availableSlotRepository.findByTutors_UserIdAndSlotStatus(
-//       tutorId,
-//       status
-//     );
-//   }
+@Service
+@Slf4j
+@Transactional
+public class AvailableSlotService {
 
-//   public Optional<AvailableSlot> getSlotById(UUID slotId) {
-//     return availableSlotRepository.findById(slotId);
-//   }
+  @Autowired
+  private AvailableSlotRepository availableSlotRepository;
 
-//   @Transactional
-//   public AvailableSlotRequest updateSlotStatus(
-//     UUID slotId,
-//     UpdateSlotStatusDto updateStatusDto
-//   ) {
-//     Optional<AvailableSlot> slotOpt = availableSlotRepository.findById(slotId);
-//     if (!slotOpt.isPresent()) {
-//       throw new BookingException("Available slot not found with ID: " + slotId);
-//     }
+  public List<AvailableSlot> getAvailableSlotsByTutorId(UUID tutorId) {
+    return availableSlotRepository.findByTutors_Id(tutorId);
+  }
 
-//     AvailableSlot slot = slotOpt.get();
-//     String oldStatus = slot.getSlotStatus();
-//     String newStatus = updateStatusDto.getSlotStatus();
+  public List<AvailableSlot> getAvailableSlotsByTutorIdAndStatus(
+    UUID tutorId,
+    String status
+  ) {
+    return availableSlotRepository.findByTutors_IdAndSlotStatus(
+      tutorId,
+      status
+    );
+  }
 
-//     // Validate status change
-//     if (!isValidSlotStatusTransition(slot, oldStatus, newStatus)) {
-//       throw new BookingException(
-//         "Invalid slot status transition from " + oldStatus + " to " + newStatus
-//       );
-//     }
+  public Optional<AvailableSlot> getSlotById(UUID slotId) {
+    return availableSlotRepository.findById(slotId);
+  }
 
-//     // Update slot status
-//     slot.setSlotStatus(newStatus);
-//     AvailableSlot savedSlot = availableSlotRepository.save(slot);
+  @Transactional
+  public AvailableSlotRequest updateSlotStatus(
+    UUID slotId,
+    UpdateSlotStatusDto updateStatusDto
+  ) {
+    Optional<AvailableSlot> slotOpt = availableSlotRepository.findById(slotId);
+    if (!slotOpt.isPresent()) {
+      throw new BookingException("Available slot not found with ID: " + slotId);
+    }
 
-//     return new AvailableSlotRequest(savedSlot);
-//   }
+    AvailableSlot slot = slotOpt.get();
+    String oldStatus = slot.getSlotStatus();
+    String newStatus = updateStatusDto.getSlotStatus();
 
-//   private boolean isValidSlotStatusTransition(
-//     AvailableSlot slot,
-//     String oldStatus,
-//     String newStatus
-//   ) {
-//     // Define valid transitions
-//     switch (oldStatus.toUpperCase()) {
-//       case "AVAILABLE":
-//         return true; // Available slots can be changed to any status
-//       case "COMPLETED":
-//         return newStatus.equalsIgnoreCase("AVAILABLE"); // Allow reactivation
-//       case "UNAVAILABLE":
-//         return true; // Unavailable slots can be made available again
-//       default:
-//         return true;
-//     }
-//   }
-// }
+    // Validate status change
+    if (!isValidSlotStatusTransition(slot, oldStatus, newStatus)) {
+      throw new BookingException(
+        "Invalid slot status transition from " + oldStatus + " to " + newStatus
+      );
+    }
+
+    // Update slot status
+    slot.setSlotStatus(newStatus);
+    AvailableSlot savedSlot = availableSlotRepository.save(slot);
+
+    return new AvailableSlotRequest(savedSlot);
+  }
+
+  private boolean isValidSlotStatusTransition(
+    AvailableSlot slot,
+    String oldStatus,
+    String newStatus
+  ) {
+    // Define valid transitions
+    switch (oldStatus.toUpperCase()) {
+      case "AVAILABLE":
+        return true; // Available slots can be changed to any status
+      case "COMPLETED":
+        return newStatus.equalsIgnoreCase("AVAILABLE"); // Allow reactivation
+      case "UNAVAILABLE":
+        return true; // Unavailable slots can be made available again
+      default:
+        return true;
+    }
+  }
+}

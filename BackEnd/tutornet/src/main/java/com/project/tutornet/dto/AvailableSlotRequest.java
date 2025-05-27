@@ -1,78 +1,78 @@
-// package com.project.tutornet.dto;
+package com.project.tutornet.dto;
 
-// import com.project.tutornet.entity.AvailableSlot;
-// import com.project.tutornet.entity.Tutor;
-// import java.util.Date;
-// import java.util.UUID;
+import java.util.Date;
+import java.util.UUID;
 
-// public class AvailableSlotRequest {
+import com.project.tutornet.entity.AvailableSlot;
 
-//   private UUID availableId;
+public class AvailableSlotRequest {
 
-//   private Date scheduleStart;
-//   private Date scheduleEnd;
-//   private String slotStatus;
-//   private UUID tutorId;
-//   private String tutorName;
+  private UUID availableId;
 
-//   // Constructors
-//   public AvailableSlotRequest() {}
+  private Date scheduleStart;
+  private Date scheduleEnd;
+  private String slotStatus;
+  private UUID tutorId;
+  private String tutorName;
 
-//   public AvailableSlotRequest(AvailableSlot slot) {
-//     this.availableId = slot.getAvailableId();
-//     this.scheduleStart = slot.getScheduleStart();
-//     this.scheduleEnd = slot.getScheduleEnd();
-//     this.slotStatus = slot.getSlotStatus();
-//     this.tutorId = slot.getTutors().getUserId();
-//     this.tutorName =
-//       slot.getTutors().getFirstName() + " " + slot.getTutors().getLastName();
-//   }
+  // Constructors
+  public AvailableSlotRequest() {}
 
-//   public void setAvailableId(UUID availableId) {
-//     this.availableId = availableId;
-//   }
+  public AvailableSlotRequest(AvailableSlot slot) {
+    this.availableId = slot.getAvailableId();
+    this.scheduleStart = slot.getScheduleStart();
+    this.scheduleEnd = slot.getScheduleEnd();
+    this.slotStatus = slot.getSlotStatus();
+    this.tutorId = slot.getTutors().getId();
+    this.tutorName =
+      slot.getTutors().getUsername();
+  }
 
-//   public UUID getAvailableId() {
-//     return availableId;
-//   }
+  public void setAvailableId(UUID availableId) {
+    this.availableId = availableId;
+  }
 
-//   public void setTutorId(UUID tutorId) {
-//     this.tutorId = tutorId;
-//   }
+  public UUID getAvailableId() {
+    return availableId;
+  }
 
-//   public void setTutorName(String tutorName) {
-//     this.tutorName = tutorName;
-//   }
+  public void setTutorId(UUID tutorId) {
+    this.tutorId = tutorId;
+  }
 
-//   public UUID getTutorId() {
-//     return tutorId;
-//   }
+  public void setTutorName(String tutorName) {
+    this.tutorName = tutorName;
+  }
 
-//   public String getTutorName() {
-//     return tutorName;
-//   }
+  public UUID getTutorId() {
+    return tutorId;
+  }
 
-//   public void setScheduleStart(Date scheduleStart) {
-//     this.scheduleStart = scheduleStart;
-//   }
+  public String getTutorName() {
+    return tutorName;
+  }
 
-//   public void setScheduleEnd(Date scheduleEnd) {
-//     this.scheduleEnd = scheduleEnd;
-//   }
+  public void setScheduleStart(Date scheduleStart) {
+    this.scheduleStart = scheduleStart;
+  }
 
-//   public void setSlotStatus(String slotStatus) {
-//     this.slotStatus = slotStatus;
-//   }
+  public void setScheduleEnd(Date scheduleEnd) {
+    this.scheduleEnd = scheduleEnd;
+  }
 
-//   public Date getScheduleStart() {
-//     return scheduleStart;
-//   }
+  public void setSlotStatus(String slotStatus) {
+    this.slotStatus = slotStatus;
+  }
 
-//   public Date getScheduleEnd() {
-//     return scheduleEnd;
-//   }
+  public Date getScheduleStart() {
+    return scheduleStart;
+  }
 
-//   public String getSlotStatus() {
-//     return slotStatus;
-//   }
-// }
+  public Date getScheduleEnd() {
+    return scheduleEnd;
+  }
+
+  public String getSlotStatus() {
+    return slotStatus;
+  }
+}

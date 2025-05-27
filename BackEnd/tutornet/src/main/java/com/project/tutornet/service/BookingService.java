@@ -1,212 +1,219 @@
-// package com.project.tutornet.service;
+package com.project.tutornet.service;
 
-// import com.project.tutornet.dto.BookingResponseDto;
-// import com.project.tutornet.dto.CreateBookingDto;
-// import com.project.tutornet.dto.UpdateBookingStatusDto;
-// import com.project.tutornet.repository.AvailableSlotRepository;
-// import com.project.tutornet.repository.BookingRepository;
-// import java.util.Date;
-// import java.util.List;
-// import java.util.Optional;
-// import java.util.UUID;
-// import lombok.extern.slf4j.Slf4j;
-// import org.springframework.beans.factory.annotation.Autowired;
-// import org.springframework.stereotype.Service;
-// import org.springframework.stereotype.Service;
-// import org.springframework.transaction.annotation.Transactional;
-// import org.springframework.transaction.annotation.Transactional;
 
-// @Service
-// @Slf4j
-// @Transactional
-// public class BookingService {
+import java.util.Date;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
-//   @Autowired
-//   private BookingRepository bookingRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-//   @Autowired
-//   private StudentRepository studentRepository;
+import com.project.tutornet.controller.BookingException;
+import com.project.tutornet.dto.BookingResponseDto;
+import com.project.tutornet.dto.CreateBookingDto;
+import com.project.tutornet.dto.UpdateBookingStatusDto;
+import com.project.tutornet.entity.AvailableSlot;
+import com.project.tutornet.entity.Booking;
+import com.project.tutornet.entity.Student;
+import com.project.tutornet.repository.AvailableSlotRepository;
+import com.project.tutornet.repository.BookingRepository;
+import com.project.tutornet.repository.StudentRepository;
 
-//   @Autowired
-//   private AvailableSlotRepository availableSlotRepository;
+import lombok.extern.slf4j.Slf4j;
 
-//   @Transactional
-//   public BookingResponseDto createBooking(CreateBookingDto createBookingDto) {
-//     // Validate student exists
-//     Optional<Student> studentOpt = studentRepository.findById(
-//       createBookingDto.getStudentId()
-//     );
-//     if (!studentOpt.isPresent()) {
-//       throw new BookingException(
-//         "Student not found with ID: " + createBookingDto.getStudentId()
-//       );
-//     }
+@Service
+@Slf4j
+@Transactional
+public class BookingService {
 
-//     // Validate slot exists and is available
-//     Optional<AvailableSlot> slotOpt = availableSlotRepository.findById(
-//       createBookingDto.getSlotId()
-//     );
-//     if (!slotOpt.isPresent()) {
-//       throw new BookingException(
-//         "Available slot not found with ID: " + createBookingDto.getSlotId()
-//       );
-//     }
+  @Autowired
+  private BookingRepository bookingRepository;
 
-//     AvailableSlot slot = slotOpt.get();
-//     if (!"AVAILABLE".equalsIgnoreCase(slot.getSlotStatus())) {
-//       throw new BookingException("Selected slot is not available for booking");
-//     }
+  @Autowired
+  private StudentRepository studentRepository;
 
-//     // Create new booking
-//     Booking booking = new Booking();
-//     booking.setStudent(studentOpt.get());
-//     booking.setSlot(slot);
-//     booking.setSubjectName(createBookingDto.getSubjectName());
-//     booking.setBookingStatus(createBookingDto.getBookingStatus());
-//     booking.setBookingDate(new Date());
-//     booking.setScheduleStart(slot.getScheduleStart());
-//     booking.setScheduleEnd(slot.getScheduleEnd());
+  @Autowired
+  private AvailableSlotRepository availableSlotRepository;
 
-//     // Save booking
-//     Booking savedBooking = bookingRepository.save(booking);
+  @Transactional
+  public BookingResponseDto createBooking(CreateBookingDto createBookingDto) {
+    // Validate student exists
+    Optional<Student> studentOpt = studentRepository.findById(
+      createBookingDto.getStudentId()
+    );
+    if (!studentOpt.isPresent()) {
+      throw new BookingException(
+        "Student not found with ID: " + createBookingDto.getStudentId()
+      );
+    }
 
-//     // Update slot status to booked
-//     slot.setSlotStatus("BOOKED");
-//     availableSlotRepository.save(slot);
+    // Validate slot exists and is available
+    Optional<AvailableSlot> slotOpt = availableSlotRepository.findById(
+      createBookingDto.getSlotId()
+    );
+    if (!slotOpt.isPresent()) {
+      throw new BookingException(
+        "Available slot not found with ID: " + createBookingDto.getSlotId()
+      );
+    }
 
-//     return new BookingResponseDto(savedBooking);
-//   }
+    AvailableSlot slot = slotOpt.get();
+    if (!"AVAILABLE".equalsIgnoreCase(slot.getSlotStatus())) {
+      throw new BookingException("Selected slot is not available for booking");
+    }
 
-//   @Transactional
-//   public BookingResponseDto updateBookingStatus(
-//     UUID bookingId,
-//     UpdateBookingStatusDto updateStatusDto
-//   ) {
-//     Optional<Booking> bookingOpt = bookingRepository.findById(bookingId);
-//     if (!bookingOpt.isPresent()) {
-//       throw new BookingException("Booking not found with ID: " + bookingId);
-//     }
+    // Create new booking
+    Booking booking = new Booking();
+    booking.setStudent(studentOpt.get());
+    booking.setSlot(slot);
+    booking.setSubjectName(createBookingDto.getSubjectName());
+    booking.setBookingStatus(createBookingDto.getBookingStatus());
+    booking.setBookingDate(new Date());
+    booking.setScheduleStart(slot.getScheduleStart());
+    booking.setScheduleEnd(slot.getScheduleEnd());
 
-//     Booking booking = bookingOpt.get();
-//     String oldStatus = booking.getBookingStatus();
-//     String newStatus = updateStatusDto.getBookingStatus();
+    // Save booking
+    Booking savedBooking = bookingRepository.save(booking);
 
-//     // Validate status transition
-//     if (!isValidStatusTransition(oldStatus, newStatus)) {
-//       throw new BookingException(
-//         "Invalid status transition from " + oldStatus + " to " + newStatus
-//       );
-//     }
+    // Update slot status to booked
+    slot.setSlotStatus("BOOKED");
+    availableSlotRepository.save(slot);
 
-//     // Update booking status
-//     booking.setBookingStatus(newStatus);
-//     Booking savedBooking = bookingRepository.save(booking);
+    return new BookingResponseDto(savedBooking);
+  }
 
-//     // Handle slot status changes based on booking status
-//     handleSlotStatusChange(booking, oldStatus, newStatus);
+  @Transactional
+  public BookingResponseDto updateBookingStatus(
+    UUID bookingId,
+    UpdateBookingStatusDto updateStatusDto
+  ) {
+    Optional<Booking> bookingOpt = bookingRepository.findById(bookingId);
+    if (!bookingOpt.isPresent()) {
+      throw new BookingException("Booking not found with ID: " + bookingId);
+    }
 
-//     return new BookingResponseDto(savedBooking);
-//   }
+    Booking booking = bookingOpt.get();
+    String oldStatus = booking.getBookingStatus();
+    String newStatus = updateStatusDto.getBookingStatus();
 
-//   public List<Booking> getBookingsByStudentId(UUID studentId) {
-//     return bookingRepository.findByStudent_UserId(studentId);
-//   }
+    // Validate status transition
+    if (!isValidStatusTransition(oldStatus, newStatus)) {
+      throw new BookingException(
+        "Invalid status transition from " + oldStatus + " to " + newStatus
+      );
+    }
 
-//   public List<Booking> getBookingsByStudentIdAndStatus(
-//     UUID studentId,
-//     String status
-//   ) {
-//     return bookingRepository.findByStudent_UserIdAndBookingStatus(
-//       studentId,
-//       status
-//     );
-//   }
+    // Update booking status
+    booking.setBookingStatus(newStatus);
+    Booking savedBooking = bookingRepository.save(booking);
 
-//   public Optional<Booking> getBookingById(UUID bookingId) {
-//     return bookingRepository.findById(bookingId);
-//   }
+    // Handle slot status changes based on booking status
+    handleSlotStatusChange(booking, oldStatus, newStatus);
 
-//   @Transactional
-//   public BookingResponseDto cancelBooking(UUID bookingId) {
-//     Optional<Booking> bookingOpt = bookingRepository.findById(bookingId);
-//     if (!bookingOpt.isPresent()) {
-//       throw new BookingException("Booking not found with ID: " + bookingId);
-//     }
+    return new BookingResponseDto(savedBooking);
+  }
 
-//     Booking booking = bookingOpt.get();
-//     if ("CANCELLED".equalsIgnoreCase(booking.getBookingStatus())) {
-//       throw new BookingException("Booking is already cancelled");
-//     }
+  public List<Booking> getBookingsByStudentId(UUID studentId) {
+    return bookingRepository.findByStudent_Id(studentId);
+  }
 
-//     // Update booking status
-//     booking.setBookingStatus("CANCELLED");
-//     Booking savedBooking = bookingRepository.save(booking);
+  public List<Booking> getBookingsByStudentIdAndStatus(
+    UUID studentId,
+    String status
+  ) {
+    return bookingRepository.findByStudent_IdAndBookingStatus(
+      studentId,
+      status
+    );
+  }
 
-//     // Make slot available again
-//     AvailableSlot slot = booking.getSlot();
-//     slot.setSlotStatus("AVAILABLE");
-//     availableSlotRepository.save(slot);
+  public Optional<Booking> getBookingById(UUID bookingId) {
+    return bookingRepository.findById(bookingId);
+  }
 
-//     return new BookingResponseDto(savedBooking);
-//   }
+  @Transactional
+  public BookingResponseDto cancelBooking(UUID bookingId) {
+    Optional<Booking> bookingOpt = bookingRepository.findById(bookingId);
+    if (!bookingOpt.isPresent()) {
+      throw new BookingException("Booking not found with ID: " + bookingId);
+    }
 
-//   private boolean isValidStatusTransition(String oldStatus, String newStatus) {
-//     // Define valid status transitions based on your business rules
-//     switch (oldStatus.toUpperCase()) {
-//       case "PENDING":
-//         return (
-//           newStatus.equalsIgnoreCase("CONFIRMED") ||
-//           newStatus.equalsIgnoreCase("CANCELLED") ||
-//           newStatus.equalsIgnoreCase("REJECTED")
-//         );
-//       case "CONFIRMED":
-//         return (
-//           newStatus.equalsIgnoreCase("COMPLETED") ||
-//           newStatus.equalsIgnoreCase("CANCELLED") ||
-//           newStatus.equalsIgnoreCase("NO_SHOW")
-//         );
-//       case "COMPLETED":
-//         return false; // Completed bookings cannot be changed
-//       case "CANCELLED":
-//         return newStatus.equalsIgnoreCase("CONFIRMED"); // Allow reactivation
-//       case "REJECTED":
-//         return newStatus.equalsIgnoreCase("PENDING"); // Allow resubmission
-//       case "NO_SHOW":
-//         return newStatus.equalsIgnoreCase("COMPLETED"); // Allow manual completion
-//       default:
-//         return true; // Allow any transition for unknown statuses
-//     }
-//   }
+    Booking booking = bookingOpt.get();
+    if ("CANCELLED".equalsIgnoreCase(booking.getBookingStatus())) {
+      throw new BookingException("Booking is already cancelled");
+    }
 
-//   private void handleSlotStatusChange(
-//     Booking booking,
-//     String oldStatus,
-//     String newStatus
-//   ) {
-//     AvailableSlot slot = booking.getSlot();
+    // Update booking status
+    booking.setBookingStatus("CANCELLED");
+    Booking savedBooking = bookingRepository.save(booking);
 
-//     // If booking is cancelled or rejected, make slot available
-//     if (
-//       newStatus.equalsIgnoreCase("CANCELLED") ||
-//       newStatus.equalsIgnoreCase("REJECTED")
-//     ) {
-//       slot.setSlotStatus("AVAILABLE");
-//     }
-//     // If booking is confirmed from pending/rejected, mark slot as booked
-//     else if (
-//       newStatus.equalsIgnoreCase("CONFIRMED") &&
-//       (
-//         oldStatus.equalsIgnoreCase("PENDING") ||
-//         oldStatus.equalsIgnoreCase("REJECTED")
-//       )
-//     ) {
-//       slot.setSlotStatus("BOOKED");
-//     }
-//     // If booking is completed, mark slot as completed
-//     else if (newStatus.equalsIgnoreCase("COMPLETED")) {
-//       slot.setSlotStatus("COMPLETED");
-//     }
+    // Make slot available again
+    AvailableSlot slot = booking.getSlot();
+    slot.setSlotStatus("AVAILABLE");
+    availableSlotRepository.save(slot);
 
-//     availableSlotRepository.save(slot);
-//   }
-// }
+    return new BookingResponseDto(savedBooking);
+  }
+
+  private boolean isValidStatusTransition(String oldStatus, String newStatus) {
+    // Define valid status transitions based on your business rules
+    switch (oldStatus.toUpperCase()) {
+      case "PENDING":
+        return (
+          newStatus.equalsIgnoreCase("CONFIRMED") ||
+          newStatus.equalsIgnoreCase("CANCELLED") ||
+          newStatus.equalsIgnoreCase("REJECTED")
+        );
+      case "CONFIRMED":
+        return (
+          newStatus.equalsIgnoreCase("COMPLETED") ||
+          newStatus.equalsIgnoreCase("CANCELLED") ||
+          newStatus.equalsIgnoreCase("NO_SHOW")
+        );
+      case "COMPLETED":
+        return false; // Completed bookings cannot be changed
+      case "CANCELLED":
+        return newStatus.equalsIgnoreCase("CONFIRMED"); // Allow reactivation
+      case "REJECTED":
+        return newStatus.equalsIgnoreCase("PENDING"); // Allow resubmission
+      case "NO_SHOW":
+        return newStatus.equalsIgnoreCase("COMPLETED"); // Allow manual completion
+      default:
+        return true; // Allow any transition for unknown statuses
+    }
+  }
+
+  private void handleSlotStatusChange(
+    Booking booking,
+    String oldStatus,
+    String newStatus
+  ) {
+    AvailableSlot slot = booking.getSlot();
+
+    // If booking is cancelled or rejected, make slot available
+    if (
+      newStatus.equalsIgnoreCase("CANCELLED") ||
+      newStatus.equalsIgnoreCase("REJECTED")
+    ) {
+      slot.setSlotStatus("AVAILABLE");
+    }
+    // If booking is confirmed from pending/rejected, mark slot as booked
+    else if (
+      newStatus.equalsIgnoreCase("CONFIRMED") &&
+      (
+        oldStatus.equalsIgnoreCase("PENDING") ||
+        oldStatus.equalsIgnoreCase("REJECTED")
+      )
+    ) {
+      slot.setSlotStatus("BOOKED");
+    }
+    // If booking is completed, mark slot as completed
+    else if (newStatus.equalsIgnoreCase("COMPLETED")) {
+      slot.setSlotStatus("COMPLETED");
+    }
+
+    availableSlotRepository.save(slot);
+  }
+}

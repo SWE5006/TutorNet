@@ -1,132 +1,128 @@
-// package com.project.tutornet.dto;
+package com.project.tutornet.dto;
 
-// import com.project.tutornet.entity.Booking;
-// import java.util.Date;
-// import java.util.UUID;
+import java.util.Date;
+import java.util.UUID;
 
-// public class BookingResponseDto {
+import com.project.tutornet.entity.Booking;
 
-//   private UUID bookingId;
-//   private Date bookingDate;
-//   private Date scheduleStart;
-//   private Date scheduleEnd;
-//   private String bookingStatus;
-//   private String subjectName;
-//   private UUID studentId;
-//   private String studentName;
-//   private UUID tutorId;
-//   private String tutorName;
-//   private UUID slotId;
+public class BookingResponseDto {
 
-//   // Constructor from Booking entity
-//   public BookingResponseDto(Booking booking) {
-//     this.bookingId = booking.getBookingId();
-//     this.bookingDate = booking.getBookingDate();
-//     this.scheduleStart = booking.getScheduleStart();
-//     this.scheduleEnd = booking.getScheduleEnd();
-//     this.bookingStatus = booking.getBookingStatus();
-//     this.subjectName = booking.getSubjectName();
-//     this.studentId = booking.getStudent().getUserId();
-//     this.studentName =
-//       booking.getStudent().getFirstName() +
-//       " " +
-//       booking.getStudent().getLastName();
-//     this.slotId = booking.getSlot().getAvailableId();
-//     if (booking.getSlot().getTutors() != null) {
-//       this.tutorId = booking.getSlot().getTutors().getUserId();
-//       this.tutorName =
-//         booking.getSlot().getTutors().getFirstName() +
-//         " " +
-//         booking.getSlot().getTutors().getLastName();
-//     }
-//   }
+  private UUID bookingId;
+  private Date bookingDate;
+  private Date scheduleStart;
+  private Date scheduleEnd;
+  private String bookingStatus;
+  private String subjectName;
+  private UUID studentId;
+  private String studentName;
+  private UUID tutorId;
+  private String tutorName;
+  private UUID slotId;
 
-//   // Getters and Setters
-//   public UUID getBookingId() {
-//     return bookingId;
-//   }
+  // Constructor from Booking entity
+  public BookingResponseDto(Booking booking) {
+    this.bookingId = booking.getBookingId();
+    this.bookingDate = booking.getBookingDate();
+    this.scheduleStart = booking.getScheduleStart();
+    this.scheduleEnd = booking.getScheduleEnd();
+    this.bookingStatus = booking.getBookingStatus();
+    this.subjectName = booking.getSubjectName();
+    this.studentId = booking.getStudent().getId();
+    this.studentName =booking.getStudent().getUsername();
+    this.slotId = booking.getSlot().getAvailableId();
+    if (booking.getSlot().getTutors() != null) {
+      this.tutorId = booking.getSlot().getTutors().getId();
+      this.tutorName =booking.getSlot().getTutors().getUsername();
+      
+    }
+  }
 
-//   public void setBookingId(UUID bookingId) {
-//     this.bookingId = bookingId;
-//   }
+  // Getters and Setters
+  public UUID getBookingId() {
+    return bookingId;
+  }
 
-//   public Date getBookingDate() {
-//     return bookingDate;
-//   }
+  public void setBookingId(UUID bookingId) {
+    this.bookingId = bookingId;
+  }
 
-//   public void setBookingDate(Date bookingDate) {
-//     this.bookingDate = bookingDate;
-//   }
+  public Date getBookingDate() {
+    return bookingDate;
+  }
 
-//   public Date getScheduleStart() {
-//     return scheduleStart;
-//   }
+  public void setBookingDate(Date bookingDate) {
+    this.bookingDate = bookingDate;
+  }
 
-//   public void setScheduleStart(Date scheduleStart) {
-//     this.scheduleStart = scheduleStart;
-//   }
+  public Date getScheduleStart() {
+    return scheduleStart;
+  }
 
-//   public Date getScheduleEnd() {
-//     return scheduleEnd;
-//   }
+  public void setScheduleStart(Date scheduleStart) {
+    this.scheduleStart = scheduleStart;
+  }
 
-//   public void setScheduleEnd(Date scheduleEnd) {
-//     this.scheduleEnd = scheduleEnd;
-//   }
+  public Date getScheduleEnd() {
+    return scheduleEnd;
+  }
 
-//   public String getBookingStatus() {
-//     return bookingStatus;
-//   }
+  public void setScheduleEnd(Date scheduleEnd) {
+    this.scheduleEnd = scheduleEnd;
+  }
 
-//   public void setBookingStatus(String bookingStatus) {
-//     this.bookingStatus = bookingStatus;
-//   }
+  public String getBookingStatus() {
+    return bookingStatus;
+  }
 
-//   public String getSubjectName() {
-//     return subjectName;
-//   }
+  public void setBookingStatus(String bookingStatus) {
+    this.bookingStatus = bookingStatus;
+  }
 
-//   public void setSubjectName(String subjectName) {
-//     this.subjectName = subjectName;
-//   }
+  public String getSubjectName() {
+    return subjectName;
+  }
 
-//   public UUID getStudentId() {
-//     return studentId;
-//   }
+  public void setSubjectName(String subjectName) {
+    this.subjectName = subjectName;
+  }
 
-//   public void setStudentId(UUID studentId) {
-//     this.studentId = studentId;
-//   }
+  public UUID getStudentId() {
+    return studentId;
+  }
 
-//   public String getStudentName() {
-//     return studentName;
-//   }
+  public void setStudentId(UUID studentId) {
+    this.studentId = studentId;
+  }
 
-//   public void setStudentName(String studentName) {
-//     this.studentName = studentName;
-//   }
+  public String getStudentName() {
+    return studentName;
+  }
 
-//   public UUID getTutorId() {
-//     return tutorId;
-//   }
+  public void setStudentName(String studentName) {
+    this.studentName = studentName;
+  }
 
-//   public void setTutorId(UUID tutorId) {
-//     this.tutorId = tutorId;
-//   }
+  public UUID getTutorId() {
+    return tutorId;
+  }
 
-//   public String getTutorName() {
-//     return tutorName;
-//   }
+  public void setTutorId(UUID tutorId) {
+    this.tutorId = tutorId;
+  }
 
-//   public void setTutorName(String tutorName) {
-//     this.tutorName = tutorName;
-//   }
+  public String getTutorName() {
+    return tutorName;
+  }
 
-//   public UUID getSlotId() {
-//     return slotId;
-//   }
+  public void setTutorName(String tutorName) {
+    this.tutorName = tutorName;
+  }
 
-//   public void setSlotId(UUID slotId) {
-//     this.slotId = slotId;
-//   }
-// }
+  public UUID getSlotId() {
+    return slotId;
+  }
+
+  public void setSlotId(UUID slotId) {
+    this.slotId = slotId;
+  }
+}
