@@ -1,18 +1,19 @@
 package com.project.tutornet.dto;
 
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.NotEmpty;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
+@Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class LoginRequest {
-
-     @NotNull @Email
+    @NotEmpty(message = "Email is required")
     private String email;
-    @NotNull @Size(min = 8)
+
+    @NotEmpty(message = "Password is required")
     private String password;
-       // Getters and setters
-       public String getEmail() { return email; }
-       public void setEmail(String email) { this.email = email; }
-       public String getPassword() { return password; }
-       public void setPassword(String password) { this.password = password; } 
 }

@@ -1,38 +1,54 @@
 package com.project.tutornet.dto;
 
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
+
+
+import com.project.tutornet.component.EncryptAttributeConverter;
+
+import jakarta.persistence.Convert;
+import jakarta.persistence.Id;
 
 public abstract class UserRequest {
-    @NotNull @Email
-    private String email;
-    @NotNull @Size(min = 8)
-    private String password;
-    @NotNull
-    private String firstName;
-    @NotNull
-    private String lastName;
-     private boolean isActive;
+  @Id
+	
+	
+  public void setUsername(String username) {
+    this.username = username;
+  }
+  public void setPassword(String password) {
+    this.password = password;
+  }
+  public void setEmailAddress(String emailAddress) {
+    this.emailAddress = emailAddress;
+  }
+ 
+  public void setMobileNumber(String mobileNumber) {
+    this.mobileNumber = mobileNumber;
+  }
 
    
-    // Getters and setters
-    public String getEmail() { return email; }
-    public void setEmail(String email) { this.email = email; }
-    public String getPassword() { return password; }
-    public void setPassword(String password) { this.password = password; }
-    public String getFirstName() { return firstName; }
-    public void setFirstName(String firstName) { this.firstName = firstName; }
-    public String getLastName() { return lastName; }
-    public void setLastName(String lastName) { this.lastName = lastName; }
+  public String getUsername() {
+    return username;
+  }
+  public String getPassword() {
+    return password;
+  }
+  public String getEmailAddress() {
+    return emailAddress;
+  }
+  
+  public String getMobileNumber() {
+    return mobileNumber;
+  }
+ 
+    private String username;
+	private String password;
+	@Convert(converter = EncryptAttributeConverter.class)
+	private String emailAddress;
 
-    public boolean isIsActive() {
-        return isActive;
-    }
+	@Convert(converter = EncryptAttributeConverter.class)
+	private String mobileNumber;
+	
 
-    public void setIsActive(boolean isActive) {
-        this.isActive = isActive;
-    }
 }
 
 
