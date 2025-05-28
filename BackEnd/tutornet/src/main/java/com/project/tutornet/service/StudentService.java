@@ -1,6 +1,7 @@
 package com.project.tutornet.service;
 
-import org.springframework.dao.DataIntegrityViolationException;
+import java.time.LocalDateTime;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -34,19 +35,15 @@ public class StudentService {
        student.setMobileNumber(request.getMobileNumber());
        student.setRoles("STUDENT");
       
-       
+       student.setCreateDatetime(LocalDateTime.now());
         student.setAge(request.getAge());
-        student.setActiveStatus("true");
+        student.setActiveStatus("ACTIVE");
         student.setClassLevel(request.getClassLevel());
        
        
-        try {
+        
             return studentRepository.save(student);
-        } catch (DataIntegrityViolationException e) {
-            throw new IllegalArgumentException("Email already exists: " + request.getEmailAddress());
-        } catch (Exception e) {
-            throw new RuntimeException("Failed to create tutor", e);
-        }
+       
     }
 
 }
