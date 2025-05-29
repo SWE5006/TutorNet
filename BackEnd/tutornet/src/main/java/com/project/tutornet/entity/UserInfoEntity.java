@@ -25,7 +25,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name="users")
+
 public class UserInfoEntity {
 
 	@Id
