@@ -231,7 +231,7 @@ function TutorListPage() {
         ) : (
           <Grid container spacing={3}>
             {filteredTutors.map((tutor) => (
-              <Grid item xs={12} sm={6} md={4} key={tutor.id}>
+              <Grid key={tutor.id}>
                 <Card
                   sx={{
                     height: "100%",

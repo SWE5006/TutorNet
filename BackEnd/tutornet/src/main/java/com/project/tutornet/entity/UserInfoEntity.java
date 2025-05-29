@@ -41,7 +41,7 @@ public class UserInfoEntity {
 	private String roles;
 	private LocalDateTime createDatetime;
 
-	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
 	private List<RefreshTokenEntity> refreshTokens;
 
 }
