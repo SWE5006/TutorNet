@@ -24,7 +24,7 @@ public class RefreshTokenEntity {
     @GeneratedValue
     private Long id;
     
-    @Column(columnDefinition = "TEXT")
+    @Column(length = 2048)
     private String refreshToken;
 
   
