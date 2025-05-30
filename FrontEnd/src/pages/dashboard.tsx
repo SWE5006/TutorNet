@@ -16,6 +16,7 @@ import {
   SelectChangeEvent,
 } from "@mui/material";
 import Layout from "../components/Layout";
+import Sidebar from "../components/Layout/sidebar";
 
 interface Tutor {
   id: string;
@@ -159,7 +160,9 @@ function TutorListPage() {
   };
 
   return (
+    
     <Layout isLoading={false}>
+       <Sidebar></Sidebar>
       <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
         <Typography
           variant="h4"
@@ -170,7 +173,7 @@ function TutorListPage() {
         >
           Recommended Tutors
         </Typography>
-
+     
         {/* Filter Section */}
         <Box
           sx={{
@@ -186,6 +189,7 @@ function TutorListPage() {
             justifyContent: "center",
           }}
         >
+          
           <TextField
             label="Search Tutors"
             variant="outlined"

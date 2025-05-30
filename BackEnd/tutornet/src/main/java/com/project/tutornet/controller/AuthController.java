@@ -2,6 +2,7 @@ package com.project.tutornet.controller;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,7 +14,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.project.tutornet.dto.StudentRequest;
+import com.project.tutornet.dto.TutorRequest;
 import com.project.tutornet.dto.UserRegistrationRequest;
+import com.project.tutornet.entity.UserInfoEntity;
+import com.project.tutornet.service.StudentService;
+import com.project.tutornet.service.TutorService;
 import com.project.tutornet.service.impl.AuthServiceImpl;
 
 import jakarta.servlet.http.Cookie;
@@ -29,7 +35,12 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class AuthController {
 
-  private final AuthServiceImpl authService;
+  @Autowired
+  private  AuthServiceImpl authService;
+  @Autowired
+  private StudentService studentService;
+  @Autowired
+  private TutorService tutorService;
 
   @PostMapping("/sign-in")
   public ResponseEntity<?> authenticateUser(
@@ -87,4 +98,18 @@ public class AuthController {
     }
     return ResponseEntity.ok(authService.getAccessTokenUsingRefreshToken(cookieToken));
   }
+
+  @PostMapping("/sign-up/student")
+    public ResponseEntity<UserInfoEntity> createStudent(@RequestBody StudentRequest request) {
+        UserInfoEntity user=studentService.createStudent(request);
+        return ResponseEntity.ok(user);
+    }
+
+ @PostMapping("/sign-up/tutor")
+    public ResponseEntity<UserInfoEntity> createTutor(@RequestBody TutorRequest request) {
+        UserInfoEntity user = tutorService.createTutor(request);
+        return ResponseEntity.ok(user);
+    }
+
+
 }

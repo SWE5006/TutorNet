@@ -60,6 +60,20 @@ export const authApi = createApi({
         body: userInfo,
       }),
     }),
+    signUpStudent: builder.mutation<LoginResponse, SignupRequestStudent>({
+      query: (userInfo) => ({
+        url: "/sign-up/student",
+        method: "POST",
+        body: userInfo,
+      }),
+    }),
+    signUpTutor: builder.mutation<LoginResponse, SignupRequestTutor>({
+      query: (userInfo) => ({
+        url: "/sign-up/tutor",
+        method: "POST",
+        body: userInfo,
+      }),
+    }),
     logout: builder.mutation<string, void>({
       query: () => ({
         url: "/logout",
@@ -75,5 +89,7 @@ export const {
   useLoginMutation,
   useLoginWithGoogleMutation,
   useSignUpMutation,
+  useSignUpStudentMutation,
+  useSignUpTutorMutation,
   useLogoutMutation,
 } = authApi;

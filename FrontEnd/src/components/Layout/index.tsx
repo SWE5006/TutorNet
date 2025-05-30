@@ -1,4 +1,8 @@
 import React from "react";
+
+
+
+
 import {
   AppBar,
   Toolbar,
@@ -25,6 +29,8 @@ const Layout: React.FC<LayoutProps> = ({ children, isLoading = false }) => {
     requestLogout();
   };
 
+
+  
   React.useEffect(() => {
     if (result.isSuccess) {
       navigate("/login");
@@ -33,16 +39,9 @@ const Layout: React.FC<LayoutProps> = ({ children, isLoading = false }) => {
   return (
     <Box sx={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
       {/* Header */}
-      <AppBar position="static" color="primary">
-        <Toolbar>
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            Welcome, {userInfo.user_name}!
-          </Typography>
-          <Button color="inherit" onClick={performLogout}>
-            Logout
-          </Button>
-        </Toolbar>
-      </AppBar>
+  
+
+
 
       <Container component="main" sx={{ flexGrow: 1, py: 4 }}>
         {isLoading ? (
