@@ -22,6 +22,7 @@ public class Tutor extends UserInfoEntity {
    private Double hourlyRate;
    private String qualification;
    private int experienceYears;
+   private String location;
 
    @OneToMany(mappedBy = "tutors")
   private Set<Subject> subjects;

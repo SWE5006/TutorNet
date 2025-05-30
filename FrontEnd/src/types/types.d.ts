@@ -36,3 +36,26 @@ interface SignupRequest {
   userPassword: string;
   userRole: SgehRoles;
 }
+
+
+interface SignupRequestStudent {
+  userName: string;
+  userEmail: string;
+  userMobileNo: string;
+  userPassword: string;
+  userAge: string;
+  userClassLevel: string;
+  userRole: string;
+}
+
+interface SignupRequestTutor {
+  userName: string;
+  userEmail: string;
+  userMobileNo: string;
+  userPassword: string;
+  userRole: string;
+  hourlyRate: string;
+  qualification:string;
+  experienceYears:string;
+  location:string;
+}

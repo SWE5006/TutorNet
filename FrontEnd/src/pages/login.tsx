@@ -113,9 +113,14 @@ const Login = () => {
               mt: 2,
             }}
           >
-            <Link href="/signup" variant="body2">
-              {"Don't have an account? Sign Up"}
-            </Link>
+            <Typography>Don't have an account?</Typography>
+            <Typography><Link href="/signupstudent" variant="body2">
+              Sign Up as Student
+            </Link></Typography>
+            
+            <Typography><Link href="/signuptutor" variant="body2">
+              Sign Up as Tutor
+            </Link></Typography>
           </Box>
         </Box>
       </Paper>

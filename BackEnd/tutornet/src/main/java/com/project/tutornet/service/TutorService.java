@@ -12,11 +12,13 @@ import com.project.tutornet.entity.Tutor;
 import com.project.tutornet.entity.UserInfoEntity;
 import com.project.tutornet.repository.TutorRepository;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Service
 @Slf4j
 @Transactional
+@RequiredArgsConstructor
 public class TutorService {
 
  @Autowired

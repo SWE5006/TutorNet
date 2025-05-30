@@ -15,11 +15,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.project.tutornet.dto.AvailableSlotRequest;
 import com.project.tutornet.dto.SubjectRequest;
-import com.project.tutornet.dto.TutorRequest;
 import com.project.tutornet.entity.AvailableSlot;
 import com.project.tutornet.entity.Subject;
 import com.project.tutornet.entity.Tutor;
-import com.project.tutornet.entity.UserInfoEntity;
 import com.project.tutornet.repository.AvailableSlotRepository;
 import com.project.tutornet.repository.SubjectRepository;
 import com.project.tutornet.repository.TutorRepository;
@@ -43,11 +41,6 @@ public class TutorController {
 
    
 
- @PostMapping("/create")
-    public ResponseEntity<UserInfoEntity> createTutor(@RequestBody TutorRequest request) {
-        UserInfoEntity user = tutorService.createTutor(request);
-        return ResponseEntity.ok(user);
-    }
 
     @GetMapping("/by-subject")
     public List<Tutor> getTutorsBySubject(@RequestParam String subject)
