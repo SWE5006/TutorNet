@@ -29,6 +29,9 @@ const Sidebar: FC = () => {
   const [requestLogout, result] = useLogoutMutation();
   const { userInfo } = useSelector((state: any) => selectAuthSlice(state));
  
+   const handleNavigation = (path: string) => {
+    navigate(path);
+  };
 
   const toggleDrawer = () => {
     setOpen(!open);
@@ -45,12 +48,33 @@ const Sidebar: FC = () => {
   }, [result, navigate]);
 
   const menuItems = [
-    { text: 'Home', icon: <HomeIcon /> },
-    { text: 'Profile', icon: <PersonIcon /> },
-    { text: 'Session', icon: <EventIcon /> },
-    { text: 'Booking', icon: <BookOnlineIcon /> },
-    { text: 'Logout', icon: <LogoutIcon />, action: performLogout },
+    { 
+      text: 'Home', 
+      icon: <HomeIcon />, 
+      action: () => handleNavigation('/home') // or '/home' depending on your routes
+    },
+    { 
+      text: 'Profile', 
+      icon: <PersonIcon />, 
+      action: () => handleNavigation('/profile')
+    },
+    { 
+      text: 'Session', 
+      icon: <EventIcon />, 
+      action: () => handleNavigation('/session')
+    },
+    { 
+      text: 'Booking', 
+      icon: <BookOnlineIcon />, 
+      action: () => handleNavigation('/booking')
+    },
+    { 
+      text: 'Logout', 
+      icon: <LogoutIcon />, 
+      action: performLogout 
+    },
   ];
+
 
   return (
     <>
