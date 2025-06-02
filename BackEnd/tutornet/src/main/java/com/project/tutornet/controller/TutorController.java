@@ -48,6 +48,12 @@ public class TutorController {
         return tutorService.getTutorsBySubject(subject);
     }
 
+    @GetMapping("/all")
+    public List<Tutor> getAllTutors()
+    {
+        return tutorService.listAllTutors();
+    }
+
      @PostMapping("/{tutorid}/subjects")
     public ResponseEntity<?> addSubject(@PathVariable UUID id, @RequestBody SubjectRequest dto) {
         Tutor tutor = tutorRepository.findById(id).orElseThrow(() -> new RuntimeException("Tutor not found"));

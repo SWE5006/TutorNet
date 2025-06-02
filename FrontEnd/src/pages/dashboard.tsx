@@ -18,6 +18,7 @@ import {
 import Layout from "../components/Layout";
 import Sidebar from "../components/Layout/sidebar";
 
+
 interface Tutor {
   id: string;
   name: string;
@@ -27,76 +28,74 @@ interface Tutor {
   rating: number;
 }
 
-const DUMMY_TUTORS: Tutor[] = [
-  {
-    id: "tutor1",
-    name: "Alice Wonderland",
-    subject: "Mathematics",
-    description:
-      "Experienced in algebra, calculus, and geometry. Passionate about making math fun!",
-    location: "Singapore",
-    rating: 4.8,
-  },
-  {
-    id: "tutor2",
-    name: "Bob The Builder",
-    subject: "Physics",
-    description:
-      "Specializes in classical mechanics and electromagnetism. Prepares students for competitive exams.",
-    location: "Jurong East",
-    rating: 4.5,
-  },
-  {
-    id: "tutor3",
-    name: "Charlie Chaplin",
-    subject: "English",
-    description:
-      "Focuses on essay writing, grammar, and literature analysis. Helps improve verbal communication.",
-    location: "Tampines",
-    rating: 4.9,
-  },
-  {
-    id: "tutor4",
-    name: "Diana Prince",
-    subject: "Chemistry",
-    description:
-      "Expert in organic and inorganic chemistry. Provides clear explanations and problem-solving strategies.",
-    location: "Ang Mo Kio",
-    rating: 4.7,
-  },
-  {
-    id: "tutor5",
-    name: "Eve Adams",
-    subject: "Mathematics",
-    description:
-      "Certified tutor for primary and secondary school mathematics. Patient and encouraging.",
-    location: "Woodlands",
-    rating: 4.6,
-  },
-  {
-    id: "tutor6",
-    name: "Frank Ocean",
-    subject: "Biology",
-    description:
-      "Covers cell biology, genetics, and ecology. Makes complex topics easy to understand.",
-    location: "Novena",
-    rating: 4.4,
-  },
-  {
-    id: "tutor7",
-    name: "Grace Hopper",
-    subject: "Computer Science",
-    description:
-      "Programming fundamentals (Python, Java), data structures, and algorithms.",
-    location: "Bishan",
-    rating: 5.0,
-  },
-];
 
-const ALL_SUBJECTS: string[] = [
-  "All Subjects",
-  ...new Set(DUMMY_TUTORS.map((tutor) => tutor.subject)),
-];
+// const DUMMY_TUTORS: Tutor[] = [
+//   {
+//     id: "tutor1",
+//     name: "Alice Wonderland",
+//     subject: "Mathematics",
+//     description:
+//       "Experienced in algebra, calculus, and geometry. Passionate about making math fun!",
+//     location: "Singapore",
+//     rating: 4.8,
+//   },
+//   {
+//     id: "tutor2",
+//     name: "Bob The Builder",
+//     subject: "Physics",
+//     description:
+//       "Specializes in classical mechanics and electromagnetism. Prepares students for competitive exams.",
+//     location: "Jurong East",
+//     rating: 4.5,
+//   },
+//   {
+//     id: "tutor3",
+//     name: "Charlie Chaplin",
+//     subject: "English",
+//     description:
+//       "Focuses on essay writing, grammar, and literature analysis. Helps improve verbal communication.",
+//     location: "Tampines",
+//     rating: 4.9,
+//   },
+//   {
+//     id: "tutor4",
+//     name: "Diana Prince",
+//     subject: "Chemistry",
+//     description:
+//       "Expert in organic and inorganic chemistry. Provides clear explanations and problem-solving strategies.",
+//     location: "Ang Mo Kio",
+//     rating: 4.7,
+//   },
+//   {
+//     id: "tutor5",
+//     name: "Eve Adams",
+//     subject: "Mathematics",
+//     description:
+//       "Certified tutor for primary and secondary school mathematics. Patient and encouraging.",
+//     location: "Woodlands",
+//     rating: 4.6,
+//   },
+//   {
+//     id: "tutor6",
+//     name: "Frank Ocean",
+//     subject: "Biology",
+//     description:
+//       "Covers cell biology, genetics, and ecology. Makes complex topics easy to understand.",
+//     location: "Novena",
+//     rating: 4.4,
+//   },
+//   {
+//     id: "tutor7",
+//     name: "Grace Hopper",
+//     subject: "Computer Science",
+//     description:
+//       "Programming fundamentals (Python, Java), data structures, and algorithms.",
+//     location: "Bishan",
+//     rating: 5.0,
+//   },
+// ];
+
+
 
 function TutorListPage() {
   const [searchTerm, setSearchTerm] = useState<string>("");
@@ -106,13 +105,40 @@ function TutorListPage() {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
+  const [TUTORS, setTUTORS] = useState<Tutor[]>([]);
+  useEffect(() => {
+    const fetchTutors = async () => {
+      try {
+        setLoading(true);
+        const response = await fetch('/api/tutors/all'); 
+        
+        if (!response.ok) {
+          throw new Error('Failed to fetch tutors');
+        }
+        
+        const tutorsData: Tutor[] = await response.json();
+        setTUTORS(tutorsData);
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'An error occurred');
+      } finally {
+        setLoading(false);
+      }
+    };
+        fetchTutors();
+  }, []);
+
+  const ALL_SUBJECTS: string[] = [
+  "All Subjects",
+  ...new Set(TUTORS.map((tutor) => tutor.subject)),
+  ];
+
   useEffect(() => {
     const fetchTutors = async () => {
       try {
         setLoading(true);
         setError(null);
         await new Promise((resolve) => setTimeout(resolve, 500));
-        setFilteredTutors(DUMMY_TUTORS);
+        setFilteredTutors(TUTORS);
       } catch (err: any) {
         setError("Failed to load tutors. Please try again.");
         console.error("Error fetching tutors:", err);
@@ -126,7 +152,7 @@ function TutorListPage() {
 
   // Filter tutors whenever search term or subject changes
   useEffect(() => {
-    let currentTutors: Tutor[] = DUMMY_TUTORS; // Explicitly type currentTutors
+    let currentTutors: Tutor[] = TUTORS; // Explicitly type currentTutors
 
     if (selectedSubject !== "All Subjects") {
       currentTutors = currentTutors.filter(

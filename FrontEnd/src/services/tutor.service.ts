@@ -17,7 +17,10 @@ export const tutorApi = createApi({
       query: (tutorId: string) => `/${tutorId}`,
       providesTags: (result, error, tutorId) => [{ type: 'Tutor', id: tutorId }],
     }),
+   
   }),
+
+  
 });
 
 export const { useGetTutorByIdQuery } = tutorApi;

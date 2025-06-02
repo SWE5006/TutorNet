@@ -32,7 +32,9 @@ public class TutorService {
    return tutorRepository.searchTutorsByName(name);
  }
 
-
+    public List<Tutor> listAllTutors() {
+        return tutorRepository.findAll();
+    }
 
 
     @Transactional
