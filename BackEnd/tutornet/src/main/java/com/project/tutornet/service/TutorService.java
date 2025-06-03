@@ -1,9 +1,11 @@
 package com.project.tutornet.service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,7 +25,7 @@ public class TutorService {
 
  @Autowired
  private TutorRepository tutorRepository;
-
+ private final PasswordEncoder passwordEncoder;
  public List<Tutor> getTutorsBySubject(String subjectName) {
    return tutorRepository.findBySubjects_Name(subjectName);
  }
@@ -44,7 +46,7 @@ public class TutorService {
         Tutor tutor = new Tutor();
 
         tutor.setEmailAddress(request.getEmailAddress());
-        tutor.setPassword(request.getPassword());
+        tutor.setPassword(passwordEncoder.encode(request.getPassword()));
         tutor.setUsername(request.getUsername());
        tutor.setMobileNumber(request.getMobileNumber());
        tutor.setRoles("TUTOR");
@@ -54,8 +56,10 @@ public class TutorService {
         tutor.setQualification(request.getQualification());
         tutor.setExperienceYears(request.getExperienceYears());
         tutor.setHourlyRate(request.getHourlyRate());
-        tutor.setActiveStatus("true");
+        tutor.setActiveStatus("ACTIVE");
+        tutor.setCreateDatetime(LocalDateTime.now());
        
+        
         try {
             return tutorRepository.save(tutor);
         } catch (DataIntegrityViolationException e) {
