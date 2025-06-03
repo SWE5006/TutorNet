@@ -36,7 +36,11 @@ public class LogoutHandlerServiceImpl implements LogoutHandler {
     @Override
     public void logout(HttpServletRequest request, HttpServletResponse response, Authentication authentication) {
 
-        // Remove the refresh_token cookie from client
+       
+
+       
+
+         // Remove the refresh_token cookie from client
         Cookie deleteCookie = new Cookie("refresh_token", null);
         deleteCookie.setHttpOnly(true);
         deleteCookie.setSecure(true);
@@ -44,7 +48,8 @@ public class LogoutHandlerServiceImpl implements LogoutHandler {
         deleteCookie.setMaxAge(0);
         response.addCookie(deleteCookie);
 
-        final String authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
+
+ final String authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
 
         if(!authHeader.startsWith(TokenType.Bearer.name())){
             return;
@@ -59,6 +64,10 @@ public class LogoutHandlerServiceImpl implements LogoutHandler {
 
         String id = (String) jwtToken.getClaims().get("userid");
 
+        System.out.print("This is the Id:::::::::" + id);
+
+        try
+        {
         UUID userId = UUID.fromString(id);
 
         List<RefreshTokenEntity> tokenList  = refreshTokenRepo.findAllByUserId(userId);
@@ -67,6 +76,8 @@ public class LogoutHandlerServiceImpl implements LogoutHandler {
             token.setRevoked(true);
             refreshTokenRepo.save(token);
         });
-        
+        } catch(Exception ex)
+{           System.out.print(ex.getMessage());
+        }        
     }
 }
