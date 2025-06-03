@@ -26,6 +26,7 @@ export default function SignUpTutorPage() {
   const [qualification, setQualification] = useState("");
   const [experienceYears, setExperienceYears] = useState("");
   const [location, setLocation] = useState("");
+  const [description, setsetDescription] = useState("");
   
   const [nameError, setNameError] = useState<boolean | string>(false);
   const [emailError, setEmailError] = useState<boolean | string>(false);
@@ -35,7 +36,7 @@ export default function SignUpTutorPage() {
   const [qualificationError, setQualificationError] = useState<boolean | string>(false);
   const [experienceError, setExperienceError] = useState<boolean | string>(false);
   const [locationError, setLocationError] = useState<boolean | string>(false);
-  
+    const [descriptionError, setDescriptionError] = useState<boolean | string>(false);
   const [signupTutor, result] = useSignUpTutorMutation();
 
   const qualifications = [
@@ -83,23 +84,10 @@ export default function SignUpTutorPage() {
     "Yishun"
   ];
 
-  // Fixed handleSignUp function
+  
   const handleSignUpTutor = (e: { preventDefault: () => void; }) => {
-    e.preventDefault(); // Prevent default form submission
+    e.preventDefault(); 
     
-    // Debug: Log all values before sending
-    console.log('Form values:', {
-      userName,
-      userEmail,
-      userPassword,
-      userMobileNo,
-      hourlyRate,
-      qualification,
-      experienceYears,
-      location,
-    });
-
-    // Validate all required fields
     let hasErrors = false;
 
     if (!userName.trim()) {
@@ -142,23 +130,29 @@ export default function SignUpTutorPage() {
       hasErrors = true;
     }
 
-    // Don't submit if there are errors
+    if (!description.trim()) {
+      setDescriptionError("Description is required.");
+      hasErrors = true;
+    }
+
+    
     if (hasErrors) {
       console.log('Form has errors, not submitting');
       return;
     }
 
-    // Submit the form
+    
     signupTutor({
-      userName: userName.trim(),
-      userEmail: userEmail.trim(),
-      userPassword: userPassword.trim(),
-      userMobileNo: userMobileNo.trim(),
+      username: userName.trim(),
+      emailAddress: userEmail.trim(),
+      password: userPassword.trim(),
+      mobileNumber: userMobileNo.trim(),
       hourlyRate: hourlyRate,
       qualification: qualification.trim(),
       experienceYears: experienceYears,
       location: location.trim(),
       userRole: "TUTOR",
+      description:description
     });
   };
 
@@ -262,6 +256,26 @@ export default function SignUpTutorPage() {
           />
 
           <TextField
+            fullWidth
+            required
+            label="Summary"
+            variant="outlined"
+            type="text"
+            value={description}
+            error={!!descriptionError}
+            helperText={descriptionError}
+            onChange={(e) => {
+              setsetDescription(e.target.value);
+              if (e.target.validity.valid) {
+                setDescriptionError(false);
+              } else {
+                setDescriptionError("Please provide Summary");
+              }
+            }}
+            margin="normal"
+          />
+
+          <TextField
             required
             fullWidth
             label="Contact Number"
@@ -309,7 +323,7 @@ export default function SignUpTutorPage() {
             }}
           />
 
-          {/* Fixed FormControl for Qualification */}
+       
           <FormControl fullWidth margin="normal" error={!!qualificationError}>
             <InputLabel id="qualification-label">Qualification</InputLabel>
             <Select

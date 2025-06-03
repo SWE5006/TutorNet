@@ -29,7 +29,7 @@ export default function SignUpPage() {
   const [mobileNoError, setMobileError] = useState<boolean | string>(false);
   const [ageError, setAgeError] = useState<boolean | string>(false);
   const [classLevelError, setClassLevelError] = useState<boolean | string>(false);
-  const [signUp, result] = useSignUpStudentMutation();
+  const [signupStudent, result] = useSignUpStudentMutation();
 
   const classLevels = [
     "Primary 1",
@@ -48,15 +48,50 @@ export default function SignUpPage() {
     "Adult Learning"
   ];
 
-  const handleSignUp = () => {
-    signUp({
-      userName,
-      userEmail,
-      userPassword,
-      userMobileNo,
-      userAge,
-      userClassLevel,
-      userRole: "STUDENT",
+ // Fixed handleSignUp function
+  const handleSignUpStudent = (e: { preventDefault: () => void; }) => {
+    e.preventDefault(); // Prevent default form submission
+    
+ 
+
+    // Validate all required fields
+    let hasErrors = false;
+
+    if (!userName.trim()) {
+      setNameError("User name is required.");
+      hasErrors = true;
+    }
+
+    if (!userEmail.trim()) {
+      setEmailError("Email is required.");
+      hasErrors = true;
+    }
+
+    if (!userPassword.trim()) {
+      setPasswordError("Password is required.");
+      hasErrors = true;
+    }
+
+    if (!userMobileNo.trim()) {
+      setMobileError("Mobile number is required.");
+      hasErrors = true;
+    }
+
+    // Don't submit if there are errors
+    if (hasErrors) {
+      console.log('Form has errors, not submitting');
+      return;
+    }
+
+    // Submit the form
+    signupStudent({
+      username: userName.trim(),
+      emailAddress: userEmail.trim(),
+      password: userPassword.trim(),
+      mobileNumber: userMobileNo.trim(),
+      age: userAge,
+      classLevel:userClassLevel,
+      userRole: "TUTOR",
     });
   };
 
@@ -86,7 +121,7 @@ export default function SignUpPage() {
         </Typography>
         <Box
           component="form"
-          onSubmit={handleSignUp}
+          onSubmit={handleSignUpStudent}
           noValidate
           sx={{ mt: 1, width: "100%" }}
         >
@@ -209,6 +244,7 @@ export default function SignUpPage() {
        
             <InputLabel id="class-level-label">Class Level</InputLabel>
             <Select
+              fullWidth
               labelId="class-level-label"
               value={userClassLevel}
               label="Class Level"
@@ -220,6 +256,7 @@ export default function SignUpPage() {
                   setClassLevelError("Please select a class level.");
                 }
               }}
+             sx={{ marginBottom: 2 }} 
             >
               {classLevels.map((level) => (
                 <MenuItem key={level} value={level}>
@@ -234,11 +271,11 @@ export default function SignUpPage() {
           <Button
             variant="contained"
             color="primary"
-            onClick={handleSignUp}
+            onClick={handleSignUpStudent}
             disabled={result.isLoading}
             fullWidth
           >
-            Sign Up and Auto Login
+            Sign Up AS Student
           </Button>
           {result.isError && (
             <Typography color="error">

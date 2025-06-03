@@ -10,6 +10,8 @@ public class TutorRequest extends UserRequest {
     @Min(0)
     private int experienceYears;
     private Double hourlyRate;
+    private String location;
+    private String description;
 
        public void setQualification(String qualification) {
         this.qualification = qualification;
@@ -28,6 +30,22 @@ public class TutorRequest extends UserRequest {
     }
     public Double getHourlyRate() {
         return hourlyRate;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
   
    

@@ -39,23 +39,24 @@ interface SignupRequest {
 
 
 interface SignupRequestStudent {
-  userName: string;
-  userEmail: string;
-  userMobileNo: string;
-  userPassword: string;
-  userAge: string;
-  userClassLevel: string;
+  username:string;
+  password:string;
+  emailAddress:string;
+  mobileNumber:string;
+  age: string;
+  classLevel: string;
   userRole: string;
 }
 
 interface SignupRequestTutor {
-      userName:string;
-      userEmail:string;
-      userPassword:string;
-      userMobileNo:string;
+      username:string;
+      password:string;
+      emailAddress:string;
+      mobileNumber:string;
       hourlyRate:string;
       qualification:string;
       experienceYears:string;
       location:string;
       userRole: string;
+      description:string;
 }

@@ -46,11 +46,12 @@ public class TutorService {
         Tutor tutor = new Tutor();
 
         tutor.setEmailAddress(request.getEmailAddress());
-        tutor.setPassword(request.getPassword());
+        tutor.setPassword(passwordEncoder.encode(request.getPassword()));
         tutor.setUsername(request.getUsername());
        tutor.setMobileNumber(request.getMobileNumber());
        tutor.setRoles("TUTOR");
-      
+       tutor.setLocation(request.getLocation());
+      tutor.setDescription(request.getDescription());
        
 
         tutor.setQualification(request.getQualification());
