@@ -30,6 +30,7 @@ interface Tutor {
 }
 
 
+
 const TUTORS: Tutor[] = [
   {
     id: "tutor1",
@@ -129,8 +130,7 @@ function TutorListPage() {
   // }, []);
 
   const ALL_SUBJECTS: string[] = [
-  "All Subjects",
-  ...new Set(TUTORS.map((tutor) => tutor.subject)),
+  "All Subjects"
   ];
 
   useEffect(() => {

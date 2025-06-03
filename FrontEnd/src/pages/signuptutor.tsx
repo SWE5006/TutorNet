@@ -36,7 +36,7 @@ export default function SignUpTutorPage() {
   const [experienceError, setExperienceError] = useState<boolean | string>(false);
   const [locationError, setLocationError] = useState<boolean | string>(false);
   
-  const [signUp, result] = useSignUpTutorMutation();
+  const [signupTutor, result] = useSignUpTutorMutation();
 
   const qualifications = [
     "Bachelor's Degree",
@@ -83,8 +83,12 @@ export default function SignUpTutorPage() {
     "Yishun"
   ];
 
-  const handleSignUp = () => {
-    signUp({
+  // Fixed handleSignUp function
+  const handleSignUpTutor = (e: { preventDefault: () => void; }) => {
+    e.preventDefault(); // Prevent default form submission
+    
+    // Debug: Log all values before sending
+    console.log('Form values:', {
       userName,
       userEmail,
       userPassword,
@@ -93,12 +97,74 @@ export default function SignUpTutorPage() {
       qualification,
       experienceYears,
       location,
+    });
+
+    // Validate all required fields
+    let hasErrors = false;
+
+    if (!userName.trim()) {
+      setNameError("User name is required.");
+      hasErrors = true;
+    }
+
+    if (!userEmail.trim()) {
+      setEmailError("Email is required.");
+      hasErrors = true;
+    }
+
+    if (!userPassword.trim()) {
+      setPasswordError("Password is required.");
+      hasErrors = true;
+    }
+
+    if (!userMobileNo.trim()) {
+      setMobileError("Mobile number is required.");
+      hasErrors = true;
+    }
+
+    if (!hourlyRate.trim()) {
+      setHourlyRateError("Hourly rate is required.");
+      hasErrors = true;
+    }
+
+    if (!qualification.trim()) {
+      setQualificationError("Qualification is required.");
+      hasErrors = true;
+    }
+
+    if (!experienceYears.trim()) {
+      setExperienceError("Experience years is required.");
+      hasErrors = true;
+    }
+
+    if (!location.trim()) {
+      setLocationError("Location is required.");
+      hasErrors = true;
+    }
+
+    // Don't submit if there are errors
+    if (hasErrors) {
+      console.log('Form has errors, not submitting');
+      return;
+    }
+
+    // Submit the form
+    signupTutor({
+      userName: userName.trim(),
+      userEmail: userEmail.trim(),
+      userPassword: userPassword.trim(),
+      userMobileNo: userMobileNo.trim(),
+      hourlyRate: hourlyRate,
+      qualification: qualification.trim(),
+      experienceYears: experienceYears,
+      location: location.trim(),
       userRole: "TUTOR",
     });
   };
 
   useEffect(() => {
     if (result.isSuccess) {
+      console.log('Signup successful:', result.data);
       navigate("/login");
     } else if (result.isError) {
       console.error("Signup error:", result.error);
@@ -123,7 +189,7 @@ export default function SignUpTutorPage() {
         </Typography>
         <Box
           component="form"
-          onSubmit={handleSignUp}
+          onSubmit={handleSignUpTutor} // Changed from onClick to onSubmit
           noValidate
           sx={{ mt: 1, width: "100%" }}
         >
@@ -243,17 +309,14 @@ export default function SignUpTutorPage() {
             }}
           />
 
-          <FormControl 
-            fullWidth 
-            margin="normal" 
-            error={!!qualificationError}
-            required
-          >
+          {/* Fixed FormControl for Qualification */}
+          <FormControl fullWidth margin="normal" error={!!qualificationError}>
             <InputLabel id="qualification-label">Qualification</InputLabel>
             <Select
               labelId="qualification-label"
               value={qualification}
               label="Qualification"
+              required
               onChange={(e) => {
                 setQualification(e.target.value);
                 if (e.target.value) {
@@ -299,17 +362,14 @@ export default function SignUpTutorPage() {
             }}
           />
 
-          <FormControl 
-            fullWidth 
-            margin="normal" 
-            error={!!locationError}
-            required
-          >
+          {/* Fixed FormControl for Location */}
+          <FormControl fullWidth margin="normal" error={!!locationError}>
             <InputLabel id="location-label">Preferred Location</InputLabel>
             <Select
               labelId="location-label"
               value={location}
               label="Preferred Location"
+              required
               onChange={(e) => {
                 setLocation(e.target.value);
                 if (e.target.value) {
@@ -331,19 +391,21 @@ export default function SignUpTutorPage() {
           </FormControl>
 
           <Button
+            type="submit" // Changed from onClick to type="submit"
             variant="contained"
             color="primary"
-            onClick={handleSignUp}
             disabled={result.isLoading}
             fullWidth
             sx={{ mt: 2 }}
           >
-            Sign Up as Tutor
+            {result.isLoading ? 'Signing Up...' : 'Sign Up as Tutor'}
           </Button>
           
           {result.isError && (
             <Typography color="error" sx={{ mt: 2 }}>
               Sign up failed. Please try again.
+              {/* Add more specific error details */}
+              
             </Typography>
           )}
           

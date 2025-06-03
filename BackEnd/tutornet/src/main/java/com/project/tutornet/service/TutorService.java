@@ -46,7 +46,7 @@ public class TutorService {
         Tutor tutor = new Tutor();
 
         tutor.setEmailAddress(request.getEmailAddress());
-        tutor.setPassword(passwordEncoder.encode(request.getPassword()));
+        tutor.setPassword(request.getPassword());
         tutor.setUsername(request.getUsername());
        tutor.setMobileNumber(request.getMobileNumber());
        tutor.setRoles("TUTOR");
@@ -59,7 +59,7 @@ public class TutorService {
         tutor.setActiveStatus("ACTIVE");
         tutor.setCreateDatetime(LocalDateTime.now());
        
-        
+
         try {
             return tutorRepository.save(tutor);
         } catch (DataIntegrityViolationException e) {

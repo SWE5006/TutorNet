@@ -49,13 +49,13 @@ interface SignupRequestStudent {
 }
 
 interface SignupRequestTutor {
-  userName: string;
-  userEmail: string;
-  userMobileNo: string;
-  userPassword: string;
-  userRole: string;
-  hourlyRate: string;
-  qualification:string;
-  experienceYears:string;
-  location:string;
+      userName:string;
+      userEmail:string;
+      userPassword:string;
+      userMobileNo:string;
+      hourlyRate:string;
+      qualification:string;
+      experienceYears:string;
+      location:string;
+      userRole: string;
 }

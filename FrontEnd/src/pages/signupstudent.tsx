@@ -206,12 +206,7 @@ export default function SignUpPage() {
             }}
           />
 
-          <FormControl 
-            fullWidth 
-            margin="normal" 
-            error={!!classLevelError}
-            required
-          >
+       
             <InputLabel id="class-level-label">Class Level</InputLabel>
             <Select
               labelId="class-level-label"
@@ -235,8 +230,7 @@ export default function SignUpPage() {
             {classLevelError && (
               <FormHelperText>{classLevelError}</FormHelperText>
             )}
-          </FormControl>
-
+   
           <Button
             variant="contained"
             color="primary"
