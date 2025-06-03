@@ -32,7 +32,7 @@ public class StudentService {
         Student student = new Student();
 
         student.setEmailAddress(request.getEmailAddress());
-        student.setPassword(request.getPassword());
+        student.setPassword(passwordEncoder.encode(request.getPassword()));
         student.setUsername(request.getUsername());
        student.setMobileNumber(request.getMobileNumber());
        student.setRoles("STUDENT");
