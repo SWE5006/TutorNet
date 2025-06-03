@@ -14,6 +14,7 @@ import {
   CircularProgress,
   Alert,
   SelectChangeEvent,
+  Avatar,
 } from "@mui/material";
 import Layout from "../components/Layout";
 import Sidebar from "../components/Layout/sidebar";
@@ -262,17 +263,35 @@ function TutorListPage() {
           <Grid container spacing={3}>
             {filteredTutors.map((tutor) => (
               <Grid width="100%" key={tutor.id}>
+                 <Box sx={{ position: 'relative'}}>
+                  {/* Photo placeholder */}
+                  <Box
+                    sx={{
+                      width:"16%",
+                      height: 164,
+                      position: 'absolute',
+                      top: 16,
+                      float:"left",
+                      bgcolor: 'grey.300',
+                      fontSize: 14
+                    }}
+                  >
+                    IMG
+                  </Box>
+                  
+                </Box >
                 <Card
                   sx={{
                     height: "100%",
                     display: "flex",
-                    width:"100%",
+                    width:"82%",
                     flexDirection: "column",
                     boxShadow: 6,
+                    float:"right"
                   }}
                 >
                   <CardContent sx={{ flexGrow: 1 }}>
-
+               
                     <Typography variant="h6" component="div" gutterBottom>
                       {tutor.name}
                     </Typography>

@@ -36,11 +36,7 @@ public class LogoutHandlerServiceImpl implements LogoutHandler {
     @Override
     public void logout(HttpServletRequest request, HttpServletResponse response, Authentication authentication) {
 
-       
-
-       
-
-         // Remove the refresh_token cookie from client
+        // Remove the refresh_token cookie from client
         Cookie deleteCookie = new Cookie("refresh_token", null);
         deleteCookie.setHttpOnly(true);
         deleteCookie.setSecure(true);
