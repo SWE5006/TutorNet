@@ -48,7 +48,8 @@ public class LogoutHandlerServiceImpl implements LogoutHandler {
         deleteCookie.setMaxAge(0);
         response.addCookie(deleteCookie);
 
-
+        try
+        {
  final String authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
 
         if(!authHeader.startsWith(TokenType.Bearer.name())){
@@ -66,8 +67,7 @@ public class LogoutHandlerServiceImpl implements LogoutHandler {
 
         System.out.print("This is the Id:::::::::" + id);
 
-        try
-        {
+        
         UUID userId = UUID.fromString(id);
 
         List<RefreshTokenEntity> tokenList  = refreshTokenRepo.findAllByUserId(userId);

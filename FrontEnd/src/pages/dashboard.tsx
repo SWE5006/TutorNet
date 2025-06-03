@@ -261,16 +261,18 @@ function TutorListPage() {
         ) : (
           <Grid container spacing={3}>
             {filteredTutors.map((tutor) => (
-              <Grid key={tutor.id}>
+              <Grid width="100%" key={tutor.id}>
                 <Card
                   sx={{
                     height: "100%",
                     display: "flex",
+                    width:"100%",
                     flexDirection: "column",
                     boxShadow: 6,
                   }}
                 >
                   <CardContent sx={{ flexGrow: 1 }}>
+
                     <Typography variant="h6" component="div" gutterBottom>
                       {tutor.name}
                     </Typography>
