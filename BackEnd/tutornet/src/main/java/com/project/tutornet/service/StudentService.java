@@ -10,6 +10,7 @@ import com.project.tutornet.dto.StudentRequest;
 import com.project.tutornet.entity.Student;
 import com.project.tutornet.entity.UserInfoEntity;
 import com.project.tutornet.repository.StudentRepository;
+import com.project.tutornet.repository.UserInfoRepository;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,31 +22,36 @@ import lombok.extern.slf4j.Slf4j;
 public class StudentService {
 
     private final StudentRepository studentRepository;
-
-    
+    private final UserInfoRepository userInfoRepository;
     private final PasswordEncoder passwordEncoder;
 
-     @Transactional
-    public UserInfoEntity createStudent(StudentRequest request) {
+    @Transactional
+    public Student createStudent(StudentRequest request) {
+        // Create UserInfoEntity first
+        UserInfoEntity userInfo = new UserInfoEntity();
+        userInfo.setEmailAddress(request.getEmailAddress());
+        userInfo.setPassword(passwordEncoder.encode(request.getPassword()));
+        userInfo.setUsername(request.getUsername());
+        userInfo.setMobileNumber(request.getMobileNumber());
+        userInfo.setRoles("STUDENT");
+        userInfo.setCreateDatetime(LocalDateTime.now());
+        userInfo.setActiveStatus("ACTIVE");
         
-       
+        // Save UserInfoEntity
+        userInfo = userInfoRepository.save(userInfo);
+        
+        // Create Student entity
         Student student = new Student();
-
-        student.setEmailAddress(request.getEmailAddress());
-        student.setPassword(passwordEncoder.encode(request.getPassword()));
-        student.setUsername(request.getUsername());
-       student.setMobileNumber(request.getMobileNumber());
-       student.setRoles("STUDENT");
-      
-       student.setCreateDatetime(LocalDateTime.now());
-        student.setAge(request.getAge());
-        student.setActiveStatus("ACTIVE");
-        student.setClassLevel(request.getClassLevel());
-       
-       
+        student.setUserInfo(userInfo);
+        student.setBio(request.getBio());
+        student.setEducation(request.getEducation());
+        student.setExperience(request.getExperience());
+        student.setInterestedSubjects(request.getInterestedSubjects());
+        student.setTopics(request.getTopics());
+        student.setMinBudget(request.getMinBudget());
+        student.setMaxBudget(request.getMaxBudget());
         
-            return studentRepository.save(student);
-       
+        // Save Student entity
+        return studentRepository.save(student);
     }
-
 }

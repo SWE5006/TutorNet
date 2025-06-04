@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 public interface UserRepository
   extends ListCrudRepository<UserInfoEntity, UUID> {
   Optional<UserInfoEntity> findByEmailAddress(String email);
+  Optional<UserInfoEntity> findByUsername(String username);
 
   List<UserInfoEntity> findAll();
 

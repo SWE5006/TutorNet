@@ -44,4 +44,76 @@ public class UserInfoEntity {
 	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
 	private List<RefreshTokenEntity> refreshTokens;
 
+	// Explicit getter/setter methods
+	public UUID getId() {
+		return id;
+	}
+
+	public void setId(UUID id) {
+		this.id = id;
+	}
+
+	public String getUsername() {
+		return username;
+	}
+
+	public void setUsername(String username) {
+		this.username = username;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
+	public String getEmailAddress() {
+		return emailAddress;
+	}
+
+	public void setEmailAddress(String emailAddress) {
+		this.emailAddress = emailAddress;
+	}
+
+	public String getActiveStatus() {
+		return activeStatus;
+	}
+
+	public void setActiveStatus(String activeStatus) {
+		this.activeStatus = activeStatus;
+	}
+
+	public String getMobileNumber() {
+		return mobileNumber;
+	}
+
+	public void setMobileNumber(String mobileNumber) {
+		this.mobileNumber = mobileNumber;
+	}
+
+	public String getRoles() {
+		return roles;
+	}
+
+	public void setRoles(String roles) {
+		this.roles = roles;
+	}
+
+	public LocalDateTime getCreateDatetime() {
+		return createDatetime;
+	}
+
+	public void setCreateDatetime(LocalDateTime createDatetime) {
+		this.createDatetime = createDatetime;
+	}
+
+	public List<RefreshTokenEntity> getRefreshTokens() {
+		return refreshTokens;
+	}
+
+	public void setRefreshTokens(List<RefreshTokenEntity> refreshTokens) {
+		this.refreshTokens = refreshTokens;
+	}
 }

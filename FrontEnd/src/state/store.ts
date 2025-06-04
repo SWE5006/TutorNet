@@ -2,6 +2,7 @@ import { configureStore, combineReducers } from "@reduxjs/toolkit";
 import authReducer, { AUTH_SLICE_NAME } from "./auth/slice";
 import { authApi } from "../services/auth.service";
 import { userApi } from "../services/user.service";
+import { profileApi } from "../services/profile.service";
 
 import {
   persistStore,
@@ -44,6 +45,7 @@ const rootReducer = combineReducers({
   [AUTH_SLICE_NAME]: authReducer,
   [authApi.reducerPath]: authApi.reducer,
   [userApi.reducerPath]: userApi.reducer,
+  [profileApi.reducerPath]: profileApi.reducer,
 });
 
 const store = configureStore({
@@ -53,7 +55,7 @@ const store = configureStore({
       serializableCheck: {
         ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
       },
-    }).concat(authApi.middleware, userApi.middleware);
+    }).concat(authApi.middleware, userApi.middleware, profileApi.middleware);
   },
 });
 

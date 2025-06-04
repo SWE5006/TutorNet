@@ -101,14 +101,14 @@ public class AuthController {
 
   @PostMapping("/sign-up/student")
     public ResponseEntity<UserInfoEntity> createStudent(@RequestBody StudentRequest request) {
-        UserInfoEntity user=studentService.createStudent(request);
-        return ResponseEntity.ok(user);
+        var student = studentService.createStudent(request);
+        return ResponseEntity.ok(student.getUserInfo());
     }
 
  @PostMapping("/sign-up/tutor")
     public ResponseEntity<UserInfoEntity> createTutor(@RequestBody TutorRequest request) {
-        UserInfoEntity user = tutorService.createTutor(request);
-        return ResponseEntity.ok(user);
+        var tutor = tutorService.createTutor(request);
+        return ResponseEntity.ok(tutor.getUserInfo());
     }
 
 
