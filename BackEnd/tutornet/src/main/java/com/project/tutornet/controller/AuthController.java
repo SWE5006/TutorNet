@@ -17,6 +17,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.project.tutornet.dto.StudentRequest;
 import com.project.tutornet.dto.TutorRequest;
 import com.project.tutornet.dto.UserRegistrationRequest;
+import com.project.tutornet.entity.Student;
+import com.project.tutornet.entity.Tutor;
 import com.project.tutornet.entity.UserInfoEntity;
 import com.project.tutornet.service.StudentService;
 import com.project.tutornet.service.TutorService;
@@ -100,15 +102,15 @@ public class AuthController {
   }
 
   @PostMapping("/sign-up/student")
-    public ResponseEntity<UserInfoEntity> createStudent(@RequestBody StudentRequest request) {
+    public ResponseEntity<Student> createStudent(@RequestBody StudentRequest request) {
         var student = studentService.createStudent(request);
-        return ResponseEntity.ok(student.getUserInfo());
+        return ResponseEntity.ok(student);
     }
 
  @PostMapping("/sign-up/tutor")
-    public ResponseEntity<UserInfoEntity> createTutor(@RequestBody TutorRequest request) {
+    public ResponseEntity<Tutor> createTutor(@RequestBody TutorRequest request) {
         var tutor = tutorService.createTutor(request);
-        return ResponseEntity.ok(tutor.getUserInfo());
+        return ResponseEntity.ok(tutor);
     }
 
 
