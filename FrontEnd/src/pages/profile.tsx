@@ -19,6 +19,7 @@ import {
   IconButton,
   Divider,
   Alert,
+  GridSize,
 } from '@mui/material';
 import { Add as AddIcon, Delete as DeleteIcon } from '@mui/icons-material';
 import { useGetCurrentProfileQuery, useUpdateProfileMutation } from '../services/profile.service';
@@ -198,7 +199,7 @@ const ProfilePage: React.FC = () => {
           <Box sx={{ mb: 4 }}>
             <Typography variant="h6" gutterBottom>Profile Information</Typography>
             <Grid container spacing={3}>
-              <Grid item xs={12}>
+              <Grid>
                 <TextField
                   fullWidth
                   multiline
@@ -209,7 +210,7 @@ const ProfilePage: React.FC = () => {
                   disabled={!isEditing}
                 />
               </Grid>
-              <Grid item xs={12}>
+              <Grid>
                 <TextField
                   fullWidth
                   multiline
@@ -220,7 +221,7 @@ const ProfilePage: React.FC = () => {
                   disabled={!isEditing}
                 />
               </Grid>
-              <Grid item xs={12}>
+              <Grid>
                 <TextField
                   fullWidth
                   multiline
@@ -289,7 +290,7 @@ const ProfilePage: React.FC = () => {
             <Box sx={{ mb: 4 }}>
               <Typography variant="h6" gutterBottom>Price Range</Typography>
               <Grid container spacing={2}>
-                <Grid item xs={6}>
+                <Grid>
                   <TextField
                     fullWidth
                     label="Minimum Price"
@@ -302,7 +303,7 @@ const ProfilePage: React.FC = () => {
                     disabled={!isEditing}
                   />
                 </Grid>
-                <Grid item xs={6}>
+                <Grid>
                   <TextField
                     fullWidth
                     label="Maximum Price"
