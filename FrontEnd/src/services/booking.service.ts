@@ -21,3 +21,22 @@ export const bookingApi = createApi({
 });
 
 export const { useGetBookingsByStudentIdQuery } = bookingApi;
+
+export const createBooking = async (data: {
+  studentId: string;
+  slotId: string;
+  subjectName: string;
+  bookingStatus?: string;
+}) => {
+  const token = localStorage.getItem('token');
+  const res = await fetch(`${process.env.GATSBY_BACKEND_API_URL}/api/booking`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      ...(token ? { Authorization: `Bearer ${token}` } : {})
+    },
+    body: JSON.stringify(data)
+  });
+  if (!res.ok) throw new Error('Failed to create booking');
+  return res.json();
+};

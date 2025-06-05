@@ -78,18 +78,18 @@ const ProfilePage: React.FC = () => {
   const handleSave = async () => {
     if (profile?.userId && editedProfile) {
       const updateData: ProfileUpdateRequest = {
-        subjects: editedProfile.subjects.map(s => s.name),
-        interests: editedProfile.interests,
-        topics: editedProfile.topics,
-        availability: editedProfile.availability,
+        subjects: editedProfile.subjects?.map(s => s.name) || [],
+        interests: editedProfile.interests || [],
+        topics: editedProfile.topics || [],
+        availability: editedProfile.availability || [],
         priceRange: editedProfile.priceRange ? {
           min: editedProfile.priceRange.min || 0,
           max: editedProfile.priceRange.max || 0
         } : undefined,
         hourlyRate: editedProfile.hourlyRate,
-        experience: '',
-        education: '',
-        bio: ''
+        experience: editedProfile.experience || '',
+        education: editedProfile.education || '',
+        bio: editedProfile.bio || ''
       };
       await updateProfile({ userId: profile.userId, data: updateData });
       setIsEditing(false);
