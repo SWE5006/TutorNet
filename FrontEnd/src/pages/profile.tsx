@@ -86,7 +86,10 @@ const ProfilePage: React.FC = () => {
           min: editedProfile.priceRange.min || 0,
           max: editedProfile.priceRange.max || 0
         } : undefined,
-        hourlyRate: editedProfile.hourlyRate
+        hourlyRate: editedProfile.hourlyRate,
+        experience: '',
+        education: '',
+        bio: ''
       };
       await updateProfile({ userId: profile.userId, data: updateData });
       setIsEditing(false);
@@ -240,7 +243,7 @@ const ProfilePage: React.FC = () => {
             <Typography variant="h6" gutterBottom>
               {isStudent ? 'Interested Subjects' : 'Teaching Subjects'}
             </Typography>
-            <Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap>
+            {/* <Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap>
               {isEditing ? (
                 editedProfile.subjects.map((subject, index) => (
                   <Chip
@@ -258,13 +261,13 @@ const ProfilePage: React.FC = () => {
                   <Chip key={index} label={subject.name} />
                 ))
               )}
-            </Stack>
+            </Stack> */}
           </Box>
 
           {/* Topics */}
           <Box sx={{ mb: 4 }}>
             <Typography variant="h6" gutterBottom>Topics</Typography>
-            <Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap>
+            {/* <Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap>
               {isEditing ? (
                 editedProfile.topics.map((topic, index) => (
                   <Chip
@@ -282,7 +285,7 @@ const ProfilePage: React.FC = () => {
                   <Chip key={index} label={topic} />
                 ))
               )}
-            </Stack>
+            </Stack> */}
           </Box>
 
           {/* Price Range or Hourly Rate */}
