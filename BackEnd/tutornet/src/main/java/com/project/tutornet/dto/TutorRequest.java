@@ -36,8 +36,7 @@ public class TutorRequest {
     
     private String location;
     
-    @Valid
-    private List<SubjectRequest> subjects;
+  
     
     // Constructors
     public TutorRequest() {}
@@ -63,9 +62,6 @@ public class TutorRequest {
     
     public String getLocation() { return location; }
     public void setLocation(String location) { this.location = location; }
-    
-    public List<SubjectRequest> getSubjects() { return subjects; }
-    public void setSubjects(List<SubjectRequest> subjects) { this.subjects = subjects; }
 
     public void setUsername(String username) {
     this.username = username;

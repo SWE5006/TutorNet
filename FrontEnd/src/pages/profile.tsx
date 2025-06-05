@@ -341,7 +341,7 @@ const ProfilePage: React.FC = () => {
           {/* Availability */}
           <Box sx={{ mb: 4 }}>
             <Typography variant="h6" gutterBottom>Availability</Typography>
-            <Stack spacing={2}>
+            {/* <Stack spacing={2}>
               {isEditing ? (
                 editedProfile.availability.map((slot, index) => (
                   <Box key={index} sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
@@ -376,14 +376,16 @@ const ProfilePage: React.FC = () => {
                     </IconButton>
                   </Box>
                 ))
-              ) : (
-                profile.availability.map((slot, index) => (
-                  <Box key={index} sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
-                    <Typography>{DAYS_OF_WEEK[slot.dayOfWeek]}</Typography>
-                    <Typography>{slot.startTime} - {slot.endTime}</Typography>
-                  </Box>
-                ))
-              )}
+              ) 
+              // : (
+              //   profile.availability.map((slot, index) => (
+              //     <Box key={index} sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
+              //       <Typography>{DAYS_OF_WEEK[slot.dayOfWeek]}</Typography>
+              //       <Typography>{slot.startTime} - {slot.endTime}</Typography>
+              //     </Box>
+              //   ))
+              // )
+              }
               {isEditing && (
                 <Button
                   startIcon={<AddIcon />}
@@ -393,7 +395,7 @@ const ProfilePage: React.FC = () => {
                   Add Time Slot
                 </Button>
               )}
-            </Stack>
+            </Stack> */}
           </Box>
 
           {/* Edit Actions */}

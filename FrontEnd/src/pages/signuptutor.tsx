@@ -152,6 +152,7 @@ export default function SignUpTutorPage() {
       experience: experienceYears,
       location: location.trim(),
       userRole: "TUTOR",
+      teachingSubjects:["Physics", "Mathematics"],
       bio:bio
     });
   };

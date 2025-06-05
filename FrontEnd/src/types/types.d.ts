@@ -59,4 +59,5 @@ interface SignupRequestTutor {
       location:string;
       userRole: string;
       bio:string;
+      teachingSubjects?: string[];
 }
