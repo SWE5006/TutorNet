@@ -26,7 +26,7 @@ export default function SignUpTutorPage() {
   const [qualification, setQualification] = useState("");
   const [experienceYears, setExperienceYears] = useState("");
   const [location, setLocation] = useState("");
-  const [description, setsetDescription] = useState("");
+  const [bio, setBio] = useState("");
   
   const [nameError, setNameError] = useState<boolean | string>(false);
   const [emailError, setEmailError] = useState<boolean | string>(false);
@@ -130,7 +130,7 @@ export default function SignUpTutorPage() {
       hasErrors = true;
     }
 
-    if (!description.trim()) {
+    if (!bio.trim()) {
       setDescriptionError("Description is required.");
       hasErrors = true;
     }
@@ -148,11 +148,11 @@ export default function SignUpTutorPage() {
       password: userPassword.trim(),
       mobileNumber: userMobileNo.trim(),
       hourlyRate: hourlyRate,
-      qualification: qualification.trim(),
-      experienceYears: experienceYears,
+      education: qualification.trim(),
+      experience: experienceYears,
       location: location.trim(),
       userRole: "TUTOR",
-      description:description
+      bio:bio
     });
   };
 
@@ -261,11 +261,11 @@ export default function SignUpTutorPage() {
             label="Summary"
             variant="outlined"
             type="text"
-            value={description}
+            value={bio}
             error={!!descriptionError}
             helperText={descriptionError}
             onChange={(e) => {
-              setsetDescription(e.target.value);
+              setBio(e.target.value);
               if (e.target.validity.valid) {
                 setDescriptionError(false);
               } else {

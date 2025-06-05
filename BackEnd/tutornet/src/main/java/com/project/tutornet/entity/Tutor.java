@@ -56,6 +56,9 @@ public class Tutor {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
+     @Column(name = "location")
+    private LocalDateTime location;
+
     @PrePersist
     protected void onCreate() {
         createdAt = LocalDateTime.now();

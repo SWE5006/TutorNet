@@ -54,9 +54,9 @@ interface SignupRequestTutor {
       emailAddress:string;
       mobileNumber:string;
       hourlyRate:string;
-      qualification:string;
-      experienceYears:string;
+      education:string;
+      experience:string;
       location:string;
       userRole: string;
-      description:string;
+      bio:string;
 }
