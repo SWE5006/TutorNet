@@ -47,19 +47,19 @@ public class ProfileController {
         return ResponseEntity.ok(profileService.updateProfile(userId, request));
     }
 
-    @GetMapping("/{userId}/availability")
-    @PreAuthorize("hasAuthority('SCOPE_USER')")
-    public ResponseEntity<?> getAvailability(@PathVariable UUID userId) {
-        log.info("[ProfileController:getAvailability] Getting availability for user: {}", userId);
-        return ResponseEntity.ok(profileService.getAvailability(userId));
-    }
+    // @GetMapping("/{userId}/availability")
+    // @PreAuthorize("hasAuthority('SCOPE_USER')")
+    // public ResponseEntity<?> getAvailability(@PathVariable UUID userId) {
+    //     log.info("[ProfileController:getAvailability] Getting availability for user: {}", userId);
+    //     return ResponseEntity.ok(profileService.getAvailability(userId));
+    // }
 
-    @PutMapping("/{userId}/availability")
-    @PreAuthorize("hasAuthority('SCOPE_USER')")
-    public ResponseEntity<?> updateAvailability(
-            @PathVariable UUID userId,
-            @RequestBody TimeSlotRequest request) {
-        log.info("[ProfileController:updateAvailability] Updating availability for user: {}", userId);
-        return ResponseEntity.ok(profileService.updateAvailability(userId, request));
-    }
+    // @PutMapping("/{userId}/availability")
+    // @PreAuthorize("hasAuthority('SCOPE_USER')")
+    // public ResponseEntity<?> updateAvailability(
+    //         @PathVariable UUID userId,
+    //         @RequestBody TimeSlotRequest request) {
+    //     log.info("[ProfileController:updateAvailability] Updating availability for user: {}", userId);
+    //     return ResponseEntity.ok(profileService.updateAvailability(userId, request));
+    // }
 } 

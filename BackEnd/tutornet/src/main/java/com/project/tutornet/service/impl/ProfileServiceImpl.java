@@ -38,7 +38,7 @@ public class ProfileServiceImpl implements ProfileService {
     private TutorRepository tutorRepository;
 
     @Override
-    public ProfileResponse getProfileByUsername(String username) {
+    public ProfileResponse getProfileByEmail(String username) {
         log.info("[ProfileServiceImpl:getProfileByUsername] Getting profile for username: {}", username);
         UserInfoEntity user = userRepository.findByEmailAddress(username)
             .orElseThrow(() -> new RuntimeException("User not found"));
@@ -72,7 +72,7 @@ public class ProfileServiceImpl implements ProfileService {
 
     @Override
     @Transactional
-    public ProfileResponse updateProfile(ProfileRequest request) {
+    public ProfileResponse updateProfile(UUID userId, ProfileRequest request) {
         log.info("[ProfileServiceImpl:updateProfile] Updating profile for user: {}", request.getUserId());
         UserInfoEntity user = userRepository.findById(request.getUserId())
             .orElseThrow(() -> new RuntimeException("User not found"));
@@ -215,4 +215,16 @@ public class ProfileServiceImpl implements ProfileService {
             })
             .collect(Collectors.toList());
     }
+
+    @Override
+    public Object getAvailability(UUID userId) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public Object updateAvailability(UUID userId, TimeSlotRequest request) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+   
 } 
