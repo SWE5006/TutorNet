@@ -1,9 +1,12 @@
 package com.project.tutornet.entity;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
@@ -17,11 +20,19 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
-@Table(name = "tutors")
+@Table(name = "tutor")
 @Data
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class Tutor {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -40,9 +51,14 @@ public class Tutor {
     @Column(length = 1000)
     private String experience;
 
+    @OneToMany(mappedBy = "tutors", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Subject> subjects = new ArrayList<>();
+
     @ElementCollection
-    @Column(name = "teaching_subjects")
-    private List<String> teachingSubjects;
+    @CollectionTable(name = "tutor_teaching_subjects", joinColumns = @JoinColumn(name = "tutor_id"))
+    @Column(name = "subject")
+    private List<String> teachingSubjects = new ArrayList<>();
+
 
     @Column(name = "hourly_rate")
     private Double hourlyRate;
@@ -57,7 +73,7 @@ public class Tutor {
     private LocalDateTime updatedAt;
 
      @Column(name = "location")
-    private LocalDateTime location;
+    private String location;
 
     @PrePersist
     protected void onCreate() {

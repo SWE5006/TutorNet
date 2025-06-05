@@ -1,4 +1,8 @@
 export interface Profile {
+  fullName: unknown;
+  bio: unknown;
+  education: unknown;
+  experience: unknown;
   userId: string;
   email: string;
   firstName: string;
@@ -36,4 +40,7 @@ export interface ProfileUpdateRequest {
   availability: TimeSlot[];
   priceRange?: PriceRange;
   hourlyRate?: number;
+  experience:string;
+  education:string;
+  bio:string;
 } 

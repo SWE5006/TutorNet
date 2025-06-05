@@ -1,15 +1,16 @@
 package com.project.tutornet.service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.project.tutornet.dto.TutorRequest;
+import com.project.tutornet.entity.Subject;
 import com.project.tutornet.entity.Tutor;
 import com.project.tutornet.entity.UserInfoEntity;
 import com.project.tutornet.repository.TutorRepository;
@@ -51,6 +52,15 @@ public class TutorService {
         userInfo.setRoles("TUTOR");
         userInfo.setCreateDatetime(LocalDateTime.now());
         userInfo.setActiveStatus("ACTIVE");
+
+        List<Subject> subjectlist = new ArrayList<>();
+        Subject subject = new Subject();
+        for (String subjectname:request.getTeachingSubjects())
+        {
+            subject.setName(subjectname);
+            subjectlist.add(subject);
+        }
+
         
         // Save UserInfoEntity
         userInfo = userInfoRepository.save(userInfo);
@@ -58,10 +68,12 @@ public class TutorService {
         // Create Tutor entity
         Tutor tutor = new Tutor();
         tutor.setUserInfo(userInfo);
+        
         tutor.setBio(request.getBio());
         tutor.setEducation(request.getEducation());
         tutor.setExperience(request.getExperience());
-        tutor.setTeachingSubjects(request.getTeachingSubjects());
+       // tutor.setTeachingSubjects(request.getTeachingSubjects());
+       tutor.setSubjects(subjectlist);
         tutor.setHourlyRate(request.getHourlyRate());
         
         try {
@@ -71,5 +83,7 @@ public class TutorService {
         } catch (Exception e) {
             throw new RuntimeException("Failed to create tutor", e);
         }
+
+       
     }
 }

@@ -19,7 +19,7 @@ import jakarta.persistence.Table;
 import lombok.Data;
 
 @Entity
-@Table(name = "students")
+@Table(name = "student")
 @Data
 public class Student {
     @Id
