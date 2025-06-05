@@ -1,0 +1,218 @@
+package com.project.tutornet.service.impl;
+
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.UUID;
+import java.util.stream.Collectors;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.project.tutornet.dto.ProfileRequest;
+import com.project.tutornet.dto.ProfileResponse;
+import com.project.tutornet.dto.TimeSlotRequest;
+import com.project.tutornet.dto.TimeSlotResponse;
+import com.project.tutornet.entity.Student;
+import com.project.tutornet.entity.TimeSlot;
+import com.project.tutornet.entity.Tutor;
+import com.project.tutornet.entity.UserInfoEntity;
+import com.project.tutornet.repository.StudentRepository;
+import com.project.tutornet.repository.TutorRepository;
+import com.project.tutornet.repository.UserRepository;
+import com.project.tutornet.service.ProfileService;
+
+import lombok.extern.slf4j.Slf4j;
+
+@Service
+@Slf4j
+public class ProfileServiceImpl implements ProfileService {
+
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private StudentRepository studentRepository;
+
+    @Autowired
+    private TutorRepository tutorRepository;
+
+    @Override
+    public ProfileResponse getProfileByUsername(String username) {
+        log.info("[ProfileServiceImpl:getProfileByUsername] Getting profile for username: {}", username);
+        UserInfoEntity user = userRepository.findByEmailAddress(username)
+            .orElseThrow(() -> new RuntimeException("User not found"));
+        return getProfile(user.getId());
+    }
+
+    @Override
+    public ProfileResponse getProfile(UUID userId) {
+        log.info("[ProfileServiceImpl:getProfile] Getting profile for user: {}", userId);
+        UserInfoEntity user = userRepository.findById(userId)
+            .orElseThrow(() -> new RuntimeException("User not found"));
+
+        try {
+            if ("STUDENT".equals(user.getRoles())) {
+                return getStudentProfile(user.getId());
+            } else if ("TUTOR".equals(user.getRoles())) {
+                return getTutorProfile(user.getId());
+            }
+        } catch (RuntimeException e) {
+            // If student/tutor record not found, return basic profile
+            return ProfileResponse.builder()
+                .userId(user.getId())
+                .email(user.getEmailAddress())
+                .fullName(user.getUsername())
+                .role(user.getRoles())
+                .build();
+        }
+
+        throw new RuntimeException("Invalid user role");
+    }
+
+    @Override
+    @Transactional
+    public ProfileResponse updateProfile(ProfileRequest request) {
+        log.info("[ProfileServiceImpl:updateProfile] Updating profile for user: {}", request.getUserId());
+        UserInfoEntity user = userRepository.findById(request.getUserId())
+            .orElseThrow(() -> new RuntimeException("User not found"));
+
+        if ("STUDENT".equals(user.getRoles())) {
+            return updateStudentProfile(request);
+        } else if ("TUTOR".equals(user.getRoles())) {
+            return updateTutorProfile(request);
+        }
+
+        throw new RuntimeException("Invalid user role");
+    }
+
+    @Override
+    public ProfileResponse getStudentProfile(UUID userId) {
+        log.info("[ProfileServiceImpl:getStudentProfile] Getting student profile for user: {}", userId);
+        UserInfoEntity user = userRepository.findById(userId)
+            .orElseThrow(() -> new RuntimeException("User not found"));
+            
+        Student student = studentRepository.findByUserInfoId(userId)
+            .orElseThrow(() -> new RuntimeException("Student not found"));
+
+        return ProfileResponse.builder()
+            .userId(user.getId())
+            .email(user.getEmailAddress())
+            .fullName(user.getUsername())
+            .role("STUDENT")
+            .bio(student.getBio())
+            .education(student.getEducation())
+            .experience(student.getExperience())
+            .interestedSubjects(student.getInterestedSubjects())
+            .topics(student.getTopics())
+            .minBudget(student.getMinBudget())
+            .maxBudget(student.getMaxBudget())
+            .availability(convertToTimeSlotResponses(student.getAvailability()))
+            .createdAt(student.getCreatedAt().toString())
+            .lastUpdated(student.getUpdatedAt().toString())
+            .build();
+    }
+
+    @Override
+    public ProfileResponse getTutorProfile(UUID userId) {
+        log.info("[ProfileServiceImpl:getTutorProfile] Getting tutor profile for user: {}", userId);
+        UserInfoEntity user = userRepository.findById(userId)
+            .orElseThrow(() -> new RuntimeException("User not found"));
+            
+        Tutor tutor = tutorRepository.findByUserInfoId(userId)
+            .orElseThrow(() -> new RuntimeException("Tutor not found"));
+
+        return ProfileResponse.builder()
+            .userId(user.getId())
+            .email(user.getEmailAddress())
+            .fullName(user.getUsername())
+            .role("TUTOR")
+            .bio(tutor.getBio())
+            .education(tutor.getEducation())
+            .experience(tutor.getExperience())
+            .teachingSubjects(tutor.getTeachingSubjects())
+            .hourlyRate(tutor.getHourlyRate())
+            .teachingAvailability(convertToTimeSlotResponses(tutor.getTeachingAvailability()))
+            .createdAt(tutor.getCreatedAt().toString())
+            .lastUpdated(tutor.getUpdatedAt().toString())
+            .build();
+    }
+
+    @Override
+    @Transactional
+    public ProfileResponse updateStudentProfile(ProfileRequest request) {
+        log.info("[ProfileServiceImpl:updateStudentProfile] Updating student profile for user: {}", request.getUserId());
+        UserInfoEntity user = userRepository.findById(request.getUserId())
+            .orElseThrow(() -> new RuntimeException("User not found"));
+            
+        Student student = studentRepository.findByUserInfoId(request.getUserId())
+            .orElseThrow(() -> new RuntimeException("Student not found"));
+
+        // Update editable fields
+        student.setBio(request.getBio());
+        student.setEducation(request.getEducation());
+        student.setExperience(request.getExperience());
+        student.setInterestedSubjects(request.getInterestedSubjects());
+        student.setTopics(request.getTopics());
+        student.setMinBudget(request.getMinBudget());
+        student.setMaxBudget(request.getMaxBudget());
+        student.setAvailability(convertToTimeSlots(request.getAvailability()));
+        student.setUpdatedAt(LocalDateTime.now());
+
+        student = studentRepository.save(student);
+        return getStudentProfile(user.getId());
+    }
+
+    @Override
+    @Transactional
+    public ProfileResponse updateTutorProfile(ProfileRequest request) {
+        log.info("[ProfileServiceImpl:updateTutorProfile] Updating tutor profile for user: {}", request.getUserId());
+        UserInfoEntity user = userRepository.findById(request.getUserId())
+            .orElseThrow(() -> new RuntimeException("User not found"));
+            
+        Tutor tutor = tutorRepository.findByUserInfoId(request.getUserId())
+            .orElseThrow(() -> new RuntimeException("Tutor not found"));
+
+        // Update editable fields
+        tutor.setBio(request.getBio());
+        tutor.setEducation(request.getEducation());
+        tutor.setExperience(request.getExperience());
+        tutor.setTeachingSubjects(request.getTeachingSubjects());
+        tutor.setHourlyRate(request.getHourlyRate());
+        tutor.setTeachingAvailability(convertToTimeSlots(request.getTeachingAvailability()));
+        tutor.setUpdatedAt(LocalDateTime.now());
+
+        tutor = tutorRepository.save(tutor);
+        return getTutorProfile(user.getId());
+    }
+
+    private List<TimeSlotResponse> convertToTimeSlotResponses(List<TimeSlot> timeSlots) {
+        if (timeSlots == null) {
+            return List.of();
+        }
+        return timeSlots.stream()
+            .map(slot -> TimeSlotResponse.builder()
+                .dayOfWeek(slot.getDayOfWeek())
+                .startTime(slot.getStartTime())
+                .endTime(slot.getEndTime())
+                .status(slot.getStatus())
+                .build())
+            .collect(Collectors.toList());
+    }
+
+    private List<TimeSlot> convertToTimeSlots(List<TimeSlotRequest> requests) {
+        if (requests == null) {
+            return List.of();
+        }
+        return requests.stream()
+            .map(request -> {
+                TimeSlot slot = new TimeSlot();
+                slot.setDayOfWeek(request.getDayOfWeek());
+                slot.setStartTime(request.getStartTime());
+                slot.setEndTime(request.getEndTime());
+                slot.setStatus("AVAILABLE");
+                return slot;
+            })
+            .collect(Collectors.toList());
+    }
+} 

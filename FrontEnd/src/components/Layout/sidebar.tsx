@@ -51,7 +51,7 @@ const Sidebar: FC = () => {
     { 
       text: 'Home', 
       icon: <HomeIcon />, 
-      action: () => handleNavigation('/home') // or '/home' depending on your routes
+      action: () => handleNavigation('/home')
     },
     { 
       text: 'Profile', 

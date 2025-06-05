@@ -66,7 +66,7 @@ public class BookingService {
 
     // Create new booking
     Booking booking = new Booking();
-    booking.setStudent(studentOpt.get());
+    booking.setStudent(studentOpt.get().getUserInfo());
     booking.setSlot(slot);
     booking.setSubjectName(createBookingDto.getSubjectName());
     booking.setBookingStatus(createBookingDto.getBookingStatus());

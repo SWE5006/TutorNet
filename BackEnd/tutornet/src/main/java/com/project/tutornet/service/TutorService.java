@@ -13,6 +13,7 @@ import com.project.tutornet.dto.TutorRequest;
 import com.project.tutornet.entity.Tutor;
 import com.project.tutornet.entity.UserInfoEntity;
 import com.project.tutornet.repository.TutorRepository;
+import com.project.tutornet.repository.UserInfoRepository;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,44 +24,46 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class TutorService {
 
- @Autowired
- private TutorRepository tutorRepository;
- private final PasswordEncoder passwordEncoder;
- public List<Tutor> getTutorsBySubject(String subjectName) {
-   return tutorRepository.findBySubjects_Name(subjectName);
- }
+    private final TutorRepository tutorRepository;
+    private final UserInfoRepository userInfoRepository;
+    private final PasswordEncoder passwordEncoder;
 
- public List<Tutor> searchTutorsByName(String name) {
-   return tutorRepository.searchTutorsByName(name);
- }
+    public List<Tutor> getTutorsBySubject(String subjectName) {
+        return tutorRepository.findByTeachingSubjectsContaining(subjectName);
+    }
+
+    public List<Tutor> searchTutorsByName(String name) {
+        return tutorRepository.searchTutorsByName(name);
+    }
 
     public List<Tutor> listAllTutors() {
         return tutorRepository.findAll();
     }
 
-
     @Transactional
-    public UserInfoEntity createTutor(TutorRequest request) {
+    public Tutor createTutor(TutorRequest request) {
+        // Create UserInfoEntity first
+        UserInfoEntity userInfo = new UserInfoEntity();
+        userInfo.setEmailAddress(request.getEmailAddress());
+        userInfo.setPassword(passwordEncoder.encode(request.getPassword()));
+        userInfo.setUsername(request.getUsername());
+        userInfo.setMobileNumber(request.getMobileNumber());
+        userInfo.setRoles("TUTOR");
+        userInfo.setCreateDatetime(LocalDateTime.now());
+        userInfo.setActiveStatus("ACTIVE");
         
-       
+        // Save UserInfoEntity
+        userInfo = userInfoRepository.save(userInfo);
+        
+        // Create Tutor entity
         Tutor tutor = new Tutor();
-
-        tutor.setEmailAddress(request.getEmailAddress());
-        tutor.setPassword(passwordEncoder.encode(request.getPassword()));
-        tutor.setUsername(request.getUsername());
-       tutor.setMobileNumber(request.getMobileNumber());
-       tutor.setRoles("TUTOR");
-       tutor.setLocation(request.getLocation());
-      tutor.setDescription(request.getDescription());
-       
-
-        tutor.setQualification(request.getQualification());
-        tutor.setExperienceYears(request.getExperienceYears());
+        tutor.setUserInfo(userInfo);
+        tutor.setBio(request.getBio());
+        tutor.setEducation(request.getEducation());
+        tutor.setExperience(request.getExperience());
+        tutor.setTeachingSubjects(request.getTeachingSubjects());
         tutor.setHourlyRate(request.getHourlyRate());
-        tutor.setActiveStatus("ACTIVE");
-        tutor.setCreateDatetime(LocalDateTime.now());
-       
-
+        
         try {
             return tutorRepository.save(tutor);
         } catch (DataIntegrityViolationException e) {

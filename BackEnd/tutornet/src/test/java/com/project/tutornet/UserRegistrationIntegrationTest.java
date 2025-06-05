@@ -1,6 +1,5 @@
 package com.project.tutornet;
 
-
 import static org.hamcrest.Matchers.is;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -14,7 +13,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.project.tutornet.entity.Student;
+import com.project.tutornet.dto.StudentRequest;
 import com.project.tutornet.repository.StudentRepository;
 import com.project.tutornet.repository.TutorRepository;
 
@@ -42,19 +41,19 @@ public class UserRegistrationIntegrationTest {
 
     @Test
     public void testRegisterStudent() throws Exception {
-        Student student = new Student();
-        student.setUsername("Alice");
-        student.setEmailAddress("alice@student.com");
-        student.setPassword("securepass");
-        student.setAge(20);
-        student.setClassLevel("Secondary");
-        student.setMobileNumber("123456");
+        StudentRequest request = new StudentRequest();
+        request.setUsername("Alice");
+        request.setEmailAddress("alice@student.com");
+        request.setPassword("securepass");
+        request.setMobileNumber("123456");
+        request.setBio("Test bio");
+        request.setEducation("Test education");
+        request.setExperience("Test experience");
 
         mockMvc.perform(post("/api/students/create")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(student)))
+                .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.username", is("Alice")))
-               ;
+                .andExpect(jsonPath("$.username", is("Alice")));
     }
 }

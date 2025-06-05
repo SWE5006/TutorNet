@@ -29,11 +29,18 @@ public class RefreshTokenEntity {
     @Column(length = 2048)
     private String refreshToken;
 
-  
     private boolean revoked;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false)
     private UserInfoEntity user;
 
+    // Explicit getter/setter methods for revoked field
+    public boolean isRevoked() {
+        return revoked;
+    }
+
+    public void setRevoked(boolean revoked) {
+        this.revoked = revoked;
+    }
 }
