@@ -68,14 +68,14 @@ public class TutorService {
        // tutor.setTeachingSubjects(request.getTeachingSubjects());
       
         tutor.setHourlyRate(request.getHourlyRate());
-        List<Subject> subjectlist = new ArrayList<>();
+       
         for (String subjectname : request.getTeachingSubjects()) {
             Subject subject = new Subject();
             subject.setName(subjectname);
             subject.setTutor(tutor); // Set the tutor reference
-            subjectlist.add(subject);
+           
         }
-        //tutor.setSubjects(subjectlist);
+       
         try {
             return tutorRepository.save(tutor);
         } catch (DataIntegrityViolationException e) {
