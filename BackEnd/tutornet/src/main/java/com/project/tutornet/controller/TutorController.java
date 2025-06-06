@@ -13,12 +13,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.project.tutornet.dto.AvailableSlotRequest;
 import com.project.tutornet.dto.SubjectRequest;
-import com.project.tutornet.entity.AvailableSlot;
 import com.project.tutornet.entity.Subject;
 import com.project.tutornet.entity.Tutor;
-import com.project.tutornet.repository.AvailableSlotRepository;
 import com.project.tutornet.repository.SubjectRepository;
 import com.project.tutornet.repository.TutorRepository;
 import com.project.tutornet.service.TutorService;
@@ -35,12 +32,6 @@ public class TutorController {
 
     @Autowired
     private SubjectRepository subjectRepository;
-
-    @Autowired
-    private AvailableSlotRepository slotRepository;
-
-   
-
 
     @GetMapping("/by-subject")
     public List<Tutor> getTutorsBySubject(@RequestParam String subject)
@@ -60,26 +51,13 @@ public class TutorController {
 
         Subject subject = new Subject();
         subject.setName(dto.getName());
-        subject.setTutors(tutor);
+        subject.setTutor(tutor);
         subjectRepository.save(subject);
 
         return ResponseEntity.ok("Subject added");
     }
 
-    @PostMapping("/{tutorid}/slots")
-    public ResponseEntity<?> addSlot(@PathVariable UUID id, @RequestBody AvailableSlotRequest dto) {
-        Tutor tutor = tutorRepository.findById(id).orElseThrow(() -> new RuntimeException("Tutor not found"));
-
-        AvailableSlot slot = new AvailableSlot();
-        slot.setScheduleStart(dto.getScheduleStart());
-        slot.setScheduleEnd(dto.getScheduleEnd());
-        slot.setTutors(tutor);
-        slot.setSlotStatus(dto.getSlotStatus());
-        slotRepository.save(slot);
-
-        return ResponseEntity.ok("Slot added");
-    }
-
+ 
     //View Tutor Detail
     //FindTutorByName
     @GetMapping("/by-name")

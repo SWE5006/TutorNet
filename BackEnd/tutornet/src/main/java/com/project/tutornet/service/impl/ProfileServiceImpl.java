@@ -159,7 +159,7 @@ public class ProfileServiceImpl implements ProfileService {
         student.setAvailability(convertToTimeSlots(request.getAvailability()));
         student.setUpdatedAt(LocalDateTime.now());
 
-        student = studentRepository.save(student);
+        studentRepository.save(student);
         return getStudentProfile(user.getId());
     }
 
@@ -182,7 +182,7 @@ public class ProfileServiceImpl implements ProfileService {
         tutor.setTeachingAvailability(convertToTimeSlots(request.getTeachingAvailability()));
         tutor.setUpdatedAt(LocalDateTime.now());
 
-        tutor = tutorRepository.save(tutor);
+        tutorRepository.save(tutor);
         return getTutorProfile(user.getId());
     }
 

@@ -53,14 +53,7 @@ public class TutorService {
         userInfo.setCreateDatetime(LocalDateTime.now());
         userInfo.setActiveStatus("ACTIVE");
 
-        List<Subject> subjectlist = new ArrayList<>();
-        Subject subject = new Subject();
-        for (String subjectname:request.getTeachingSubjects())
-        {
-            subject.setName(subjectname);
-            subjectlist.add(subject);
-        }
-
+        
         
         // Save UserInfoEntity
         userInfo = userInfoRepository.save(userInfo);
@@ -73,9 +66,16 @@ public class TutorService {
         tutor.setEducation(request.getEducation());
         tutor.setExperience(request.getExperience());
        // tutor.setTeachingSubjects(request.getTeachingSubjects());
-       tutor.setSubjects(subjectlist);
+      
         tutor.setHourlyRate(request.getHourlyRate());
-        
+        List<Subject> subjectlist = new ArrayList<>();
+        for (String subjectname : request.getTeachingSubjects()) {
+            Subject subject = new Subject();
+            subject.setName(subjectname);
+            subject.setTutor(tutor); // Set the tutor reference
+            subjectlist.add(subject);
+        }
+        //tutor.setSubjects(subjectlist);
         try {
             return tutorRepository.save(tutor);
         } catch (DataIntegrityViolationException e) {

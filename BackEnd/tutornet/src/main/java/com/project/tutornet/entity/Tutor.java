@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
@@ -51,8 +53,11 @@ public class Tutor {
     @Column(length = 1000)
     private String experience;
 
-    @OneToMany(mappedBy = "tutors", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+   @OneToMany(mappedBy = "tutor", cascade = CascadeType.ALL, orphanRemoval = true)
+   @JsonManagedReference
     private List<Subject> subjects = new ArrayList<>();
+
+    
 
     @ElementCollection
     @CollectionTable(name = "tutor_teaching_subjects", joinColumns = @JoinColumn(name = "tutor_id"))

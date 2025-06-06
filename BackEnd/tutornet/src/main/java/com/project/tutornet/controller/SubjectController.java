@@ -16,10 +16,6 @@ public class SubjectController {
      @Autowired
     private SubjectRepository subjectRepository;
     
-
-    
-
-    
     // Option 3: Return only distinct subject codes
     @GetMapping("/distinct/codes")
     public ResponseEntity<List<String>> getDistinctSubjectCodes() {

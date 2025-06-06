@@ -39,7 +39,7 @@ public class Booking {
    
     @OneToOne
     @JoinColumn(name = "slot_id")
-    private AvailableSlot slot;
+    private TimeSlot slot;
 
     @ManyToOne
     @JoinColumn(name = "student_id")

@@ -6,11 +6,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.project.tutornet.dto.ProfileRequest;
 import com.project.tutornet.dto.ProfileResponse;
-import com.project.tutornet.dto.TimeSlotRequest;
 import com.project.tutornet.service.ProfileService;
 
 import lombok.RequiredArgsConstructor;
@@ -47,19 +51,5 @@ public class ProfileController {
         return ResponseEntity.ok(profileService.updateProfile(userId, request));
     }
 
-    // @GetMapping("/{userId}/availability")
-    // @PreAuthorize("hasAuthority('SCOPE_USER')")
-    // public ResponseEntity<?> getAvailability(@PathVariable UUID userId) {
-    //     log.info("[ProfileController:getAvailability] Getting availability for user: {}", userId);
-    //     return ResponseEntity.ok(profileService.getAvailability(userId));
-    // }
-
-    // @PutMapping("/{userId}/availability")
-    // @PreAuthorize("hasAuthority('SCOPE_USER')")
-    // public ResponseEntity<?> updateAvailability(
-    //         @PathVariable UUID userId,
-    //         @RequestBody TimeSlotRequest request) {
-    //     log.info("[ProfileController:updateAvailability] Updating availability for user: {}", userId);
-    //     return ResponseEntity.ok(profileService.updateAvailability(userId, request));
-    // }
+   
 } 
