@@ -26,6 +26,7 @@ import { useGetCurrentProfileQuery, useUpdateProfileMutation } from '../services
 import { RootState } from '../state/store';
 import { Profile, TimeSlot, PriceRange, ProfileUpdateRequest } from '../types/profile';
 import Layout from '../components/Layout';
+import Sidebar from '../components/Layout/sidebar';
 
 const DAYS_OF_WEEK = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
@@ -78,18 +79,18 @@ const ProfilePage: React.FC = () => {
   const handleSave = async () => {
     if (profile?.userId && editedProfile) {
       const updateData: ProfileUpdateRequest = {
-        subjects: editedProfile.subjects.map(s => s.name),
-        interests: editedProfile.interests,
-        topics: editedProfile.topics,
-        availability: editedProfile.availability,
+        subjects: editedProfile.subjects?.map(s => s.name) || [],
+        interests: editedProfile.interests || [],
+        topics: editedProfile.topics || [],
+        availability: editedProfile.availability || [],
         priceRange: editedProfile.priceRange ? {
           min: editedProfile.priceRange.min || 0,
           max: editedProfile.priceRange.max || 0
         } : undefined,
         hourlyRate: editedProfile.hourlyRate,
-        experience: '',
-        education: '',
-        bio: ''
+        experience: editedProfile.experience || '',
+        education: editedProfile.education || '',
+        bio: editedProfile.bio || ''
       };
       await updateProfile({ userId: profile.userId, data: updateData });
       setIsEditing(false);
@@ -166,7 +167,8 @@ const ProfilePage: React.FC = () => {
 
   return (
     <Layout isLoading={isLoading}>
-      <Container maxWidth="md" sx={{ py: 4 }}>
+      <Sidebar />
+      <Container maxWidth="md" sx={{ py: 4, ml: '240px' }}>
         <Paper sx={{ p: 3 }}>
           <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
             <Typography variant="h4">
