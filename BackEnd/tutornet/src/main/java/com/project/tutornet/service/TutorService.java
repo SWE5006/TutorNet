@@ -43,6 +43,10 @@ public class TutorService {
 
     @Transactional
     public Tutor createTutor(TutorRequest request) {
+
+    if (userInfoRepository.findByEmailAddress(request.getEmailAddress()).isPresent()) {
+        throw new IllegalArgumentException("Email already exists: " + request.getEmailAddress());
+    }
         // Create UserInfoEntity first
         UserInfoEntity userInfo = new UserInfoEntity();
         userInfo.setEmailAddress(request.getEmailAddress());
