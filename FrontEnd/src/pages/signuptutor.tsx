@@ -14,8 +14,10 @@ import {
   InputLabel,
   FormHelperText,
   InputAdornment,
+  Stack,
 } from "@mui/material";
 import { useSignUpTutorMutation } from "../services/auth.service";
+import Chip from "@mui/material/Chip";
 
 export default function SignUpTutorPage() {
   const [userName, setUserName] = useState("");
@@ -27,7 +29,7 @@ export default function SignUpTutorPage() {
   const [experienceYears, setExperienceYears] = useState("");
   const [location, setLocation] = useState("");
   const [bio, setBio] = useState("");
-  
+
   const [nameError, setNameError] = useState<boolean | string>(false);
   const [emailError, setEmailError] = useState<boolean | string>(false);
   const [passwordError, setPasswordError] = useState<boolean | string>(false);
@@ -36,7 +38,10 @@ export default function SignUpTutorPage() {
   const [qualificationError, setQualificationError] = useState<boolean | string>(false);
   const [experienceError, setExperienceError] = useState<boolean | string>(false);
   const [locationError, setLocationError] = useState<boolean | string>(false);
-    const [descriptionError, setDescriptionError] = useState<boolean | string>(false);
+  const [descriptionError, setDescriptionError] = useState<boolean | string>(false);
+  const [subjectsError, setSubjectsError] = useState<boolean | string>(false);
+
+  const [teachingSubjects, setTeachingSubjects] = useState<string[]>([]);
   const [signupTutor, result] = useSignUpTutorMutation();
 
   const qualifications = [
@@ -84,7 +89,26 @@ export default function SignUpTutorPage() {
     "Yishun"
   ];
 
-  
+  const subjectOptions = [
+    "Physics",
+    "Chemistry",
+    "Mathematics",
+    "English",
+    "Chinese",
+    "Malay",
+    "History",
+    "Geography",
+    "Biology",
+    "Literature",
+    "Economics",
+    "Social Studies",
+    "Computer Science",
+    "Art",
+    "Music",
+    "Physical Education",
+    "Other"
+  ];
+
   const handleSignUpTutor = (e: { preventDefault: () => void; }) => {
     e.preventDefault(); 
     
@@ -92,6 +116,11 @@ export default function SignUpTutorPage() {
 
     if (!userName.trim()) {
       setNameError("User name is required.");
+      hasErrors = true;
+    }
+
+    if (teachingSubjects.length === 0) {
+      setSubjectsError("Please select at least one subject.");
       hasErrors = true;
     }
 
@@ -134,13 +163,11 @@ export default function SignUpTutorPage() {
       setDescriptionError("Description is required.");
       hasErrors = true;
     }
-
     
     if (hasErrors) {
       console.log('Form has errors, not submitting');
       return;
     }
-
     
     signupTutor({
       username: userName.trim(),
@@ -152,8 +179,8 @@ export default function SignUpTutorPage() {
       experience: experienceYears,
       location: location.trim(),
       userRole: "TUTOR",
-      teachingSubjects:["Physics", "Mathematics"],
-      bio:bio
+      teachingSubjects: teachingSubjects,
+      bio: bio
     });
   };
 
@@ -184,251 +211,278 @@ export default function SignUpTutorPage() {
         </Typography>
         <Box
           component="form"
-          onSubmit={handleSignUpTutor} // Changed from onClick to onSubmit
+          onSubmit={handleSignUpTutor}
           noValidate
           sx={{ mt: 1, width: "100%" }}
         >
-          <TextField
-            required
-            fullWidth
-            label="User Name"
-            variant="outlined"
-            value={userName}
-            error={!!nameError}
-            helperText={nameError}
-            onChange={(e) => {
-              setUserName(e.target.value);
-              if (e.target.value.length >= 1) {
-                setNameError(false);
-              } else {
-                setNameError("User name is required.");
-              }
-            }}
-            margin="normal"
-          />
-
-          <TextField
-            fullWidth
-            required
-            label="Email Address"
-            variant="outlined"
-            type="email"
-            value={userEmail}
-            inputProps={{
-              type: "email",
-            }}
-            error={!!emailError}
-            helperText={emailError}
-            onChange={(e) => {
-              setEmailAddress(e.target.value);
-              if (e.target.validity.valid) {
-                setEmailError(false);
-              } else {
-                setEmailError("Please provide valid email address.");
-              }
-            }}
-            margin="normal"
-          />
-
-          <TextField
-            required
-            fullWidth
-            label="Password"
-            variant="outlined"
-            type="password"
-            value={userPassword}
-            error={!!passwordError}
-            helperText={passwordError}
-            onChange={(e) => {
-              setPassword(e.target.value);
-              if (
-                !/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/.test(
-                  e.target.value
-                )
-              ) {
-                setPasswordError(
-                  "Invalid password, your password must be: Minimum eight characters, at least one uppercase letter, one lowercase letter, one number and one special character"
-                );
-              } else {
-                setPasswordError(false);
-              }
-            }}
-            margin="normal"
-          />
-
-          <TextField
-            fullWidth
-            required
-            label="Summary"
-            variant="outlined"
-            type="text"
-            value={bio}
-            error={!!descriptionError}
-            helperText={descriptionError}
-            onChange={(e) => {
-              setBio(e.target.value);
-              if (e.target.validity.valid) {
-                setDescriptionError(false);
-              } else {
-                setDescriptionError("Please provide Summary");
-              }
-            }}
-            margin="normal"
-          />
-
-          <TextField
-            required
-            fullWidth
-            label="Contact Number"
-            variant="outlined"
-            type="text"
-            value={userMobileNo}
-            error={!!mobileNoError}
-            helperText={mobileNoError}
-            onChange={(e) => {
-              setMobile(e.target.value);
-              if (
-                e.target.value.length == 8 &&
-                !isNaN(Number(e.target.value))
-              ) {
-                setMobileError(false);
-              } else {
-                setMobileError("Please provide valid singapore mobile number.");
-              }
-            }}
-            margin="normal"
-          />
-
-          <TextField
-            required
-            fullWidth
-            label="Hourly Rate"
-            variant="outlined"
-            type="number"
-            value={hourlyRate}
-            error={!!hourlyRateError}
-            helperText={hourlyRateError}
-            onChange={(e) => {
-              setHourlyRate(e.target.value);
-              const rate = parseFloat(e.target.value);
-              if (rate >= 10 && rate <= 200) {
-                setHourlyRateError(false);
-              } else {
-                setHourlyRateError("Please provide a valid hourly rate between $10 and $200.");
-              }
-            }}
-            margin="normal"
-            InputProps={{
-              startAdornment: <InputAdornment position="start">$</InputAdornment>,
-              inputProps: { min: 10, max: 200, step: 0.5 }
-            }}
-          />
-
-       
-          <FormControl fullWidth margin="normal" error={!!qualificationError}>
-            <InputLabel id="qualification-label">Qualification</InputLabel>
-            <Select
-              labelId="qualification-label"
-              value={qualification}
-              label="Qualification"
+          <Stack spacing={2}>
+            <TextField
               required
+              fullWidth
+              label="User Name"
+              variant="outlined"
+              value={userName}
+              error={!!nameError}
+              helperText={nameError}
               onChange={(e) => {
-                setQualification(e.target.value);
-                if (e.target.value) {
-                  setQualificationError(false);
+                setUserName(e.target.value);
+                if (e.target.value.length >= 1) {
+                  setNameError(false);
                 } else {
-                  setQualificationError("Please select your qualification.");
+                  setNameError("User name is required.");
                 }
               }}
-            >
-              {qualifications.map((qual) => (
-                <MenuItem key={qual} value={qual}>
-                  {qual}
-                </MenuItem>
-              ))}
-            </Select>
-            {qualificationError && (
-              <FormHelperText>{qualificationError}</FormHelperText>
-            )}
-          </FormControl>
+            />
 
-          <TextField
-            required
-            fullWidth
-            label="Years of Experience"
-            variant="outlined"
-            type="number"
-            value={experienceYears}
-            error={!!experienceError}
-            helperText={experienceError}
-            onChange={(e) => {
-              setExperienceYears(e.target.value);
-              const years = parseInt(e.target.value);
-              if (years >= 0 && years <= 50) {
-                setExperienceError(false);
-              } else {
-                setExperienceError("Please provide valid years of experience (0-50).");
-              }
-            }}
-            margin="normal"
-            inputProps={{
-              min: 0,
-              max: 50
-            }}
-          />
-
-          {/* Fixed FormControl for Location */}
-          <FormControl fullWidth margin="normal" error={!!locationError}>
-            <InputLabel id="location-label">Preferred Location</InputLabel>
-            <Select
-              labelId="location-label"
-              value={location}
-              label="Preferred Location"
+            <TextField
+              fullWidth
               required
+              label="Email Address"
+              variant="outlined"
+              type="email"
+              value={userEmail}
+              inputProps={{
+                type: "email",
+              }}
+              error={!!emailError}
+              helperText={emailError}
               onChange={(e) => {
-                setLocation(e.target.value);
-                if (e.target.value) {
-                  setLocationError(false);
+                setEmailAddress(e.target.value);
+                if (e.target.validity.valid) {
+                  setEmailError(false);
                 } else {
-                  setLocationError("Please select your preferred location.");
+                  setEmailError("Please provide valid email address.");
                 }
               }}
-            >
-              {singaporeLocations.map((loc) => (
-                <MenuItem key={loc} value={loc}>
-                  {loc}
-                </MenuItem>
-              ))}
-            </Select>
-            {locationError && (
-              <FormHelperText>{locationError}</FormHelperText>
-            )}
-          </FormControl>
+            />
 
-          <Button
-            type="submit" // Changed from onClick to type="submit"
-            variant="contained"
-            color="primary"
-            disabled={result.isLoading}
-            fullWidth
-            sx={{ mt: 2 }}
-          >
-            {result.isLoading ? 'Signing Up...' : 'Sign Up as Tutor'}
-          </Button>
-          
+            <TextField
+              required
+              fullWidth
+              label="Password"
+              variant="outlined"
+              type="password"
+              value={userPassword}
+              error={!!passwordError}
+              helperText={passwordError}
+              onChange={(e) => {
+                setPassword(e.target.value);
+                if (
+                  !/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/.test(
+                    e.target.value
+                  )
+                ) {
+                  setPasswordError(
+                    "Invalid password, your password must be: Minimum eight characters, at least one uppercase letter, one lowercase letter, one number and one special character"
+                  );
+                } else {
+                  setPasswordError(false);
+                }
+              }}
+            />
+
+            <TextField
+              fullWidth
+              required
+              label="Summary"
+              variant="outlined"
+              type="text"
+              value={bio}
+              error={!!descriptionError}
+              helperText={descriptionError}
+              onChange={(e) => {
+                setBio(e.target.value);
+                if (e.target.validity.valid) {
+                  setDescriptionError(false);
+                } else {
+                  setDescriptionError("Please provide Summary");
+                }
+              }}
+            />
+
+            <TextField
+              required
+              fullWidth
+              label="Contact Number"
+              variant="outlined"
+              type="text"
+              value={userMobileNo}
+              error={!!mobileNoError}
+              helperText={mobileNoError}
+              onChange={(e) => {
+                setMobile(e.target.value);
+                if (
+                  e.target.value.length === 8 &&
+                  !isNaN(Number(e.target.value))
+                ) {
+                  setMobileError(false);
+                } else {
+                  setMobileError("Please provide valid singapore mobile number.");
+                }
+              }}
+            />
+
+            <TextField
+              required
+              fullWidth
+              label="Hourly Rate"
+              variant="outlined"
+              type="number"
+              value={hourlyRate}
+              error={!!hourlyRateError}
+              helperText={hourlyRateError}
+              onChange={(e) => {
+                setHourlyRate(e.target.value);
+                const rate = parseFloat(e.target.value);
+                if (rate >= 10 && rate <= 200) {
+                  setHourlyRateError(false);
+                } else {
+                  setHourlyRateError("Please provide a valid hourly rate between $10 and $200.");
+                }
+              }}
+              InputProps={{
+                startAdornment: <InputAdornment position="start">$</InputAdornment>,
+                inputProps: { min: 10, max: 200, step: 0.5 }
+              }}
+            />
+
+            <FormControl fullWidth error={!!qualificationError}>
+              <InputLabel id="qualification-label">Qualification</InputLabel>
+              <Select
+                labelId="qualification-label"
+                value={qualification}
+                label="Qualification"
+                required
+                onChange={(e) => {
+                  setQualification(e.target.value);
+                  if (e.target.value) {
+                    setQualificationError(false);
+                  } else {
+                    setQualificationError("Please select your qualification.");
+                  }
+                }}
+              >
+                {qualifications.map((qual) => (
+                  <MenuItem key={qual} value={qual}>
+                    {qual}
+                  </MenuItem>
+                ))}
+              </Select>
+              {qualificationError && (
+                <FormHelperText>{qualificationError}</FormHelperText>
+              )}
+            </FormControl>
+
+            <TextField
+              required
+              fullWidth
+              label="Years of Experience"
+              variant="outlined"
+              type="number"
+              value={experienceYears}
+              error={!!experienceError}
+              helperText={experienceError}
+              onChange={(e) => {
+                setExperienceYears(e.target.value);
+                const years = parseInt(e.target.value);
+                if (years >= 0 && years <= 50) {
+                  setExperienceError(false);
+                } else {
+                  setExperienceError("Please provide valid years of experience (0-50).");
+                }
+              }}
+              inputProps={{
+                min: 0,
+                max: 50
+              }}
+            />
+
+            <FormControl fullWidth error={!!locationError}>
+              <InputLabel id="location-label">Preferred Location</InputLabel>
+              <Select
+                labelId="location-label"
+                value={location}
+                label="Preferred Location"
+                required
+                onChange={(e) => {
+                  setLocation(e.target.value);
+                  if (e.target.value) {
+                    setLocationError(false);
+                  } else {
+                    setLocationError("Please select your preferred location.");
+                  }
+                }}
+              >
+                {singaporeLocations.map((loc) => (
+                  <MenuItem key={loc} value={loc}>
+                    {loc}
+                  </MenuItem>
+                ))}
+              </Select>
+              {locationError && (
+                <FormHelperText>{locationError}</FormHelperText>
+              )}
+            </FormControl>
+
+            <FormControl fullWidth error={!!subjectsError}>
+              <InputLabel id="subjects-label">Teaching Subjects</InputLabel>
+              <Select
+                labelId="subjects-label"
+                multiple
+                value={teachingSubjects}
+                onChange={(e) => {
+                  const value = typeof e.target.value === "string"
+                    ? e.target.value.split(",")
+                    : e.target.value;
+                  setTeachingSubjects(value);
+                  if (value.length > 0) {
+                    setSubjectsError(false);
+                  } else {
+                    setSubjectsError("Please select at least one subject.");
+                  }
+                }}
+                label="Teaching Subjects"
+                renderValue={(selected) => (
+                  <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+                    {(selected as string[]).map((value) => (
+                      <Chip key={value} label={value} />
+                    ))}
+                  </Box>
+                )}
+              >
+                {subjectOptions.map((subject) => (
+                  <MenuItem key={subject} value={subject}>
+                    {subject}
+                  </MenuItem>
+                ))}
+              </Select>
+              {subjectsError && (
+                <FormHelperText>{subjectsError}</FormHelperText>
+              )}
+            </FormControl>
+
+            <Button
+              type="submit"
+              variant="contained"
+              color="primary"
+              disabled={result.isLoading}
+              fullWidth
+            >
+              {result.isLoading ? 'Signing Up...' : 'Sign Up as Tutor'}
+            </Button>
+          </Stack>
+
           {result.isError && (
             <Typography color="error" sx={{ mt: 2 }}>
               Sign up failed. Please try again.
-              {/* Add more specific error details */}
-              
             </Typography>
           )}
-          
+
           <Box
             sx={{
               display: "flex",
               justifyContent: "center",
-              width: "100%",
+              inlineSize: "100%",
               mt: 2,
             }}
           >

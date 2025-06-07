@@ -43,5 +43,5 @@ public class Booking {
 
     @ManyToOne
     @JoinColumn(name = "student_id")
-    private UserInfoEntity student;
+    private Student student;
 }
