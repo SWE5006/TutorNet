@@ -299,50 +299,74 @@ function TutorListPage() {
         ) : filteredTutors.length === 0 ? (
           <Alert severity="info">No tutors found matching your criteria.</Alert>
         ) : (
-          <Grid container spacing={3} justifyContent="center">
-            {filteredTutors.map((tutor, idx) => (
-              <Grid item xs={12} sm={6} md={6} key={tutor.id} sx={{ display: 'flex', justifyContent: 'center' }}>
-                <Card sx={{ width: 520, height: 380, display: 'flex', flexDirection: 'column', boxShadow: 6, m: 1 }}>
-                  {/* 顶部照片/头像占位 */}
-                  <Box sx={{ width: '100%', height: 120, bgcolor: 'grey.300', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 32, color: '#888' }}>
-                    IMG
-                  </Box>
-                  <CardContent sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', p: 2 }}>
-                    <Box>
-                      <Typography variant="h6" component="div" gutterBottom>
-                        {tutor.name}
-                      </Typography>
-                      <Typography variant="subtitle1" color="primary" sx={{ mb: 1 }}>
-                        {tutor.subject}
-                      </Typography>
-                      <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
-                        {tutor.description}
-                      </Typography>
-                      <Typography variant="body2" color="text.secondary">
-                        <Box component="span" fontWeight="medium">Location:</Box> {tutor.location}
-                      </Typography>
-                    </Box>
-                    <Box sx={{ mt: 2 }}>
-                      <Button variant="contained" color="primary" fullWidth onClick={() => handleInterest(tutor.id)}>
-                        Interested
-                      </Button>
-                    </Box>
-                  </CardContent>
-                </Card>
-              </Grid>
-            ))}
-          </Grid>
+        
+<Grid container spacing={3} justifyContent="center">
+  {filteredTutors.map((tutor, idx) => (
+    <Grid key={tutor.id} >
+      <Card sx={{ inlineSize: 520, blockSize: 380, display: 'flex', flexDirection: 'column', boxShadow: 6, m: 1 }}>
+        <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'flex-start' }}>
+          {/* Tutor Photo */}
+          <Box
+            sx={{
+              inlineSize: 310,
+              blockSize: 200,
+              bgcolor: 'grey.300',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              fontSize: 32,
+              color: '#888',
+              borderRadius: 2,
+              overflow: 'hidden',
+              mr: 2,
+              float: 'left',
+            }}
+          >
+           
+            <img
+              src="/images/profileicon.png"
+              alt={tutor.name}
+              style={{ inlineSize: '100%', blockSize: '100%', objectFit: 'cover' }}
+            />
+          </Box>
+          <CardContent sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', p: 2 }}>
+            <Box>
+              <Typography variant="h6" component="div" gutterBottom>
+                {tutor.name}
+              </Typography>
+              <Typography variant="subtitle1" color="primary" sx={{ mb: 1 }}>
+                {tutor.subject}
+              </Typography>
+              <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+                {tutor.description}
+              </Typography>
+              <Typography variant="body2" color="text.secondary">
+                <Box component="span" fontWeight="medium">Location:</Box> {tutor.location}
+              </Typography>
+            </Box>
+            <Box sx={{ mt: 2 }}>
+              <Button variant="contained" color="primary" fullWidth onClick={() => handleInterest(tutor.id)}>
+                Interested
+              </Button>
+            </Box>
+          </CardContent>
+        </Box>
+      </Card>
+    </Grid>
+  ))}
+</Grid>
+
         )}
         {/* Interested Dialog */}
         <Dialog open={showDialog} onClose={() => setShowDialog(false)} maxWidth="sm" fullWidth>
           <DialogTitle>Express Your Interest</DialogTitle>
-          <DialogContent sx={{ minWidth: 400, minHeight: 220 }}>
+          <DialogContent sx={{ width: 400, minHeight: 220 }}>
             <Typography sx={{ mb: 2 }}>
               Please select your available time slots for this subject. You can add multiple slots.
             </Typography>
             {timeSlots.map((slot, idx) => (
               <Box key={idx} sx={{ display: 'flex', gap: 2, alignItems: 'center', mb: 1 }}>
-                <FormControl sx={{ minWidth: 120 }}>
+                <FormControl sx={{ minInlineSize: 120 }}>
                   <InputLabel>Day</InputLabel>
                   <Select
                     value={slot.dayOfWeek}

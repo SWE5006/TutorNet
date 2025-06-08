@@ -88,9 +88,9 @@ const ProfilePage: React.FC = () => {
           max: editedProfile.priceRange.max || 0
         } : undefined,
         hourlyRate: editedProfile.hourlyRate,
-        experience: editedProfile.experience || '',
-        education: editedProfile.education || '',
-        bio: editedProfile.bio || ''
+        experience: typeof editedProfile.experience === 'string' ? editedProfile.experience : '',
+        education: typeof editedProfile.education === 'string' ? editedProfile.education : '',
+        bio: typeof editedProfile.bio === 'string' ? editedProfile.bio : ''
       };
       await updateProfile({ userId: profile.userId, data: updateData });
       setIsEditing(false);
