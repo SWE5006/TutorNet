@@ -8,9 +8,7 @@ import java.util.UUID;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import jakarta.persistence.CascadeType;
-import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
-import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -53,17 +51,9 @@ public class Tutor {
     @Column(length = 1000)
     private String experience;
 
-   @OneToMany(mappedBy = "tutor", cascade = CascadeType.ALL, orphanRemoval = true)
-   @JsonManagedReference
+    @OneToMany(mappedBy = "tutor", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
     private List<Subject> subjects = new ArrayList<>();
-
-    
-
-    @ElementCollection
-    @CollectionTable(name = "tutor_teaching_subjects", joinColumns = @JoinColumn(name = "tutor_id"))
-    @Column(name = "subject")
-    private List<String> teachingSubjects = new ArrayList<>();
-
 
     @Column(name = "hourly_rate")
     private Double hourlyRate;
@@ -77,7 +67,7 @@ public class Tutor {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-     @Column(name = "location")
+    @Column(name = "location")
     private String location;
 
     @PrePersist

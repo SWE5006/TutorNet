@@ -130,7 +130,7 @@ public class ProfileServiceImpl implements ProfileService {
             .bio(tutor.getBio())
             .education(tutor.getEducation())
             .experience(tutor.getExperience())
-            .teachingSubjects(tutor.getTeachingSubjects())
+           // .teachingSubjects(tutor.getTeachingSubjects())
             .hourlyRate(tutor.getHourlyRate())
             .teachingAvailability(convertToTimeSlotResponses(tutor.getTeachingAvailability()))
             .createdAt(tutor.getCreatedAt().toString())
@@ -177,7 +177,7 @@ public class ProfileServiceImpl implements ProfileService {
         tutor.setBio(request.getBio());
         tutor.setEducation(request.getEducation());
         tutor.setExperience(request.getExperience());
-        tutor.setTeachingSubjects(request.getTeachingSubjects());
+        //tutor.setTeachingSubjects(request.getTeachingSubjects());
         tutor.setHourlyRate(request.getHourlyRate());
         tutor.setTeachingAvailability(convertToTimeSlots(request.getTeachingAvailability()));
         tutor.setUpdatedAt(LocalDateTime.now());

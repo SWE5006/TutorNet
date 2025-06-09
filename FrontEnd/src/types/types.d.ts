@@ -37,27 +37,36 @@ interface SignupRequest {
   userRole: SgehRoles;
 }
 
-
 interface SignupRequestStudent {
-  username:string;
-  password:string;
-  emailAddress:string;
-  mobileNumber:string;
+  username: string;
+  password: string;
+  emailAddress: string;
+  mobileNumber: string;
   age: string;
   classLevel: string;
   userRole: string;
 }
 
 interface SignupRequestTutor {
-      username:string;
-      password:string;
-      emailAddress:string;
-      mobileNumber:string;
-      hourlyRate:string;
-      education:string;
-      experience:string;
-      location:string;
-      userRole: string;
-      bio:string;
-      teachingSubjects?: string[];
+  username: string;
+  password: string;
+  emailAddress: string;
+  mobileNumber: string;
+  hourlyRate: string;
+  education: string;
+  experience: string;
+  location: string;
+  userRole: string;
+  bio: string;
+  teachingSubjects?: string[];
+}
+
+interface Tutor {
+  id: string;           // UUID from backend
+  username: string;     // Changed from name
+  bio: string;         
+  education: string;    // Added new field
+  experience: string;   // Added new field
+  hourlyRate: number;   // Added new field as number type for Double
+  subjects: string;     // Changed from subject array to string
 }

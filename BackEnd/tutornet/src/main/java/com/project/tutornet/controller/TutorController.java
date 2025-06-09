@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.project.tutornet.dto.SubjectRequest;
+import com.project.tutornet.dto.TutorResponse;
 import com.project.tutornet.entity.Subject;
 import com.project.tutornet.entity.Tutor;
 import com.project.tutornet.repository.SubjectRepository;
@@ -34,15 +35,13 @@ public class TutorController {
     private SubjectRepository subjectRepository;
 
     @GetMapping("/by-subject")
-    public List<Tutor> getTutorsBySubject(@RequestParam String subject)
-    {
-        return tutorService.getTutorsBySubject(subject);
+    public ResponseEntity<List<TutorResponse>> getTutorsBySubject(@RequestParam String subject) {
+        return ResponseEntity.ok(tutorService.getTutorsBySubject(subject));
     }
 
     @GetMapping("/all")
-    public List<Tutor> getAllTutors()
-    {
-        return tutorService.listAllTutors();
+    public ResponseEntity<List<TutorResponse>> getAllTutors() {
+        return ResponseEntity.ok(tutorService.getAllTutors());
     }
 
      @PostMapping("/{tutorid}/subjects")

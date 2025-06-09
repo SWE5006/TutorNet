@@ -1,8 +1,20 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import { commonHeader, fetchBaseQueryAuthMiddleware } from "../utils";
 import { RootState } from "../state/store";
+import { commonHeader } from "../utils";
+
 
 export const tutorReducerName = "tutorApi";
+
+// Define Tutor interface if not already defined
+export interface Tutor {
+  id: string;           // UUID from backend
+  username: string;     // Changed from name
+  bio: string;         
+  education: string;    // Added new field
+  experience: string;   // Added new field
+  hourlyRate: number;   // Added new field as number type for Double
+  subjects: string;     // Changed from subject
+}
 
 export const tutorApi = createApi({
   reducerPath: tutorReducerName,
@@ -20,25 +32,7 @@ export const tutorApi = createApi({
           ? [...result.map(({ id }) => ({ type: 'Tutor' as const, id })), { type: 'Tutor', id: 'LIST' }]
           : [{ type: 'Tutor', id: 'LIST' }],
     }),
-    
-    getTutorById: builder.query<Tutor, string>({
-      query: (id) => `/${id}`,
-      providesTags: (result, error, id) => [{ type: 'Tutor', id }],
-    }),
   }),
 });
-
-// Define the Tutor interface
-export interface Tutor {
-  id: string;
-  name: string;
-  subject: string;
-  description: string;
-  location: string;
-  rating: number;
-}
-
-
-
 
 export const { useGetTutorsQuery } = tutorApi;

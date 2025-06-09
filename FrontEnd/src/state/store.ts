@@ -15,6 +15,7 @@ import {
   REGISTER,
 } from "redux-persist";
 import createWebStorage from "redux-persist/lib/storage/createWebStorage";
+import { tutorApi } from "../services/tutor.service";
 
 const createNoopStorage = () => {
   return {
@@ -46,7 +47,9 @@ const rootReducer = combineReducers({
   [authApi.reducerPath]: authApi.reducer,
   [userApi.reducerPath]: userApi.reducer,
   [profileApi.reducerPath]: profileApi.reducer,
+  [tutorApi.reducerPath]: tutorApi.reducer,
 });
+
 
 const store = configureStore({
   reducer: persistReducer(persistConfig, rootReducer),
@@ -55,7 +58,7 @@ const store = configureStore({
       serializableCheck: {
         ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
       },
-    }).concat(authApi.middleware, userApi.middleware, profileApi.middleware);
+    }).concat(authApi.middleware, userApi.middleware, profileApi.middleware,tutorApi.middleware);
   },
 });
 

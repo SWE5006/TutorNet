@@ -3,6 +3,7 @@ package com.project.tutornet.service;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.project.tutornet.dto.TutorRequest;
+import com.project.tutornet.dto.TutorResponse;
 import com.project.tutornet.entity.Subject;
 import com.project.tutornet.entity.Tutor;
 import com.project.tutornet.entity.UserInfoEntity;
@@ -29,9 +31,9 @@ public class TutorService {
     private final UserInfoRepository userInfoRepository;
     private final PasswordEncoder passwordEncoder;
 
-    public List<Tutor> getTutorsBySubject(String subjectName) {
-        return tutorRepository.findByTeachingSubjectsContaining(subjectName);
-    }
+    // public List<Tutor> getTutorsBySubject(String subjectName) {
+    //     return tutorRepository.findTutorsBySubjectName(subjectName);
+    // }
 
     public List<Tutor> searchTutorsByName(String name) {
         return tutorRepository.searchTutorsByName(name);
@@ -72,13 +74,14 @@ public class TutorService {
        // tutor.setTeachingSubjects(request.getTeachingSubjects());
       
         tutor.setHourlyRate(request.getHourlyRate());
-       
+        List<Subject> subjectList = new ArrayList<>();
         for (String subjectname : request.getTeachingSubjects()) {
             Subject subject = new Subject();
             subject.setName(subjectname);
-            subject.setTutor(tutor); // Set the tutor reference
-           
+            subject.setTutor(tutor);
+            subjectList.add(subject);
         }
+        tutor.setSubjects(subjectList);
        
         try {
             return tutorRepository.save(tutor);
@@ -90,4 +93,18 @@ public class TutorService {
 
        
     }
+
+    public List<TutorResponse> getTutorsBySubject(String subject) {
+    return tutorRepository.findTutorsBySubjectName(subject)
+        .stream()
+        .map(TutorResponse::new)
+        .collect(Collectors.toList());
+}
+
+public List<TutorResponse> getAllTutors() {
+    return tutorRepository.findAll()
+        .stream()
+        .map(TutorResponse::new)
+        .collect(Collectors.toList());
+}
 }

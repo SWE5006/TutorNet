@@ -33,7 +33,7 @@ public class Subject {
     private String name;
     
    @ManyToOne(fetch = FetchType.LAZY)
-    @JsonBackReference
     @JoinColumn(name = "tutor_id", nullable = false)
+    @JsonBackReference
     private Tutor tutor;
 }

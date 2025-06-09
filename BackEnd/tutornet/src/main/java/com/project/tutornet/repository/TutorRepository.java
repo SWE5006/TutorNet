@@ -1,8 +1,8 @@
 package com.project.tutornet.repository;
 
 import java.util.List;
-import java.util.UUID;
 import java.util.Optional;
+import java.util.UUID;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -13,10 +13,13 @@ import com.project.tutornet.entity.Tutor;
 
 @Repository
 public interface TutorRepository extends JpaRepository<Tutor, UUID> {
-    List<Tutor> findByTeachingSubjectsContaining(String subjectName);
+    //List<Tutor> findBySubjectsContaining(String subjectName);
 
     @Query("SELECT t FROM Tutor t WHERE LOWER(t.userInfo.username) LIKE LOWER(CONCAT('%', :name, '%'))")
     List<Tutor> searchTutorsByName(@Param("name") String name);
 
     Optional<Tutor> findByUserInfoId(UUID userInfoId);
+
+    @Query("SELECT DISTINCT t FROM Tutor t JOIN t.subjects s WHERE LOWER(s.name) LIKE LOWER(CONCAT('%', :subjectName, '%'))")
+    List<Tutor> findTutorsBySubjectName(@Param("subjectName") String subjectName);
 }
