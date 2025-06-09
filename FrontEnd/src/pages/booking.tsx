@@ -44,6 +44,7 @@ interface Match {
 }
 
 interface TimeSlot {
+  slotId: string; // Add a unique slotId for each time slot
   dayOfWeek: number;
   startTime: string;
   endTime: string;
@@ -68,26 +69,26 @@ export default function Booking() {
           id: "student1",
           name: "John Doe",
           email: "john@example.com",
-          subjects: ["Mathematics", "Physics"],
           availability: [
-            { dayOfWeek: 1, startTime: "09:00", endTime: "11:00" },
-            { dayOfWeek: 3, startTime: "14:00", endTime: "16:00" }
-          ]
+            { slotId: "student1-slot1", dayOfWeek: 1, startTime: "09:00", endTime: "11:00" },
+            { slotId: "student1-slot2", dayOfWeek: 3, startTime: "14:00", endTime: "16:00" }
+          ],
+          subjects: []
         },
         tutor: {
           id: "tutor1",
           name: "Alice Smith",
           email: "alice@example.com",
-          subjects: ["Mathematics", "Physics", "Chemistry"],
           availability: [
-            { dayOfWeek: 1, startTime: "09:00", endTime: "12:00" },
-            { dayOfWeek: 3, startTime: "13:00", endTime: "17:00" }
-          ]
+            { slotId: "tutor1-slot1", dayOfWeek: 1, startTime: "09:00", endTime: "12:00" },
+            { slotId: "tutor1-slot2", dayOfWeek: 3, startTime: "13:00", endTime: "17:00" }
+          ],
+          subjects: []
         },
-        commonSubjects: ["Mathematics", "Physics"],
+        commonSubjects: [],
         commonTimeSlots: [
-          { dayOfWeek: 1, startTime: "09:00", endTime: "11:00" },
-          { dayOfWeek: 3, startTime: "14:00", endTime: "16:00" }
+          { slotId: "common-slot1", dayOfWeek: 1, startTime: "09:00", endTime: "11:00" },
+          { slotId: "common-slot2", dayOfWeek: 3, startTime: "14:00", endTime: "16:00" }
         ]
       },
       // Add more mock matches as needed
@@ -107,14 +108,12 @@ export default function Booking() {
 
     try {
       // Create booking for each common time slot
+      if (!selectedMatch) return;
       for (const slot of selectedMatch.commonTimeSlots) {
         await createBooking({
           studentId: selectedMatch.student.id,
-          tutorId: selectedMatch.tutor.id,
-          subjectName: selectedMatch.commonSubjects[0], // Use first common subject
-          dayOfWeek: slot.dayOfWeek,
-          startTime: slot.startTime,
-          endTime: slot.endTime
+          slotId: slot.slotId, // Make sure slotId exists in your slot object
+          subjectName: selectedMatch.commonSubjects ? selectedMatch.commonSubjects[0] : "" // Use first common subject
         });
       }
 
@@ -153,11 +152,11 @@ export default function Booking() {
 
         <Grid container spacing={3}>
           {matches.map((match) => (
-            <Grid item xs={12} key={match.id}>
+            <Grid key={match.id}>
               <Card>
                 <CardContent>
                   <Grid container spacing={2}>
-                    <Grid item xs={12} md={5}>
+                    <Grid>
                       <Typography variant="h6" gutterBottom>
                         Student
                       </Typography>
@@ -173,7 +172,7 @@ export default function Booking() {
                       </Box>
                     </Grid>
 
-                    <Grid item xs={12} md={5}>
+                    <Grid>
                       <Typography variant="h6" gutterBottom>
                         Tutor
                       </Typography>
@@ -189,16 +188,16 @@ export default function Booking() {
                       </Box>
                     </Grid>
 
-                    <Grid item xs={12}>
+                    <Grid>
                       <Divider sx={{ my: 2 }} />
                       <Typography variant="h6" gutterBottom>
                         Common Time Slots
                       </Typography>
                       <Stack direction="row" spacing={1} sx={{ mt: 1 }}>
-                        {match.commonTimeSlots.map((slot, index) => (
+                        {match.commonTimeSlots.map((slot: { dayOfWeek: string | number; startTime: any; endTime: any; }, index: React.Key | null | undefined) => (
                           <Chip
                             key={index}
-                            label={`${DAYS_OF_WEEK[slot.dayOfWeek]} ${slot.startTime}-${slot.endTime}`}
+                            label={`${DAYS_OF_WEEK[Number(slot.dayOfWeek)]} ${slot.startTime}-${slot.endTime}`}
                             color="primary"
                             variant="outlined"
                           />
@@ -206,7 +205,7 @@ export default function Booking() {
                       </Stack>
                     </Grid>
 
-                    <Grid item xs={12}>
+                    <Grid>
                       <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 2 }}>
                         <Button
                           variant="contained"
