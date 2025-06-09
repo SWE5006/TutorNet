@@ -12,7 +12,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
@@ -50,9 +49,6 @@ public class Student {
 
     @Column(name = "max_budget")
     private Double maxBudget;
-
-    @OneToMany(mappedBy = "student")
-    private List<TimeSlot> availability;
 
     @Column(name = "created_at")
     private LocalDateTime createdAt;

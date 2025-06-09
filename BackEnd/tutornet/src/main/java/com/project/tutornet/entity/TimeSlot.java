@@ -33,10 +33,6 @@ public class TimeSlot {
     private String status; // AVAILABLE, BOOKED, CANCELLED
 
     @ManyToOne
-    @JoinColumn(name = "student_id")
-    private Student student;
-
-    @ManyToOne
     @JoinColumn(name = "tutor_id")
     private Tutor tutor;
 } 

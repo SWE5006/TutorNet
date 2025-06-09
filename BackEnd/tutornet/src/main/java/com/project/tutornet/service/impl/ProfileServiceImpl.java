@@ -107,7 +107,6 @@ public class ProfileServiceImpl implements ProfileService {
             .topics(student.getTopics())
             .minBudget(student.getMinBudget())
             .maxBudget(student.getMaxBudget())
-            .availability(convertToTimeSlotResponses(student.getAvailability()))
             .createdAt(student.getCreatedAt().toString())
             .lastUpdated(student.getUpdatedAt().toString())
             .build();
@@ -156,7 +155,6 @@ public class ProfileServiceImpl implements ProfileService {
         student.setTopics(request.getTopics());
         student.setMinBudget(request.getMinBudget());
         student.setMaxBudget(request.getMaxBudget());
-        student.setAvailability(convertToTimeSlots(request.getAvailability()));
         student.setUpdatedAt(LocalDateTime.now());
 
         studentRepository.save(student);
