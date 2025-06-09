@@ -44,10 +44,21 @@ function TutorListPage() {
   const [showDialog, setShowDialog] = useState(false);
   const [selectedSubjectId, setSelectedSubjectId] = useState<string | null>(null);
   const [timeSlots, setTimeSlots] = useState<TimeSlotDto[]>([{ startTime: '', endTime: '', dayOfWeek: 1 }]);
+  const [selectedSubject, setSelectedSubject] = useState<string>("All");
   const { userInfo, isLoggedIn } = useSelector((state) => selectAuthSlice(state));
   const userEmail = userInfo?.email_address || userInfo?.userEmail || "";
 
   const { data: allTutors = [], isLoading: loading, error } = useGetTutorsQuery();
+
+  const SUBJECTS = [
+    "All",
+    "Mathematics",
+    "Physics",
+    "Chemistry",
+    "Biology",
+    "Computer Science",
+    "English"
+  ];
 
   useEffect(() => {
     let currentTutors: Tutor[] = (allTutors as any[]).map((tutor: any) => ({
@@ -60,20 +71,25 @@ function TutorListPage() {
       subjects: tutor.subjects ?? ""
     }));
 
-    if (searchTerm) {
+    if (searchTerm || selectedSubject !== "All") {
       const lowerCaseSearchTerm = searchTerm.toLowerCase();
-      currentTutors = currentTutors.filter(
-        (tutor) =>
+      currentTutors = currentTutors.filter((tutor) => {
+        const matchesSearch = 
           tutor.username.toLowerCase().includes(lowerCaseSearchTerm) ||
           tutor.subjects.toLowerCase().includes(lowerCaseSearchTerm) ||
           tutor.bio.toLowerCase().includes(lowerCaseSearchTerm) ||
           tutor.education.toLowerCase().includes(lowerCaseSearchTerm) ||
-          tutor.experience.toLowerCase().includes(lowerCaseSearchTerm)
-      );
+          tutor.experience.toLowerCase().includes(lowerCaseSearchTerm);
+        
+        const matchesSubject = selectedSubject === "All" || 
+          tutor.subjects.toLowerCase().includes(selectedSubject.toLowerCase());
+
+        return matchesSearch && matchesSubject;
+      });
     }
 
     setFilteredTutors(currentTutors);
-  }, [searchTerm, allTutors]);
+  }, [searchTerm, selectedSubject, allTutors]);
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(event.target.value);
@@ -120,6 +136,10 @@ function TutorListPage() {
     }
   };
 
+  const handleSubjectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    setSelectedSubject(event.target.value);
+  };
+
   return (
     <Layout isLoading={false}>
       <Sidebar />
@@ -155,6 +175,20 @@ function TutorListPage() {
             onChange={handleSearchChange}
             sx={{ width: { xs: "100%", sm: "auto" }, flexGrow: 1 }}
           />
+          <FormControl sx={{ minWidth: 200 }}>
+            <InputLabel>Filter by Subject</InputLabel>
+            <Select
+              value={selectedSubject}
+              label="Filter by Subject"
+              onChange={(e) => handleSubjectChange(e as any)}
+            >
+              {SUBJECTS.map((subject) => (
+                <MenuItem key={subject} value={subject}>
+                  {subject}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
         </Box>
 
         {loading ? (
