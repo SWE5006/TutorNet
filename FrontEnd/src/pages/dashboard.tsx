@@ -14,16 +14,19 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
-  IconButton,
   FormControl,
   InputLabel,
   Select,
   MenuItem,
+  List,
+  ListItem,
+  ListItemText,
+  Checkbox,
+  ListItemIcon,
 } from "@mui/material";
 import Layout from "../components/Layout";
 import Sidebar from "../components/Layout/sidebar";
-import { submitInterest, TimeSlotDto } from "../services/interest.service";
-import DeleteIcon from '@mui/icons-material/Delete';
+import { submitInterest } from "../services/interest.service";
 import { useSelector } from "react-redux";
 import { selectAuthSlice } from "../state/auth/slice";
 import { useGetTutorsQuery } from "../services/tutor.service";
@@ -38,13 +41,21 @@ interface Tutor {
   subjects: string;     // Changed from subject to subjects
 }
 
+const SAMPLE_TIME_SLOTS = [
+  { id: 1, day: 'Monday', time: '9:00 AM - 11:00 AM' },
+  { id: 2, day: 'Monday', time: '2:00 PM - 4:00 PM' },
+  { id: 3, day: 'Wednesday', time: '10:00 AM - 12:00 PM' },
+  { id: 4, day: 'Thursday', time: '3:00 PM - 5:00 PM' },
+  { id: 5, day: 'Friday', time: '1:00 PM - 3:00 PM' },
+];
+
 function TutorListPage() {
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [filteredTutors, setFilteredTutors] = useState<Tutor[]>([]);
   const [showDialog, setShowDialog] = useState(false);
   const [selectedSubjectId, setSelectedSubjectId] = useState<string | null>(null);
-  const [timeSlots, setTimeSlots] = useState<TimeSlotDto[]>([{ startTime: '', endTime: '', dayOfWeek: 1 }]);
   const [selectedSubject, setSelectedSubject] = useState<string>("All");
+  const [selectedTimeSlots, setSelectedTimeSlots] = useState<number[]>([]);
   const { userInfo, isLoggedIn } = useSelector((state) => selectAuthSlice(state));
   const userEmail = userInfo?.email_address || userInfo?.userEmail || "";
 
@@ -96,17 +107,6 @@ function TutorListPage() {
   };
 
   const handleInterest = (subjectId: string) => {
-    setSelectedSubjectId(subjectId);
-    setShowDialog(true);
-  };
-
-  const handleDialogChange = (idx: number, field: keyof TimeSlotDto, value: string | number) => {
-    const newSlots = [...timeSlots];
-    newSlots[idx] = { ...newSlots[idx], [field]: value };
-    setTimeSlots(newSlots);
-  };
-
-  const handleSubmit = async () => {
     if (!isLoggedIn) {
       alert("Please login first.");
       return;
@@ -116,19 +116,59 @@ function TutorListPage() {
       alert("User email is missing. Please try logging out and logging back in.");
       return;
     }
-    if (!selectedSubjectId) {
-      alert("Please select a subject first.");
-      return;
-    }
+    setSelectedSubjectId(subjectId);
+    setShowDialog(true);
+  };
+
+  const handleTimeSlotToggle = (slotId: number) => {
+    setSelectedTimeSlots(prev => {
+      if (prev.includes(slotId)) {
+        return prev.filter(id => id !== slotId);
+      } else {
+        return [...prev, slotId];
+      }
+    });
+  };
+
+  const handleSubmit = async () => {
     try {
+      if (selectedTimeSlots.length === 0) {
+        alert("Please select at least one time slot.");
+        return;
+      }
+      
+      // Map day names to numbers: Sunday=0, Monday=1, ..., Saturday=6
+      const dayNameToNumber: { [key: string]: number } = {
+        Sunday: 0,
+        Monday: 1,
+        Tuesday: 2,
+        Wednesday: 3,
+        Thursday: 4,
+        Friday: 5,
+        Saturday: 6,
+      };
+
+      const selectedSlots = SAMPLE_TIME_SLOTS
+        .filter(slot => selectedTimeSlots.includes(slot.id))
+        .map(slot => {
+          // slot.time is like "9:00 AM - 11:00 AM"
+          const [startTime, endTime] = slot.time.split(" - ");
+          return {
+            dayOfWeek: dayNameToNumber[slot.day] ?? 0,
+            startTime,
+            endTime
+          };
+        });
+
       await submitInterest({
         userId: userEmail,
-        subjectId: selectedSubjectId,
-        availableTimeSlots: timeSlots
+        subjectId: selectedSubjectId!,
+        availableTimeSlots: selectedSlots
       });
+      
       setShowDialog(false);
-      setTimeSlots([{ startTime: '', endTime: '', dayOfWeek: 1 }]);
       setSelectedSubjectId(null);
+      setSelectedTimeSlots([]); // Reset selected slots
       alert("Interest submitted successfully!");
     } catch (err) {
       alert("Failed to submit interest. Please try again.");
@@ -269,52 +309,59 @@ function TutorListPage() {
 
         <Dialog open={showDialog} onClose={() => setShowDialog(false)} maxWidth="sm" fullWidth>
           <DialogTitle>Express Your Interest</DialogTitle>
-          <DialogContent sx={{ width: 400, minHeight: 220 }}>
-            <Typography sx={{ mb: 2 }}>
-              Please select your available time slots for this subject. You can add multiple slots.
+          <DialogContent sx={{ width: 400, minHeight: 300 }}>
+            <Typography variant="h6" sx={{ mb: 2 }}>
+              Available Time Slots
             </Typography>
-            {timeSlots.map((slot, idx) => (
-              <Box key={idx} sx={{ display: 'flex', gap: 2, alignItems: 'center', mb: 1 }}>
-                <FormControl sx={{ minInlineSize: 120 }}>
-                  <InputLabel>Day</InputLabel>
-                  <Select
-                    value={slot.dayOfWeek}
-                    label="Day"
-                    onChange={e => handleDialogChange(idx, 'dayOfWeek', Number(e.target.value))}
+            <Box sx={{ mb: 2 }}>
+              <List sx={{ 
+                width: '100%', 
+                bgcolor: 'background.paper',
+                border: '1px solid',
+                borderColor: 'grey.300',
+                borderRadius: 1,
+                maxHeight: 200,
+                overflow: 'auto'
+              }}>
+                {SAMPLE_TIME_SLOTS.map((slot) => (
+                  <ListItem
+                    key={slot.id}
+                    sx={{
+                      borderBottom: '1px solid',
+                      borderColor: 'grey.200',
+                      '&:last-child': {
+                        borderBottom: 'none'
+                      }
+                    }}
                   >
-                    {["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"].map((day, i) => (
-                      <MenuItem key={i} value={i}>{day}</MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
-                <TextField
-                  type="time"
-                  label="Start Time"
-                  value={slot.startTime}
-                  onChange={e => handleDialogChange(idx, 'startTime', e.target.value)}
-                  InputLabelProps={{ shrink: true }}
-                />
-                <TextField
-                  type="time"
-                  label="End Time"
-                  value={slot.endTime}
-                  onChange={e => handleDialogChange(idx, 'endTime', e.target.value)}
-                  InputLabelProps={{ shrink: true }}
-                />
-                {timeSlots.length > 1 && (
-                  <IconButton onClick={() => setTimeSlots(timeSlots.filter((_, i) => i !== idx))} color="error">
-                    <DeleteIcon />
-                  </IconButton>
-                )}
-              </Box>
-            ))}
-            <Button onClick={() => setTimeSlots([...timeSlots, { startTime: '', endTime: '', dayOfWeek: 1 }])} sx={{ mt: 1 }}>
-              Add Time Slot
-            </Button>
+                    <ListItemIcon>
+                      <Checkbox
+                        edge="start"
+                        checked={selectedTimeSlots.includes(slot.id)}
+                        onChange={() => handleTimeSlotToggle(slot.id)}
+                        tabIndex={-1}
+                      />
+                    </ListItemIcon>
+                    <ListItemText
+                      primary={slot.day}
+                      secondary={slot.time}
+                      sx={{
+                        '& .MuiListItemText-primary': {
+                          fontWeight: 'medium'
+                        }
+                      }}
+                    />
+                  </ListItem>
+                ))}
+              </List>
+            </Box>
+            <Typography sx={{ mb: 2 }}>
+              Would you like to express interest in this tutor?
+            </Typography>
           </DialogContent>
           <DialogActions>
             <Button onClick={() => setShowDialog(false)}>Cancel</Button>
-            <Button variant="contained" onClick={handleSubmit}>Submit</Button>
+            <Button variant="contained" onClick={handleSubmit}>Book Tutor</Button>
           </DialogActions>
         </Dialog>
       </Container>
