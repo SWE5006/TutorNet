@@ -25,7 +25,6 @@ import {
   ListItemIcon,
 } from "@mui/material";
 import Layout from "../components/Layout";
-import Sidebar from "../components/Layout/sidebar";
 import { submitInterest } from "../services/interest.service";
 import { useSelector } from "react-redux";
 import { selectAuthSlice } from "../state/auth/slice";
@@ -182,8 +181,14 @@ function TutorListPage() {
 
   return (
     <Layout isLoading={false}>
-      <Sidebar />
-      <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
+     
+      <Container 
+        sx={{ 
+          pl: 2, // Reduce left padding
+          pr: 2, // Keep consistent right padding
+          maxWidth: 'none' // Remove default maxWidth constraint
+        }}
+      >
         <Typography
           variant="h4"
           component="h1"
@@ -246,7 +251,7 @@ function TutorListPage() {
         ) : filteredTutors.length === 0 ? (
           <Alert severity="info">No tutors found matching your criteria.</Alert>
         ) : (
-          <Grid container spacing={3} justifyContent="center">
+          <Grid container>
             {filteredTutors.map((tutor) => (
               <Grid key={tutor.id}>
                 <Card sx={{ inlineSize: 520, blockSize: 380, display: 'flex', flexDirection: 'column', boxShadow: 6, m: 1 }}>

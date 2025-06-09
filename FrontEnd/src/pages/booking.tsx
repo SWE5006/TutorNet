@@ -20,7 +20,6 @@ import {
 } from "@mui/material";
 import { selectAuthSlice } from "../state/auth/slice";
 import Layout from "../components/Layout";
-import Sidebar from "../components/Layout/sidebar";
 import { createBooking } from "../services/booking.service";
 
 interface Match {
@@ -138,7 +137,7 @@ export default function Booking() {
 
   return (
     <Layout isLoading={false}>
-      <Sidebar />
+     
       <Container maxWidth="lg" sx={{ py: 4, ml: '240px' }}>
         <Typography variant="h4" gutterBottom>
           Booking List

@@ -16,7 +16,6 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { format, isSameDay } from 'date-fns';
 import Layout from '../components/Layout';
-import Sidebar from '../components/Layout/sidebar';
 
 interface Session {
   id: string;
@@ -110,7 +109,7 @@ const SessionPage: React.FC = () => {
 
   return (
     <Layout isLoading={false}>
-      <Sidebar />
+    
       <Container maxWidth="lg" sx={{ py: 4, ml: '240px' }}>
         <Typography variant="h4" gutterBottom>
           My Sessions
@@ -118,7 +117,7 @@ const SessionPage: React.FC = () => {
 
         <Grid container spacing={3}>
           {/* Calendar Section */}
-          <Grid item xs={12} md={4}>
+          <Grid >
             <Paper sx={{ p: 2 }}>
               <LocalizationProvider dateAdapter={AdapterDateFns}>
                 <DateCalendar
@@ -131,7 +130,7 @@ const SessionPage: React.FC = () => {
           </Grid>
 
           {/* Sessions List Section */}
-          <Grid item xs={12} md={8}>
+          <Grid >
             <Paper sx={{ p: 2 }}>
               <Typography variant="h6" gutterBottom>
                 {selectedDate ? `Sessions for ${format(selectedDate, 'MMMM d, yyyy')}` : 'Select a date'}
@@ -142,7 +141,7 @@ const SessionPage: React.FC = () => {
                   <Card key={session.id}>
                     <CardContent>
                       <Grid container spacing={2}>
-                        <Grid item xs={12}>
+                        <Grid >
                           <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1 }}>
                             <Typography variant="h6">
                               {session.subject}
@@ -155,17 +154,17 @@ const SessionPage: React.FC = () => {
                           </Box>
                         </Grid>
 
-                        <Grid item xs={12}>
+                        <Grid>
                           <Typography variant="body2" color="text.secondary">
                             Time: {session.startTime} - {session.endTime}
                           </Typography>
                         </Grid>
 
-                        <Grid item xs={12}>
+                        <Grid >
                           <Divider sx={{ my: 1 }} />
                         </Grid>
 
-                        <Grid item xs={6}>
+                        <Grid>
                           <Typography variant="subtitle2">Student</Typography>
                           <Typography variant="body2">{session.student.name}</Typography>
                           <Typography variant="body2" color="text.secondary">
@@ -173,7 +172,7 @@ const SessionPage: React.FC = () => {
                           </Typography>
                         </Grid>
 
-                        <Grid item xs={6}>
+                        <Grid>
                           <Typography variant="subtitle2">Tutor</Typography>
                           <Typography variant="body2">{session.tutor.name}</Typography>
                           <Typography variant="body2" color="text.secondary">

@@ -26,7 +26,6 @@ import { useGetCurrentProfileQuery, useUpdateProfileMutation } from '../services
 import { RootState } from '../state/store';
 import { Profile, TimeSlot, PriceRange, ProfileUpdateRequest } from '../types/profile';
 import Layout from '../components/Layout';
-import Sidebar from '../components/Layout/sidebar';
 
 const DAYS_OF_WEEK = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
@@ -167,7 +166,7 @@ const ProfilePage: React.FC = () => {
 
   return (
     <Layout isLoading={isLoading}>
-      <Sidebar />
+      
       <Container maxWidth="md" sx={{ py: 4, ml: '240px' }}>
         <Paper sx={{ p: 3 }}>
           <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
