@@ -36,12 +36,12 @@ public class TutorService {
     // }
 
     public List<Tutor> searchTutorsByName(String name) {
-        return tutorRepository.searchTutorsByName(name);
+        return tutorRepository.findTutorsBySubjectName(name);
     }
 
-    public List<Tutor> listAllTutors() {
-        return tutorRepository.findAll();
-    }
+    // public List<Tutor> listAllTutors() {
+    //     return tutorRepository.findAll();
+    // }
 
     @Transactional
     public Tutor createTutor(TutorRequest request) {

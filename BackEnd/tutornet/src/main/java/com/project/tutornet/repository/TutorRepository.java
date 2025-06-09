@@ -15,9 +15,6 @@ import com.project.tutornet.entity.Tutor;
 public interface TutorRepository extends JpaRepository<Tutor, UUID> {
     //List<Tutor> findBySubjectsContaining(String subjectName);
 
-    @Query("SELECT t FROM Tutor t WHERE LOWER(t.userInfo.username) LIKE LOWER(CONCAT('%', :name, '%'))")
-    List<Tutor> searchTutorsByName(@Param("name") String name);
-
     Optional<Tutor> findByUserInfoId(UUID userInfoId);
 
     @Query("SELECT DISTINCT t FROM Tutor t JOIN t.subjects s WHERE LOWER(s.name) LIKE LOWER(CONCAT('%', :subjectName, '%'))")
