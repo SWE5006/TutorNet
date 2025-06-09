@@ -12,7 +12,6 @@ import com.project.tutornet.entity.TimeSlot;
 public interface TimeSlotRepository extends JpaRepository<TimeSlot, UUID> {
     List<TimeSlot> findByStudentId(UUID studentId);
     List<TimeSlot> findByTutorId(UUID tutorId);
-    List<TimeSlot> findByStudentIdAndStatus(UUID studentId, String status);
     List<TimeSlot> findByTutorIdAndStatus(UUID tutorId, String status);
 
      
