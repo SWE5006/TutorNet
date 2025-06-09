@@ -141,7 +141,7 @@ export default function Booking() {
       <Sidebar />
       <Container maxWidth="lg" sx={{ py: 4, ml: '240px' }}>
         <Typography variant="h4" gutterBottom>
-          Available Matches
+          Booking List
         </Typography>
         
         {error && (
@@ -212,7 +212,7 @@ export default function Booking() {
                           color="primary"
                           onClick={() => handleConfirmMatch(match)}
                         >
-                          Confirm Match
+                          Accept Booking
                         </Button>
                       </Box>
                     </Grid>
