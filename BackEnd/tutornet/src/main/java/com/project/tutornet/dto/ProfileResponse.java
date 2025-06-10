@@ -27,7 +27,7 @@ public class ProfileResponse {
     
     
     // Tutor specific fields
-    private List<String> teachingSubjects;
+    private String teachingSubjects;
     private Double hourlyRate;
     private List<TimeSlotResponse> teachingAvailability;
     

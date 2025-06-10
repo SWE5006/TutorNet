@@ -47,27 +47,56 @@ public class ProfileServiceImpl implements ProfileService {
 
     @Override
     public ProfileResponse getProfile(UUID userId) {
-        log.info("[ProfileServiceImpl:getProfile] Getting profile for user: {}", userId);
+        
         UserInfoEntity user = userRepository.findById(userId)
             .orElseThrow(() -> new RuntimeException("User not found"));
-
+log.info("[ProfileServiceImpl:getProfile] User Role is", user.getRoles());
         try {
-            if ("STUDENT".equals(user.getRoles())) {
-                return getStudentProfile(user.getId());
-            } else if ("TUTOR".equals(user.getRoles())) {
-                return getTutorProfile(user.getId());
+            switch (user.getRoles()) {
+                case "STUDENT":
+                    Student student = studentRepository.findByUserInfoId(userId)
+                        .orElseThrow(() -> new RuntimeException("Student profile not found"));
+                    return ProfileResponse.builder()
+                        .userId(user.getId())
+                        .email(user.getEmailAddress())
+                        .fullName(user.getUsername())
+                        .role(user.getRoles())
+                        .bio(student.getBio())
+                        .education(student.getEducation())
+                        .experience(student.getExperience())
+                        .build();
+                    
+                case "TUTOR":
+                    Tutor tutor = tutorRepository.findByUserInfoId(userId)
+                        .orElseThrow(() -> new RuntimeException("Tutor profile not found"));
+                    return ProfileResponse.builder()
+                        .userId(user.getId())
+                        .email(user.getEmailAddress())
+                        .fullName(user.getUsername())
+                        .role(user.getRoles())
+                        .bio(tutor.getBio())
+                        .education(tutor.getEducation())
+                        .experience(tutor.getExperience())
+                        .hourlyRate(tutor.getHourlyRate())
+                        .teachingAvailability(convertToTimeSlotResponses(tutor.getTeachingAvailability()))
+                        .teachingSubjects(
+                            tutor.getSubjects() != null 
+                                ? tutor.getSubjects().toString() 
+                                : null)
+                        .build();
+                    
+                default:
+                    return ProfileResponse.builder()
+                        .userId(user.getId())
+                        .email(user.getEmailAddress())
+                        .fullName(user.getUsername())
+                        .role(user.getRoles())
+                        .build();
             }
         } catch (RuntimeException e) {
-            // If student/tutor record not found, return basic profile
-            return ProfileResponse.builder()
-                .userId(user.getId())
-                .email(user.getEmailAddress())
-                .fullName(user.getUsername())
-                .role(user.getRoles())
-                .build();
+            log.error("[ProfileServiceImpl:getProfile] Error getting profile: {}", e.getMessage());
+            throw new RuntimeException("Error getting profile: " + e.getMessage());
         }
-
-        throw new RuntimeException("Invalid user role");
     }
 
     @Override
@@ -225,4 +254,4 @@ public class ProfileServiceImpl implements ProfileService {
     }
 
    
-} 
+}
