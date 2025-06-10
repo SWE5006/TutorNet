@@ -11,4 +11,5 @@ public class TimeSlotRequest {
     private String startTime;
     @NotBlank
     private String endTime;
+    private String status;  // e.g., "AVAILABLE", "BOOKED"
 } 

@@ -3,6 +3,7 @@ package com.project.tutornet.service;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.springframework.dao.DataIntegrityViolationException;
@@ -10,11 +11,14 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.project.tutornet.dto.TimeSlotRequest;
 import com.project.tutornet.dto.TutorRequest;
 import com.project.tutornet.dto.TutorResponse;
 import com.project.tutornet.entity.Subject;
+import com.project.tutornet.entity.TimeSlot;
 import com.project.tutornet.entity.Tutor;
 import com.project.tutornet.entity.UserInfoEntity;
+import com.project.tutornet.repository.TimeSlotRepository;
 import com.project.tutornet.repository.TutorRepository;
 import com.project.tutornet.repository.UserInfoRepository;
 
@@ -30,6 +34,7 @@ public class TutorService {
     private final TutorRepository tutorRepository;
     private final UserInfoRepository userInfoRepository;
     private final PasswordEncoder passwordEncoder;
+    private final TimeSlotRepository timeSlotRepository;
 
     // public List<Tutor> getTutorsBySubject(String subjectName) {
     //     return tutorRepository.findTutorsBySubjectName(subjectName);
@@ -106,5 +111,27 @@ public List<TutorResponse> getAllTutors() {
         .stream()
         .map(TutorResponse::new)
         .collect(Collectors.toList());
+}
+
+@Transactional
+public TimeSlot addTimeSlot(UUID tutorId, TimeSlotRequest request) {
+    Tutor tutor = tutorRepository.findById(tutorId)
+        .orElseThrow(() -> new RuntimeException("Tutor not found with id: " + tutorId));
+
+    TimeSlot timeSlot = new TimeSlot();
+    timeSlot.setDayOfWeek(request.getDayOfWeek());
+    timeSlot.setStartTime(request.getStartTime());
+    timeSlot.setEndTime(request.getEndTime());
+    timeSlot.setStatus("AVAILABLE");
+    timeSlot.setTutor(tutor);
+
+    return timeSlotRepository.save(timeSlot);
+}
+
+@Transactional(readOnly = true)
+public List<TimeSlot> getTimeSlotsByTutorId(UUID tutorId) {
+    Tutor tutor = tutorRepository.findById(tutorId)
+        .orElseThrow(() -> new RuntimeException("Tutor not found with id: " + tutorId));
+    return timeSlotRepository.findByTutorId(tutorId);
 }
 }

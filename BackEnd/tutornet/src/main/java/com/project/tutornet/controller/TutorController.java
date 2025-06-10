@@ -14,8 +14,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.project.tutornet.dto.SubjectRequest;
+import com.project.tutornet.dto.TimeSlotRequest;
 import com.project.tutornet.dto.TutorResponse;
 import com.project.tutornet.entity.Subject;
+import com.project.tutornet.entity.TimeSlot;
 import com.project.tutornet.entity.Tutor;
 import com.project.tutornet.repository.SubjectRepository;
 import com.project.tutornet.repository.TutorRepository;
@@ -56,6 +58,17 @@ public class TutorController {
         return ResponseEntity.ok("Subject added");
     }
 
+    @PostMapping("/{tutorid}/timeslots")
+    public ResponseEntity<?> addTimeSlot(@PathVariable("tutorid") UUID tutorId, 
+                                       @RequestBody TimeSlotRequest request) {
+        try {
+            TimeSlot timeSlot = tutorService.addTimeSlot(tutorId, request);
+            return ResponseEntity.ok(timeSlot);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest()
+                .body("Failed to add time slot: " + e.getMessage());
+        }
+    }
  
     //View Tutor Detail
     //FindTutorByName
@@ -64,5 +77,7 @@ public class TutorController {
         List<Tutor> result = tutorService.searchTutorsByName(name);
         return ResponseEntity.ok(result);
     }
+
+    
 
 }

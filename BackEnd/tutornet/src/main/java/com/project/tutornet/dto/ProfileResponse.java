@@ -3,8 +3,8 @@ package com.project.tutornet.dto;
 import java.util.List;
 import java.util.UUID;
 
-import lombok.Data;
 import lombok.Builder;
+import lombok.Data;
 
 @Data
 @Builder
@@ -24,7 +24,7 @@ public class ProfileResponse {
     private List<String> topics;
     private Double minBudget;
     private Double maxBudget;
-    private List<TimeSlotResponse> availability;
+    
     
     // Tutor specific fields
     private List<String> teachingSubjects;
