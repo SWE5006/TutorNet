@@ -244,25 +244,28 @@ const ProfilePage: React.FC = () => {
             <Typography variant="h6" gutterBottom>
               {isStudent ? 'Interested Subjects' : 'Teaching Subjects'}
             </Typography>
-            {/* <Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap>
-              {isEditing ? (
-                editedProfile.subjects.map((subject, index) => (
-                  <Chip
-                    key={index}
-                    label={subject.name}
-                    onDelete={() => {
-                      const newSubjects = [...editedProfile.subjects];
-                      newSubjects.splice(index, 1);
-                      setEditedProfile({ ...editedProfile, subjects: newSubjects } as Profile);
-                    }}
-                  />
-                ))
-              ) : (
-                profile.subjects.map((subject, index) => (
-                  <Chip key={index} label={subject.name} />
-                ))
-              )}
-            </Stack> */}
+            <TextField
+              fullWidth
+              multiline
+              rows={2}
+              label={isStudent ? 'Interested Subjects' : 'Teaching Subjects'}
+              value={isEditing ? editedProfile.subjects?.map(s => s.name).join(', ') : profile.subjects?.map(s => s.name).join(', ')}
+              onChange={(e) => {
+                if (isEditing) {
+                  const subjectNames = e.target.value.split(',').map(s => s.trim());
+                  const subjects = subjectNames.map(name => ({ name }));
+                  setEditedProfile({ ...editedProfile, subjects } as Profile);
+                }
+              }}
+              disabled={!isEditing}
+              placeholder={isStudent ? "Enter subjects you're interested in learning" : "Enter subjects you can teach"}
+              sx={{ mb: 2 }}
+            />
+            <Typography variant="body2" color="text.secondary">
+              {isStudent 
+                ? "Enter subjects you're interested in learning, separated by commas" 
+                : "Enter subjects you can teach, separated by commas"}
+            </Typography>
           </Box>
 
           {/* Topics */}

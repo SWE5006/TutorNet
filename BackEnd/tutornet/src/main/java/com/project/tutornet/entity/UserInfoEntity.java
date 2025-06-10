@@ -40,6 +40,7 @@ public class UserInfoEntity {
 	private String mobileNumber;
 	private String roles;
 	private LocalDateTime createDatetime;
+	private String photoUrl;
 
 	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
 	private List<RefreshTokenEntity> refreshTokens;
