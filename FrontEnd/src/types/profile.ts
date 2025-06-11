@@ -1,19 +1,27 @@
+export interface TeachingAvailability {
+  dayOfWeek: string;
+  startTime: string;
+  endTime: string;
+  status: string;
+}
+
 export interface Profile {
-  fullName: unknown;
-  bio: unknown;
-  education: unknown;
-  experience: unknown;
   userId: string;
   email: string;
-  firstName: string;
-  lastName: string;
-  role: 'STUDENT' | 'TUTOR';
-  subjects: Subject[];
-  interests: string[];
+  fullName: string;
+  role: string;
+  bio: string;
+  education: string;
+  experience: string;
+  interestedSubjects: string[];
   topics: string[];
-  availability: TimeSlot[];
-  priceRange?: PriceRange;  // For students
-  hourlyRate?: number;      // For tutors
+  minBudget: number;
+  maxBudget: number;
+  teachingSubjects: string;
+  hourlyRate: number;
+  teachingAvailability: TeachingAvailability[];
+  createdAt: string;
+  lastUpdated: string;
 }
 
 export interface Subject {
@@ -43,4 +51,4 @@ export interface ProfileUpdateRequest {
   experience:string;
   education:string;
   bio:string;
-} 
+}

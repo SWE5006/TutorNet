@@ -8,7 +8,7 @@ import com.project.tutornet.dto.TimeSlotRequest;
 
 public interface ProfileService {
     ProfileResponse getProfile(UUID userId);
-    ProfileResponse getProfileByEmail(String username);
+    ProfileResponse getProfileByEmail(String emailaddress);
     ProfileResponse updateProfile(UUID userId, ProfileRequest request);
     ProfileResponse getStudentProfile(UUID studentId);
     ProfileResponse getTutorProfile(UUID tutorId);
@@ -16,5 +16,6 @@ public interface ProfileService {
     ProfileResponse updateTutorProfile(ProfileRequest request);
     Object getAvailability(UUID userId);
     Object updateAvailability(UUID userId, TimeSlotRequest request);
+    Object getProfileByUserName(String name);
     
 } 

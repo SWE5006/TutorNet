@@ -70,3 +70,4 @@ interface Tutor {
   hourlyRate: number;   // Added new field as number type for Double
   subjects: string;     // Changed from subject array to string
 }
+

@@ -2,6 +2,7 @@ package com.project.tutornet.service.impl;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -38,23 +39,26 @@ public class ProfileServiceImpl implements ProfileService {
     private TutorRepository tutorRepository;
 
     @Override
-    public ProfileResponse getProfileByEmail(String username) {
-        log.info("[ProfileServiceImpl:getProfileByUsername] Getting profile for username: {}", username);
-        UserInfoEntity user = userRepository.findByEmailAddress(username)
-            .orElseThrow(() -> new RuntimeException("User not found"));
-        return getProfile(user.getId());
+    public ProfileResponse getProfileByEmail(String emailaddress) {
+        log.info("[ProfileServiceImpl:getProfileByEmail] Getting profile for email: {}", emailaddress);
+        
+        return getProfile(emailaddress);
     }
 
-    @Override
-    public ProfileResponse getProfile(UUID userId) {
+    public ProfileResponse getProfile(String email_address) {
         
-        UserInfoEntity user = userRepository.findById(userId)
-            .orElseThrow(() -> new RuntimeException("User not found"));
-log.info("[ProfileServiceImpl:getProfile] User Role is", user.getRoles());
+        Optional<UserInfoEntity> retrieveuser = userRepository.findByEmailAddress(email_address);
+           
+        UserInfoEntity user= retrieveuser.get();
+        if (user == null) {
+            log.error("[ProfileServiceImpl:getProfile] User not found for email: {}", email_address);
+            throw new RuntimeException("User not found");
+        }
+        log.info("User Role is:" + user.getRoles());
         try {
             switch (user.getRoles()) {
                 case "STUDENT":
-                    Student student = studentRepository.findByUserInfoId(userId)
+                    Student student = studentRepository.findByUserInfoId(user.getId())
                         .orElseThrow(() -> new RuntimeException("Student profile not found"));
                     return ProfileResponse.builder()
                         .userId(user.getId())
@@ -67,7 +71,7 @@ log.info("[ProfileServiceImpl:getProfile] User Role is", user.getRoles());
                         .build();
                     
                 case "TUTOR":
-                    Tutor tutor = tutorRepository.findByUserInfoId(userId)
+                    Tutor tutor = tutorRepository.findByUserInfoId(user.getId())
                         .orElseThrow(() -> new RuntimeException("Tutor profile not found"));
                     return ProfileResponse.builder()
                         .userId(user.getId())
@@ -250,6 +254,16 @@ log.info("[ProfileServiceImpl:getProfile] User Role is", user.getRoles());
 
     @Override
     public Object updateAvailability(UUID userId, TimeSlotRequest request) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public Object getProfileByUserName(String name) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public ProfileResponse getProfile(UUID userId) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 

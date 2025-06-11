@@ -33,7 +33,24 @@ const ProfilePage: React.FC = () => {
   const location = useLocation();
   const userInfo = useSelector((state: RootState) => state.auth.userInfo);
   
-  const { data: profile, isLoading, error } = useGetCurrentProfileQuery();
+  // Update the query to include email parameter
+  const { data: profile, isLoading, error } = useGetCurrentProfileQuery(
+    userInfo?.email_address ?? '', // Pass email address
+    {
+      skip: !userInfo?.email_address, // Skip if no email address available
+    }
+  );
+
+  // Add logging to debug the query
+  useEffect(() => {
+    console.log('Profile Query Details:', {
+      email: userInfo?.email_address,
+      isLoading,
+      error,
+      hasProfile: !!profile
+    });
+  }, [userInfo?.email_address, profile, isLoading, error]);
+
   const [updateProfile] = useUpdateProfileMutation();
 
   // Redirect to login if no user is found
@@ -50,11 +67,12 @@ const ProfilePage: React.FC = () => {
     if (profile) {
       setEditedProfile({
         ...profile,
-        subjects: profile.subjects || [],
-        interests: profile.interests || [],
+        interestedSubjects: profile.interestedSubjects || [],
         topics: profile.topics || [],
-        availability: profile.availability || [],
-        priceRange: profile.priceRange || { min: 0, max: 0 },
+        teachingSubjects: profile.teachingSubjects || '',
+        teachingAvailability: profile.teachingAvailability || [],
+        minBudget: profile.minBudget || 0,
+        maxBudget: profile.maxBudget || 0,
         hourlyRate: profile.hourlyRate || 0,
       } as Profile);
     }
@@ -64,12 +82,13 @@ const ProfilePage: React.FC = () => {
     if (profile) {
       setEditedProfile({
         ...profile,
-        subjects: profile.subjects,
-        interests: profile.interests,
-        topics: profile.topics,
-        availability: profile.availability,
-        priceRange: profile.priceRange || { min: 0, max: 0 },
-        hourlyRate: profile.hourlyRate,
+        interestedSubjects: profile.interestedSubjects || [],
+        topics: profile.topics || [],
+        teachingSubjects: profile.teachingSubjects || '',
+        teachingAvailability: profile.teachingAvailability || [],
+        minBudget: profile.minBudget || 0,
+        maxBudget: profile.maxBudget || 0,
+        hourlyRate: profile.hourlyRate || 0,
       } as Profile);
       setIsEditing(true);
     }
@@ -78,42 +97,27 @@ const ProfilePage: React.FC = () => {
   const handleSave = async () => {
     if (profile?.userId && editedProfile) {
       const updateData: ProfileUpdateRequest = {
-        subjects: editedProfile.subjects?.map(s => s.name) || [],
-        interests: editedProfile.interests || [],
+        subjects: Array.isArray(editedProfile.teachingSubjects)
+          ? editedProfile.teachingSubjects
+          : (editedProfile.teachingSubjects ? editedProfile.teachingSubjects.split(',').map(s => s.trim()) : []),
+        interests: editedProfile.interestedSubjects || [],
         topics: editedProfile.topics || [],
-        availability: editedProfile.availability || [],
-        priceRange: editedProfile.priceRange ? {
-          min: editedProfile.priceRange.min || 0,
-          max: editedProfile.priceRange.max || 0
-        } : undefined,
+
         hourlyRate: editedProfile.hourlyRate,
         experience: typeof editedProfile.experience === 'string' ? editedProfile.experience : '',
         education: typeof editedProfile.education === 'string' ? editedProfile.education : '',
-        bio: typeof editedProfile.bio === 'string' ? editedProfile.bio : ''
+        bio: typeof editedProfile.bio === 'string' ? editedProfile.bio : '',
+        availability: []
       };
       await updateProfile({ userId: profile.userId, data: updateData });
       setIsEditing(false);
     }
   };
 
-  const handleCancel = () => {
-    if (profile) {
-      setEditedProfile({
-        ...profile,
-        subjects: profile.subjects,
-        interests: profile.interests,
-        topics: profile.topics,
-        availability: profile.availability,
-        priceRange: profile.priceRange || { min: 0, max: 0 },
-        hourlyRate: profile.hourlyRate,
-      } as Profile);
-    }
-    setIsEditing(false);
-  };
-
+ 
   const handleTimeSlotChange = (index: number, field: keyof TimeSlot, value: string | number) => {
     if (editedProfile) {
-      const newTimeSlots = [...editedProfile.availability];
+      const newTimeSlots = [...editedProfile.teachingAvailability];
       newTimeSlots[index] = { ...newTimeSlots[index], [field]: value };
       setEditedProfile({ ...editedProfile, availability: newTimeSlots } as Profile);
     }
@@ -129,14 +133,14 @@ const ProfilePage: React.FC = () => {
       };
       setEditedProfile({
         ...editedProfile,
-        availability: [...editedProfile.availability, newTimeSlot],
+        availability: [...editedProfile.teachingAvailability, newTimeSlot],
       } as Profile);
     }
   };
 
   const removeTimeSlot = (index: number) => {
     if (editedProfile) {
-      const newTimeSlots = [...editedProfile.availability];
+      const newTimeSlots = [...editedProfile.teachingAvailability];
       newTimeSlots.splice(index, 1);
       setEditedProfile({ ...editedProfile, availability: newTimeSlots } as Profile);
     }
@@ -166,40 +170,34 @@ const ProfilePage: React.FC = () => {
 
   return (
     <Layout isLoading={isLoading}>
-      
       <Container maxWidth="md" sx={{ py: 4, ml: '240px' }}>
         <Paper sx={{ p: 3 }}>
-          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
-            <Typography variant="h4">
-              {isStudent ? 'Student Profile' : 'Tutor Profile'}
-            </Typography>
-            {!isEditing && (
-              <Button variant="contained" onClick={handleEdit}>
-                Edit Profile
-              </Button>
-            )}
-          </Box>
-
-          {/* Read-only Information */}
+          {/* Basic Info */}
           <Box sx={{ mb: 4 }}>
-            <Typography variant="h6" gutterBottom>Personal Information</Typography>
-            <Box sx={{ display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, gap: 3 }}>
-              <TextField
-                fullWidth
-                label="Email"
-                value={profile.email}
-                disabled
-              />
-              <TextField
-                fullWidth
-                label="Full Name"
-                value={profile.fullName}
-                disabled
-              />
-            </Box>
+            <Typography variant="h4" gutterBottom>
+              {profile?.role === 'STUDENT' ? 'Student Profile' : 'Tutor Profile'}
+            </Typography>
+            <Grid container spacing={3}>
+              <Grid>
+                <TextField
+                  fullWidth
+                  label="Email"
+                  value={profile?.email || ''}
+                  disabled
+                />
+              </Grid>
+              <Grid>
+                <TextField
+                  fullWidth
+                  label="Full Name"
+                  value={profile?.fullName || ''}
+                  disabled
+                />
+              </Grid>
+            </Grid>
           </Box>
 
-          {/* Editable Information */}
+          {/* Profile Details */}
           <Box sx={{ mb: 4 }}>
             <Typography variant="h6" gutterBottom>Profile Information</Typography>
             <Grid container spacing={3}>
@@ -209,9 +207,8 @@ const ProfilePage: React.FC = () => {
                   multiline
                   rows={4}
                   label="Bio"
-                  value={isEditing ? editedProfile.bio : profile.bio}
-                  onChange={(e) => isEditing && setEditedProfile({ ...editedProfile, bio: e.target.value } as Profile)}
-                  disabled={!isEditing}
+                  value={profile?.bio || ''}
+                  disabled
                 />
               </Grid>
               <Grid>
@@ -220,9 +217,8 @@ const ProfilePage: React.FC = () => {
                   multiline
                   rows={4}
                   label="Education"
-                  value={isEditing ? editedProfile.education : profile.education}
-                  onChange={(e) => isEditing && setEditedProfile({ ...editedProfile, education: e.target.value } as Profile)}
-                  disabled={!isEditing}
+                  value={profile?.education || ''}
+                  disabled
                 />
               </Grid>
               <Grid>
@@ -231,96 +227,51 @@ const ProfilePage: React.FC = () => {
                   multiline
                   rows={4}
                   label="Experience"
-                  value={isEditing ? editedProfile.experience : profile.experience}
-                  onChange={(e) => isEditing && setEditedProfile({ ...editedProfile, experience: e.target.value } as Profile)}
-                  disabled={!isEditing}
+                  value={profile?.experience || ''}
+                  disabled
                 />
               </Grid>
             </Grid>
           </Box>
 
-          {/* Subjects and Interests */}
+          {/* Subjects */}
           <Box sx={{ mb: 4 }}>
             <Typography variant="h6" gutterBottom>
-              {isStudent ? 'Interested Subjects' : 'Teaching Subjects'}
+              {profile?.role === 'STUDENT' ? 'Interested Subjects' : 'Teaching Subjects'}
             </Typography>
             <TextField
               fullWidth
               multiline
               rows={2}
-              label={isStudent ? 'Interested Subjects' : 'Teaching Subjects'}
-              value={isEditing ? editedProfile.subjects?.map(s => s.name).join(', ') : profile.subjects?.map(s => s.name).join(', ')}
-              onChange={(e) => {
-                if (isEditing) {
-                  const subjectNames = e.target.value.split(',').map(s => s.trim());
-                  const subjects = subjectNames.map(name => ({ name }));
-                  setEditedProfile({ ...editedProfile, subjects } as Profile);
-                }
-              }}
-              disabled={!isEditing}
-              placeholder={isStudent ? "Enter subjects you're interested in learning" : "Enter subjects you can teach"}
-              sx={{ mb: 2 }}
+              label={profile?.role === 'STUDENT' ? 'Interested Subjects' : 'Teaching Subjects'}
+              value={profile?.role === 'STUDENT' 
+                ? profile?.interestedSubjects?.join(', ') 
+                : profile?.teachingSubjects}
+              disabled
             />
-            <Typography variant="body2" color="text.secondary">
-              {isStudent 
-                ? "Enter subjects you're interested in learning, separated by commas" 
-                : "Enter subjects you can teach, separated by commas"}
-            </Typography>
           </Box>
 
-          {/* Topics */}
-          <Box sx={{ mb: 4 }}>
-            <Typography variant="h6" gutterBottom>Topics</Typography>
-            {/* <Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap>
-              {isEditing ? (
-                editedProfile.topics.map((topic, index) => (
-                  <Chip
-                    key={index}
-                    label={topic}
-                    onDelete={() => {
-                      const newTopics = [...editedProfile.topics];
-                      newTopics.splice(index, 1);
-                      setEditedProfile({ ...editedProfile, topics: newTopics } as Profile);
-                    }}
-                  />
-                ))
-              ) : (
-                profile.topics.map((topic, index) => (
-                  <Chip key={index} label={topic} />
-                ))
-              )}
-            </Stack> */}
-          </Box>
-
-          {/* Price Range or Hourly Rate */}
-          {isStudent ? (
+          {/* Budget/Rate Information */}
+          {profile?.role === 'STUDENT' ? (
             <Box sx={{ mb: 4 }}>
-              <Typography variant="h6" gutterBottom>Price Range</Typography>
+              <Typography variant="h6" gutterBottom>Budget Range</Typography>
               <Grid container spacing={2}>
                 <Grid>
                   <TextField
                     fullWidth
-                    label="Minimum Price"
+                    label="Minimum Budget"
                     type="number"
-                    value={isEditing ? editedProfile.priceRange?.min : profile.priceRange?.min}
-                    onChange={(e) => isEditing && setEditedProfile({
-                      ...editedProfile,
-                      priceRange: { ...editedProfile.priceRange, min: Number(e.target.value) }
-                    } as Profile)}
-                    disabled={!isEditing}
+                    value={profile?.minBudget || 0}
+                    disabled
                   />
                 </Grid>
                 <Grid>
                   <TextField
                     fullWidth
-                    label="Maximum Price"
+                    label="Maximum Budget"
                     type="number"
-                    value={isEditing ? editedProfile.priceRange?.max : profile.priceRange?.max}
-                    onChange={(e) => isEditing && setEditedProfile({
-                      ...editedProfile,
-                      priceRange: { ...editedProfile.priceRange, max: Number(e.target.value) }
-                    } as Profile)}
-                    disabled={!isEditing}
+                    value={profile?.maxBudget || 0}
+                    disabled
                   />
                 </Grid>
               </Grid>
@@ -332,85 +283,9 @@ const ProfilePage: React.FC = () => {
                 fullWidth
                 label="Rate per Hour"
                 type="number"
-                value={isEditing ? editedProfile.hourlyRate : profile.hourlyRate}
-                onChange={(e) => isEditing && setEditedProfile({
-                  ...editedProfile,
-                  hourlyRate: Number(e.target.value)
-                } as Profile)}
-                disabled={!isEditing}
+                value={profile?.hourlyRate || 0}
+                disabled
               />
-            </Box>
-          )}
-
-          {/* Availability */}
-          <Box sx={{ mb: 4 }}>
-            <Typography variant="h6" gutterBottom>Availability</Typography>
-            {/* <Stack spacing={2}>
-              {isEditing ? (
-                editedProfile.availability.map((slot, index) => (
-                  <Box key={index} sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
-                    <FormControl sx={{ minWidth: 120 }}>
-                      <InputLabel>Day</InputLabel>
-                      <Select
-                        value={slot.dayOfWeek}
-                        label="Day"
-                        onChange={(e) => handleTimeSlotChange(index, 'dayOfWeek', Number(e.target.value))}
-                      >
-                        {DAYS_OF_WEEK.map((day, i) => (
-                          <MenuItem key={i} value={i}>{day}</MenuItem>
-                        ))}
-                      </Select>
-                    </FormControl>
-                    <TextField
-                      type="time"
-                      label="Start Time"
-                      value={slot.startTime}
-                      onChange={(e) => handleTimeSlotChange(index, 'startTime', e.target.value)}
-                      InputLabelProps={{ shrink: true }}
-                    />
-                    <TextField
-                      type="time"
-                      label="End Time"
-                      value={slot.endTime}
-                      onChange={(e) => handleTimeSlotChange(index, 'endTime', e.target.value)}
-                      InputLabelProps={{ shrink: true }}
-                    />
-                    <IconButton onClick={() => removeTimeSlot(index)} color="error">
-                      <DeleteIcon />
-                    </IconButton>
-                  </Box>
-                ))
-              ) 
-              // : (
-              //   profile.availability.map((slot, index) => (
-              //     <Box key={index} sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
-              //       <Typography>{DAYS_OF_WEEK[slot.dayOfWeek]}</Typography>
-              //       <Typography>{slot.startTime} - {slot.endTime}</Typography>
-              //     </Box>
-              //   ))
-              // )
-              }
-              {isEditing && (
-                <Button
-                  startIcon={<AddIcon />}
-                  onClick={addTimeSlot}
-                  variant="outlined"
-                >
-                  Add Time Slot
-                </Button>
-              )}
-            </Stack> */}
-          </Box>
-
-          {/* Edit Actions */}
-          {isEditing && (
-            <Box sx={{ display: 'flex', gap: 2, justifyContent: 'flex-end' }}>
-              <Button variant="outlined" onClick={handleCancel}>
-                Cancel
-              </Button>
-              <Button variant="contained" onClick={handleSave}>
-                Save Changes
-              </Button>
             </Box>
           )}
         </Paper>

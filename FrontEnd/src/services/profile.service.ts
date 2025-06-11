@@ -13,8 +13,8 @@ export const profileApi = createApi({
     prepareHeaders: commonHeader,
   }),
   endpoints: (builder) => ({
-    getCurrentProfile: builder.query<Profile, void>({
-      query: () => "/current",
+    getCurrentProfile: builder.query<Profile, String>({
+      query: (email) => `/current/${email}`,
     }),
     getProfile: builder.query<Profile, string>({
       query: (userId) => `/${userId}`,
