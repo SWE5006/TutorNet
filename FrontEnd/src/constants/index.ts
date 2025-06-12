@@ -7,9 +7,9 @@ export const STATUS_OPTIONS = [
 export const DATETIME_FORMAT = "DD/MM/YYYY HH:mm:ss";
 
 export const HOME_MAPPING: Record<Roles, string> = {
-  ADMIN: "/dashboard",
+  ADMIN: "/admindashboard",
   TUTOR: "/tutordashboard",
-  STUDENT: "/admindashboard",
+  STUDENT: "/dashboard",
 };
 
 export const TIME_FORMAT = "YYYY-MM-DDTHH:mm:ss";
