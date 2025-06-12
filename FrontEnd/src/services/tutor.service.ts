@@ -1,6 +1,7 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { RootState } from "../state/store";
 import { commonHeader } from "../utils";
+import { TutorTimeSlot } from "../types/types";
 
 
 export const tutorReducerName = "tutorApi";
@@ -32,7 +33,15 @@ export const tutorApi = createApi({
           ? [...result.map(({ id }) => ({ type: 'Tutor' as const, id })), { type: 'Tutor', id: 'LIST' }]
           : [{ type: 'Tutor', id: 'LIST' }],
     }),
+    getTutorTimeSlots: builder.query<TutorTimeSlot[], string>({
+      query: (email) => ({
+        url: `/timeslots/by-email/${email}`,
+        method: 'GET'
+      }),
+      providesTags: ['Tutor']
+    }),
   }),
+  
 });
 
-export const { useGetTutorsQuery } = tutorApi;
+export const { useGetTutorsQuery,useGetTutorTimeSlotsQuery } = tutorApi;

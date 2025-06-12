@@ -29,6 +29,13 @@ interface LoginResponse {
   user_role: SgehRoles;
 }
 
+export interface TutorTimeSlot {
+  dayOfWeek: string;
+  startTime: string;
+  endTime: string;
+  status: string;
+}
+
 interface SignupRequest {
   userName: string;
   userEmail: string;
@@ -42,8 +49,10 @@ interface SignupRequestStudent {
   password: string;
   emailAddress: string;
   mobileNumber: string;
+  bio: string;
+  experience: string;
   age: string;
-  classLevel: string;
+  education: string;
   userRole: string;
 }
 

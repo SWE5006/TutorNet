@@ -134,4 +134,10 @@ public List<TimeSlot> getTimeSlotsByTutorId(UUID tutorId) {
         .orElseThrow(() -> new RuntimeException("Tutor not found with id: " + tutorId));
     return timeSlotRepository.findByTutorId(tutorId);
 }
+
+public List<TimeSlot> getTimeSlotsByTutorEmail(String email) {
+    Tutor tutor = tutorRepository.findByUserInfoEmailAddress(email)
+        .orElseThrow(() -> new RuntimeException("Tutor not found with email: " + email));
+    return timeSlotRepository.findByTutorId(tutor.getId());
+}
 }

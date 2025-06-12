@@ -78,6 +78,14 @@ public class TutorController {
         return ResponseEntity.ok(result);
     }
 
-    
-
+    @GetMapping("/timeslots/by-email/{email}")
+    public ResponseEntity<?> getTimeSlotsByTutorEmail(@PathVariable String email) {
+        try {
+            List<TimeSlot> timeSlots = tutorService.getTimeSlotsByTutorEmail(email);
+            return ResponseEntity.ok(timeSlots);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest()
+                .body("Failed to get time slots: " + e.getMessage());
+        }
+    }
 }

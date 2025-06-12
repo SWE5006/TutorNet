@@ -24,12 +24,16 @@ export default function SignUpPage() {
   const [userMobileNo, setMobile] = useState("");
   const [userAge, setUserAge] = useState("");
   const [userClassLevel, setUserClassLevel] = useState("");
+  const [userBio, setUserBio] = useState("");
+  const [userEducation, setUserEducation] = useState("");
   const [nameError, setNameError] = useState<boolean | string>(false);
   const [emailError, setEmailError] = useState<boolean | string>(false);
   const [passwordError, setPasswordError] = useState<boolean | string>(false);
   const [mobileNoError, setMobileError] = useState<boolean | string>(false);
   const [ageError, setAgeError] = useState<boolean | string>(false);
   const [classLevelError, setClassLevelError] = useState<boolean | string>(false);
+  const [bioError, setBioError] = useState<boolean | string>(false);
+  const [educationError, setEducationError] = useState<boolean | string>(false);
   const [signupStudent, result] = useSignUpStudentMutation();
 
   const classLevels = [
@@ -78,6 +82,16 @@ export default function SignUpPage() {
       hasErrors = true;
     }
 
+    if (!userBio.trim()) {
+      setBioError("Bio is required.");
+      hasErrors = true;
+    }
+
+    if (!userEducation.trim()) {
+      setEducationError("Education background is required.");
+      hasErrors = true;
+    }
+
     // Don't submit if there are errors
     if (hasErrors) {
       console.log('Form has errors, not submitting');
@@ -91,8 +105,10 @@ export default function SignUpPage() {
       password: userPassword.trim(),
       mobileNumber: userMobileNo.trim(),
       age: userAge,
-      classLevel:userClassLevel,
-      userRole: "TUTOR",
+      bio: userBio.trim(),
+      education: userClassLevel,
+      experience: "", // or provide a value if you have one
+      userRole: "STUDENT",
     });
   };
 
@@ -120,7 +136,7 @@ export default function SignUpPage() {
           justifyContent: "flex-end",
           alignItems: "center",
           width: "100%",
-          height: "650px",
+          height: "900px",
           bgcolor: "background.paper",
           borderRadius: 3,
           boxShadow: 3,
@@ -136,7 +152,7 @@ export default function SignUpPage() {
           sx={{
             p: 4,
             width: "100%",
-            maxWidth: 400,
+            maxWidth: 500,
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
@@ -267,6 +283,48 @@ export default function SignUpPage() {
                 min: 5,
                 max: 100
               }}
+            />
+
+            <TextField
+              required
+              fullWidth
+              label="Bio"
+              variant="outlined"
+              multiline
+              rows={3}
+              value={userBio}
+              error={!!bioError}
+              helperText={bioError}
+              onChange={(e) => {
+                setUserBio(e.target.value);
+                if (e.target.value.length >= 10) {
+                  setBioError(false);
+                } else {
+                  setBioError("Bio should be at least 10 characters long.");
+                }
+              }}
+              margin="normal"
+            />
+
+            <TextField
+              required
+              fullWidth
+              label="Education Background"
+              variant="outlined"
+              multiline
+              rows={2}
+              value={userEducation}
+              error={!!educationError}
+              helperText={educationError}
+              onChange={(e) => {
+                setUserEducation(e.target.value);
+                if (e.target.value.length >= 10) {
+                  setEducationError(false);
+                } else {
+                  setEducationError("Education background should be at least 10 characters long.");
+                }
+              }}
+              margin="normal"
             />
 
      

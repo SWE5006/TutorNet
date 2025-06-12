@@ -21,7 +21,7 @@ import {
   Alert,
   GridSize,
 } from '@mui/material';
-import { Add as AddIcon, Delete as DeleteIcon } from '@mui/icons-material';
+import { Add as AddIcon, Delete as DeleteIcon, Edit as EditIcon } from '@mui/icons-material';
 import { useGetCurrentProfileQuery, useUpdateProfileMutation } from '../services/profile.service';
 import { RootState } from '../state/store';
 import { Profile, TimeSlot, PriceRange, ProfileUpdateRequest } from '../types/profile';
@@ -41,15 +41,6 @@ const ProfilePage: React.FC = () => {
     }
   );
 
-  // Add logging to debug the query
-  useEffect(() => {
-    console.log('Profile Query Details:', {
-      email: userInfo?.email_address,
-      isLoading,
-      error,
-      hasProfile: !!profile
-    });
-  }, [userInfo?.email_address, profile, isLoading, error]);
 
   const [updateProfile] = useUpdateProfileMutation();
 
@@ -170,15 +161,15 @@ const ProfilePage: React.FC = () => {
 
   return (
     <Layout isLoading={isLoading}>
-      <Container maxWidth="md" sx={{ py: 4, ml: '240px' }}>
-        <Paper sx={{ p: 3 }}>
-          {/* Basic Info */}
+      <Container sx={{ ml: '240px' }}>
+        <Paper sx={{ p: 2,mb:4 }}>
+         
           <Box sx={{ mb: 4 }}>
             <Typography variant="h4" gutterBottom>
               {profile?.role === 'STUDENT' ? 'Student Profile' : 'Tutor Profile'}
             </Typography>
-            <Grid container spacing={3}>
-              <Grid>
+            <Grid container spacing={3} sx={{ display: 'flex', alignItems: 'center' }}>
+              <Grid >
                 <TextField
                   fullWidth
                   label="Email"
@@ -186,7 +177,7 @@ const ProfilePage: React.FC = () => {
                   disabled
                 />
               </Grid>
-              <Grid>
+              <Grid >
                 <TextField
                   fullWidth
                   label="Full Name"
@@ -194,13 +185,24 @@ const ProfilePage: React.FC = () => {
                   disabled
                 />
               </Grid>
+              <Grid >
+                <Button
+                  variant="contained"
+                  color="primary"
+                  startIcon={<EditIcon />}
+                  onClick={handleEdit}
+                  sx={{ height: '56px' }}
+                >
+                  Edit Profile
+                </Button>
+              </Grid>
             </Grid>
           </Box>
 
           {/* Profile Details */}
           <Box sx={{ mb: 4 }}>
             <Typography variant="h6" gutterBottom>Profile Information</Typography>
-            <Grid container spacing={3}>
+            <Box sx={{ mb: 4 }}></Box>
               <Grid>
                 <TextField
                   fullWidth
@@ -211,36 +213,36 @@ const ProfilePage: React.FC = () => {
                   disabled
                 />
               </Grid>
-              <Grid>
+              </Box>
+              <Box sx={{ mb: 4 }}>
+              <Grid >
                 <TextField
                   fullWidth
                   multiline
                   rows={4}
-                  label="Education"
+                  label="Education Background"
                   value={profile?.education || ''}
                   disabled
                 />
               </Grid>
+              </Box>
+              <Box sx={{ mb: 4 }}>
               <Grid>
                 <TextField
-                  fullWidth
                   multiline
                   rows={4}
-                  label="Experience"
+                  label={profile?.role === 'STUDENT' ? 'Class Level' : 'Experience'}
                   value={profile?.experience || ''}
                   disabled
+                  sx={{ width: '50%' }}
                 />
-              </Grid>
-            </Grid>
-          </Box>
-
-          {/* Subjects */}
-          <Box sx={{ mb: 4 }}>
+             
+          
             <Typography variant="h6" gutterBottom>
               {profile?.role === 'STUDENT' ? 'Interested Subjects' : 'Teaching Subjects'}
             </Typography>
             <TextField
-              fullWidth
+              sx={{ width: '50%' }}
               multiline
               rows={2}
               label={profile?.role === 'STUDENT' ? 'Interested Subjects' : 'Teaching Subjects'}
@@ -249,6 +251,7 @@ const ProfilePage: React.FC = () => {
                 : profile?.teachingSubjects}
               disabled
             />
+             </Grid>
           </Box>
 
           {/* Budget/Rate Information */}

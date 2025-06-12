@@ -11,10 +11,21 @@ import {
   Divider,
 } from "@mui/material";
 import Layout from "../components/Layout";
+import { useGetTutorTimeSlotsQuery } from "../services/tutor.service";
+import { useSelector } from "react-redux";
+import { RootState } from "../state/store";
 
 function TutorDashboard() {
+  const userInfo = useSelector((state: RootState) => state.auth.userInfo);
+  const { data: timeSlots, isLoading } = useGetTutorTimeSlotsQuery(
+    userInfo?.email_address ?? '',
+    {
+      skip: !userInfo?.email_address,
+    }
+  );
+
   return (
-    <Layout isLoading={false}>
+    <Layout isLoading={isLoading}>
       <Container maxWidth="xl" sx={{ mt: 4, mb: 4 }}>
         {/* First Row */}
         <Grid container spacing={3} sx={{ mb: 4 }}>
@@ -28,17 +39,25 @@ function TutorDashboard() {
               }}
             >
               <Typography variant="h6" sx={{ mb: 2 }}>
-                Pending Booking Requests
+                Available Time Slots
               </Typography>
               <List>
-                {/* Replace with actual pending bookings data */}
-                <ListItem>
-                  <ListItemText
-                    primary="Student: John Doe"
-                    secondary="Subject: Mathematics | Time: Mon, 2:00 PM"
-                  />
-                </ListItem>
-                <Divider />
+                {timeSlots?.map((slot, index) => (
+                  <React.Fragment key={index}>
+                    <ListItem>
+                      <ListItemText
+                        primary={`${slot.dayOfWeek}`}
+                        secondary={`${slot.startTime} - ${slot.endTime} (${slot.status})`}
+                      />
+                    </ListItem>
+                    {index < timeSlots.length - 1 && <Divider />}
+                  </React.Fragment>
+                ))}
+                {(!timeSlots || timeSlots.length === 0) && (
+                  <ListItem>
+                    <ListItemText primary="No time slots available" />
+                  </ListItem>
+                )}
               </List>
             </Paper>
           </Grid>
@@ -86,7 +105,7 @@ function TutorDashboard() {
                 Confirmed Students
               </Typography>
               <List>
-                {/* Replace with actual confirmed students data */}
+               
                 <ListItem>
                   <ListItemText
                     primary="Alice Smith"
