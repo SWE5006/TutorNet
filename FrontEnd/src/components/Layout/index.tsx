@@ -37,7 +37,7 @@ const Layout: FC<LayoutProps> = ({ children, isLoading = false }) => {
   const [open, setOpen] = useState(true);
   const [requestLogout, result] = useLogoutMutation();
   const { userInfo } = useSelector((state: any) => selectAuthSlice(state));
-
+  const role = userInfo?.user_role
   const handleNavigation = (path: string) => {
     navigate(path);
   };
@@ -56,7 +56,8 @@ const Layout: FC<LayoutProps> = ({ children, isLoading = false }) => {
     }
   }, [result]);
 
-  const menuItems = [
+  // Base menu items that are always shown
+  const baseMenuItems = [
     {
       text: "Home",
       icon: <HomeIcon />,
@@ -72,11 +73,18 @@ const Layout: FC<LayoutProps> = ({ children, isLoading = false }) => {
       icon: <EventIcon />,
       action: () => handleNavigation("/session"),
     },
-    {
-      text: "Booking",
-      icon: <BookOnlineIcon />,
-      action: () => handleNavigation("/booking"),
-    },
+  ];
+
+  // Add Booking link only for students
+  const menuItems = [
+    ...baseMenuItems,
+    ...(role !== 'TUTOR' ? [
+      {
+        text: "Booking",
+        icon: <BookOnlineIcon />,
+        action: () => handleNavigation("/booking"),
+      }
+    ] : []),
     { text: "Logout", icon: <LogoutIcon />, action: performLogout },
   ];
 

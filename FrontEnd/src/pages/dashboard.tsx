@@ -28,7 +28,7 @@ import Layout from "../components/Layout";
 import { submitInterest } from "../services/interest.service";
 import { useSelector } from "react-redux";
 import { selectAuthSlice } from "../state/auth/slice";
-import { useGetTutorsQuery } from "../services/tutor.service";
+import { useGetTutorsQuery, useGetTutorTimeSlotsQuery } from "../services/tutor.service";
 
 interface Tutor {
   id: string;           // UUID from backend
@@ -39,14 +39,6 @@ interface Tutor {
   hourlyRate: number;   // Added new field
   subjects: string;     // Changed from subject to subjects
 }
-
-const SAMPLE_TIME_SLOTS = [
-  { id: 1, day: 'Monday', time: '9:00 AM - 11:00 AM' },
-  { id: 2, day: 'Monday', time: '2:00 PM - 4:00 PM' },
-  { id: 3, day: 'Wednesday', time: '10:00 AM - 12:00 PM' },
-  { id: 4, day: 'Thursday', time: '3:00 PM - 5:00 PM' },
-  { id: 5, day: 'Friday', time: '1:00 PM - 3:00 PM' },
-];
 
 function TutorListPage() {
   const [searchTerm, setSearchTerm] = useState<string>("");
@@ -59,6 +51,12 @@ function TutorListPage() {
   const userEmail = userInfo?.email_address || userInfo?.userEmail || "";
 
   const { data: allTutors = [], isLoading: loading, error } = useGetTutorsQuery();
+  const { data: timeSlots = [], isLoading: timeSlotsLoading } = useGetTutorTimeSlotsQuery(
+    selectedSubjectId ?? '', 
+    {
+      skip: !selectedSubjectId,
+    }
+  );
 
   const SUBJECTS = [
     "All",
@@ -135,29 +133,14 @@ function TutorListPage() {
         alert("Please select at least one time slot.");
         return;
       }
-      
-      // Map day names to numbers: Sunday=0, Monday=1, ..., Saturday=6
-      const dayNameToNumber: { [key: string]: number } = {
-        Sunday: 0,
-        Monday: 1,
-        Tuesday: 2,
-        Wednesday: 3,
-        Thursday: 4,
-        Friday: 5,
-        Saturday: 6,
-      };
 
-      const selectedSlots = SAMPLE_TIME_SLOTS
+      const selectedSlots = timeSlots
         .filter(slot => selectedTimeSlots.includes(slot.id))
-        .map(slot => {
-          // slot.time is like "9:00 AM - 11:00 AM"
-          const [startTime, endTime] = slot.time.split(" - ");
-          return {
-            dayOfWeek: dayNameToNumber[slot.day] ?? 0,
-            startTime,
-            endTime
-          };
-        });
+        .map(slot => ({
+          dayOfWeek: slot.dayOfWeek,
+          startTime: slot.startTime,
+          endTime: slot.endTime
+        }));
 
       await submitInterest({
         userId: userEmail,
@@ -328,7 +311,7 @@ function TutorListPage() {
                 maxHeight: 200,
                 overflow: 'auto'
               }}>
-                {SAMPLE_TIME_SLOTS.map((slot) => (
+                {timeSlots.map((slot) => (
                   <ListItem
                     key={slot.id}
                     sx={{
@@ -348,8 +331,8 @@ function TutorListPage() {
                       />
                     </ListItemIcon>
                     <ListItemText
-                      primary={slot.day}
-                      secondary={slot.time}
+                      primary={`${slot.dayOfWeek}`}
+                      secondary={`${slot.startTime} - ${slot.endTime}`}
                       sx={{
                         '& .MuiListItemText-primary': {
                           fontWeight: 'medium'

@@ -17,8 +17,9 @@ import { RootState } from "../state/store";
 
 function TutorDashboard() {
   const userInfo = useSelector((state: RootState) => state.auth.userInfo);
+  
   const { data: timeSlots, isLoading } = useGetTutorTimeSlotsQuery(
-    userInfo?.email_address ?? '',
+    userInfo?.email_address ?? '', 
     {
       skip: !userInfo?.email_address,
     }
@@ -39,7 +40,7 @@ function TutorDashboard() {
               }}
             >
               <Typography variant="h6" sx={{ mb: 2 }}>
-                Available Time Slots
+                Time Slots
               </Typography>
               <List>
                 {timeSlots?.map((slot, index) => (

@@ -70,7 +70,7 @@ const Login = () => {
           />
         </MuiBox>
 
-        {/* Right side - Login Form */}
+      
         <MuiBox
           sx={{
             flex: 1,
@@ -80,6 +80,8 @@ const Login = () => {
             alignItems: "center",
           }}
         >
+        
+
           <Paper
             elevation={0}
             sx={{
@@ -92,6 +94,26 @@ const Login = () => {
               borderRadius: 2,
             }}
           >
+             <img 
+      src="/images/logo_sidebar_small.png" 
+      alt="TutorNet Logo"
+      style={{
+        width: '60px',
+        height: '60px',
+        objectFit: 'contain'
+      }}
+    />
+          <Typography
+            variant="h4"
+            sx={{
+              mb: 4,
+              fontWeight: "bold",
+              color: "info.light", // Light blue color from MUI theme
+              textAlign: "center",
+            }}
+          >
+            Welcome to TutorNet
+          </Typography>
             <Box component="form" noValidate sx={{ mt: 1, width: "100%" }}>
               <TextField
                 margin="normal"

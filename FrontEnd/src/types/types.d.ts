@@ -30,6 +30,7 @@ interface LoginResponse {
 }
 
 export interface TutorTimeSlot {
+  id:string;
   dayOfWeek: string;
   startTime: string;
   endTime: string;
