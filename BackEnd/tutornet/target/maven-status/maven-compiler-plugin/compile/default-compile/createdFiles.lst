@@ -1,9 +1,7 @@
-com\project\tutornet\dto\BookingResponseDto.class
 com\project\tutornet\repository\TutorRepository.class
 com\project\tutornet\dto\StudentRequest.class
 com\project\tutornet\repository\SubjectRepository.class
 com\project\tutornet\dto\LoginResponse.class
-com\project\tutornet\entity\AvailableSlot.class
 com\project\tutornet\dto\TokenType.class
 com\project\tutornet\dto\ProfileResponse.class
 com\project\tutornet\dto\AuthResponse.class
@@ -29,19 +27,15 @@ com\project\tutornet\dto\ApiResponse$ApiResponseBuilder.class
 com\project\tutornet\controller\BookingController.class
 com\project\tutornet\repository\StudentRepository.class
 com\project\tutornet\service\ProfileService.class
-com\project\tutornet\controller\SampleController.class
 com\project\tutornet\dto\UserRegistrationRequest$UserRegistrationRequestBuilder.class
-com\project\tutornet\service\AvailableSlotService.class
 com\project\tutornet\dto\CreateBookingDto.class
 com\project\tutornet\entity\UserInfoEntity.class
 com\project\tutornet\component\EncryptAttributeConverter.class
 com\project\tutornet\service\impl\LogoutHandlerServiceImpl.class
 com\project\tutornet\component\SecurityFailureListener.class
-com\project\tutornet\repository\AvailableSlotRepository.class
 com\project\tutornet\component\CustomAuthSuccessHandler.class
 com\project\tutornet\dto\CreateUserRequest.class
 com\project\tutornet\component\CustomAuthProvider.class
-com\project\tutornet\controller\BookingException.class
 com\project\tutornet\entity\Booking.class
 com\project\tutornet\repository\TutionSessionRepository.class
 com\project\tutornet\entity\Assignment.class
@@ -63,7 +57,6 @@ com\project\tutornet\model\UserDetailModel.class
 com\project\tutornet\dto\TimeSlotRequest.class
 com\project\tutornet\dto\TutorRequest.class
 com\project\tutornet\dto\ExceptionResponse.class
-com\project\tutornet\controller\AvailableSlotController.class
 com\project\tutornet\repository\UserInfoRepository.class
 com\project\tutornet\controller\AuthController.class
 com\project\tutornet\entity\Rating.class
@@ -88,7 +81,6 @@ com\project\tutornet\entity\RefreshTokenEntity$RefreshTokenEntityBuilder.class
 com\project\tutornet\dto\ManageUserRequest.class
 com\project\tutornet\entity\Dispute.class
 com\project\tutornet\service\StudentService.class
-com\project\tutornet\dto\AvailableSlotRequest.class
 com\project\tutornet\repository\TimeSlotRepository.class
 com\project\tutornet\service\BookingService.class
 com\project\tutornet\entity\Tutor.class

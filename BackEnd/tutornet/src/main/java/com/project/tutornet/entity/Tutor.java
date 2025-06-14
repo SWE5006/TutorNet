@@ -58,8 +58,9 @@ public class Tutor {
     @Column(name = "hourly_rate")
     private Double hourlyRate;
 
-    @OneToMany(mappedBy = "tutor")
-    private List<TimeSlot> teachingAvailability;
+    @OneToMany(mappedBy = "tutor", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
+    private List<TimeSlot> teachingAvailability = new ArrayList<>();
 
     @Column(name = "created_at")
     private LocalDateTime createdAt;

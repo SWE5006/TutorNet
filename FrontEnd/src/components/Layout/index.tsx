@@ -75,16 +75,14 @@ const Layout: FC<LayoutProps> = ({ children, isLoading = false }) => {
     },
   ];
 
-  // Add Booking link only for students
+  // Always show Booking link
   const menuItems = [
     ...baseMenuItems,
-    ...(role !== 'TUTOR' ? [
-      {
-        text: "Booking",
-        icon: <BookOnlineIcon />,
-        action: () => handleNavigation("/booking"),
-      }
-    ] : []),
+    {
+      text: "Booking",
+      icon: <BookOnlineIcon />,
+      action: () => handleNavigation("/booking"),
+    },
     { text: "Logout", icon: <LogoutIcon />, action: performLogout },
   ];
 

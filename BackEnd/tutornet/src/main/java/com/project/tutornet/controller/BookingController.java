@@ -1,37 +1,41 @@
 package com.project.tutornet.controller;
+
 import java.util.List;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import com.project.tutornet.dto.CreateBookingRequest;
+import com.project.tutornet.dto.CreateBookingDto;
 import com.project.tutornet.entity.Booking;
 import com.project.tutornet.service.BookingService;
+
 @RestController
 @RequestMapping("/api/booking")
 public class BookingController {
 
-     @Autowired
+    @Autowired
     private BookingService bookingService;
 
+    // 学生预约时间槽
     @PostMapping
-    public ResponseEntity<Booking> createBooking(@RequestBody CreateBookingRequest request) {
-        Booking booking = bookingService.createBooking(request);
+    public ResponseEntity<Booking> createBooking(@RequestBody CreateBookingDto dto) {
+        Booking booking = bookingService.createBooking(dto);
         return ResponseEntity.ok(booking);
-       
     }
 
-    @GetMapping("/{studentid}")
-    public ResponseEntity<List<Booking>> getBookingsByStudentId(@PathVariable("studentid") UUID studentId) {
+    // 获取学生所有预约
+    @GetMapping("/student/{studentId}")
+    public ResponseEntity<List<Booking>> getBookingsByStudentId(@PathVariable("studentId") UUID studentId) {
         List<Booking> bookings = bookingService.getBookingsByStudentId(studentId);
         return ResponseEntity.ok(bookings);
     }
-    
+
+    // 取消预约
+    @DeleteMapping("/{bookingId}")
+    public ResponseEntity<Void> cancelBooking(@PathVariable("bookingId") UUID bookingId) {
+        bookingService.cancelBooking(bookingId);
+        return ResponseEntity.noContent().build();
+    }
 }
