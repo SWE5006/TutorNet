@@ -53,11 +53,8 @@ export default function BookingPage() {
       setError(err.message || "Failed to fetch bookings");
     } finally {
       setLoading(false);
-    }
-  };
-
-  // 示例：预约入口（实际应为弹窗或选择器）
-  // const handleCreateBooking = async (slot: TimeSlot, subjectName: string) => { ... }
+  }
+};
 
   const handleCancelBooking = async (bookingId: string) => {
     try {
@@ -87,7 +84,7 @@ export default function BookingPage() {
         {error && <Alert severity="error">{error}</Alert>}
         <Grid container spacing={3}>
           {bookings.map((booking) => (
-            <Grid item={true} xs={12} md={6} key={booking.bookingId}>
+            <Grid key={booking.bookingId}>
               <Card>
                 <CardContent>
                   <Typography variant="h6">{booking.subjectName}</Typography>
