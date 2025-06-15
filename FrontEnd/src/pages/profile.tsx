@@ -90,10 +90,10 @@ const ProfilePage: React.FC = () => {
   const handleSave = async () => {
     if (profile?.userId && editedProfile) {
       const teachingAvailability = editedProfile.teachingAvailability?.map(slot => ({
-        dayOfWeek: String(slot.dayOfWeek),
+        id: slot.id,
+        dayOfWeek: typeof slot.dayOfWeek === 'string' ? parseInt(slot.dayOfWeek) : slot.dayOfWeek,
         startTime: slot.startTime,
         endTime: slot.endTime,
-        status: 'AVAILABLE'
       })) || [];
 
       const updateData: ProfileUpdateRequest = {
@@ -106,7 +106,8 @@ const ProfilePage: React.FC = () => {
         teachingSubjects: editedProfile.teachingSubjects ? editedProfile.teachingSubjects.split(',').map(s => s.trim()) : [],
         subjects: editedProfile.teachingSubjects ? editedProfile.teachingSubjects.split(',').map(s => s.trim()) : [],
         interests: editedProfile.interestedSubjects || [],
-        topics: editedProfile.topics || []
+        topics: editedProfile.topics || [],
+        availability: []
       };
 
       try {

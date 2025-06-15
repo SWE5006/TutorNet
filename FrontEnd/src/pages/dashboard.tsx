@@ -30,6 +30,16 @@ import { useSelector } from "react-redux";
 import { selectAuthSlice } from "../state/auth/slice";
 import { useGetTutorsQuery, useGetTutorTimeSlotsQuery } from "../services/tutor.service";
 
+const DAYS_OF_WEEK = [
+  "Sunday",
+  "Monday",
+  "Tuesday",
+  "Wednesday",
+  "Thursday",
+  "Friday",
+  "Saturday"
+];
+
 interface Tutor {
   id: string;           // UUID from backend
   username: string;     // Changed from name to username
@@ -138,9 +148,9 @@ function TutorListPage() {
       }
 
       const selectedSlots = timeSlots
-        .filter(slot => selectedTimeSlots.includes(slot.id))
+        .filter(slot => selectedTimeSlots.includes(Number(slot.id)))
         .map(slot => ({
-          dayOfWeek: slot.dayOfWeek,
+          dayOfWeek: typeof slot.dayOfWeek === "number" ? slot.dayOfWeek : parseInt(slot.dayOfWeek, 10),
           startTime: slot.startTime,
           endTime: slot.endTime
         }));
@@ -241,7 +251,7 @@ function TutorListPage() {
         ) : (
           <Grid container>
             {filteredTutors.map((tutor) => (
-              <Grid item xs={12} sm={6} md={6} key={tutor.id}>
+              <Grid key={tutor.id}>
                 <Card sx={{ inlineSize: 520, blockSize: 380, display: 'flex', flexDirection: 'column', boxShadow: 6, m: 1 }}>
                   <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center', minHeight: 120 }}>
                     <Box
@@ -330,8 +340,8 @@ function TutorListPage() {
                     <ListItemIcon>
                       <Checkbox
                         edge="start"
-                        checked={selectedTimeSlots.includes(slot.id)}
-                        onChange={() => handleTimeSlotToggle(slot.id)}
+                        checked={selectedTimeSlots.includes(Number(slot.id))}
+                        onChange={() => handleTimeSlotToggle(Number(slot.id))}
                         tabIndex={-1}
                       />
                     </ListItemIcon>
