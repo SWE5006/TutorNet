@@ -3,8 +3,11 @@ package com.project.tutornet.entity;
 
 import java.util.UUID;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -29,7 +32,8 @@ public class Subject {
     @Column(columnDefinition = "TEXT")
     private String name;
     
-  @ManyToOne
-  @JoinColumn(name = "tutor_id")
-  private Tutor tutors;
+   @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "tutor_id", nullable = false)
+    @JsonBackReference
+    private Tutor tutor;
 }

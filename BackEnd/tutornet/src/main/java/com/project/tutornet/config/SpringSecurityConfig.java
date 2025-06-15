@@ -47,7 +47,6 @@ import com.project.tutornet.component.AuthLoggingFilter;
 import com.project.tutornet.component.CustomAuthProvider;
 import com.project.tutornet.component.CustomAuthSuccessHandler;
 import com.project.tutornet.config.jwtConfig.JwtAccessTokenFilter;
-import com.project.tutornet.config.jwtConfig.JwtRefreshTokenFilter;
 import com.project.tutornet.repository.RefreshTokenRepo;
 import com.project.tutornet.service.impl.LogoutHandlerServiceImpl;
 import com.project.tutornet.utils.JwtTokenUtils;
@@ -205,8 +204,8 @@ public class SpringSecurityConfig {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource(new String[] { "POST"  })))
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .addFilterBefore(new JwtRefreshTokenFilter(rsaKeyRecord, jwtTokenUtils, refreshTokenRepo),
-                        UsernamePasswordAuthenticationFilter.class)
+                // .addFilterBefore(new JwtRefreshTokenFilter(refreshTokenRepo, jwtTokenUtils),
+                //         UsernamePasswordAuthenticationFilter.class)
                 .exceptionHandling(ex -> {
                     log.error("[SecurityConfig:refreshTokenSecurityFilterChain] Exception due to :{}", ex);
                     ex.authenticationEntryPoint(new BearerTokenAuthenticationEntryPoint());
