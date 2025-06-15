@@ -135,9 +135,9 @@ function TutorListPage() {
       }
 
       const selectedSlots = timeSlots
-        .filter(slot => selectedTimeSlots.includes(slot.id))
+        .filter(slot => selectedTimeSlots.includes(Number(slot.id)))
         .map(slot => ({
-          dayOfWeek: slot.dayOfWeek,
+          dayOfWeek: Number(slot.dayOfWeek),
           startTime: slot.startTime,
           endTime: slot.endTime
         }));
@@ -325,8 +325,8 @@ function TutorListPage() {
                     <ListItemIcon>
                       <Checkbox
                         edge="start"
-                        checked={selectedTimeSlots.includes(slot.id)}
-                        onChange={() => handleTimeSlotToggle(slot.id)}
+                        checked={selectedTimeSlots.includes(Number(slot.id))}
+                        onChange={() => handleTimeSlotToggle(Number(slot.id))}
                         tabIndex={-1}
                       />
                     </ListItemIcon>

@@ -5,6 +5,7 @@ import {
 } from "@reduxjs/toolkit/query/react";
 import { RootState } from "../state/store";
 import { commonHeader } from "../utils";
+import { LoginRequest, LoginResponse, SignupRequest, SignupRequestStudent, SignupRequestTutor } from "../types/types";
 
 export const authReducerName = "authApi";
 
