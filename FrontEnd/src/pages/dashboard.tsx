@@ -44,7 +44,8 @@ function TutorListPage() {
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [filteredTutors, setFilteredTutors] = useState<Tutor[]>([]);
   const [showDialog, setShowDialog] = useState(false);
-  const [selectedSubjectId, setSelectedSubjectId] = useState<string | null>(null);
+  const [selectedTutorId, setSelectedTutorId] = useState<string | null>(null);
+  
   const [selectedSubject, setSelectedSubject] = useState<string>("All");
   const [selectedTimeSlots, setSelectedTimeSlots] = useState<number[]>([]);
   const { userInfo, isLoggedIn } = useSelector((state) => selectAuthSlice(state));
@@ -52,9 +53,9 @@ function TutorListPage() {
 
   const { data: allTutors = [], isLoading: loading, error } = useGetTutorsQuery();
   const { data: timeSlots = [], isLoading: timeSlotsLoading } = useGetTutorTimeSlotsQuery(
-    selectedSubjectId ?? '', 
+    selectedTutorId ?? '', 
     {
-      skip: !selectedSubjectId,
+      skip: !selectedTutorId,
     }
   );
 
@@ -103,7 +104,7 @@ function TutorListPage() {
     setSearchTerm(event.target.value);
   };
 
-  const handleInterest = (subjectId: string) => {
+  const handleInterest = (TutorId: string) => {
     if (!isLoggedIn) {
       alert("Please login first.");
       return;
@@ -113,7 +114,7 @@ function TutorListPage() {
       alert("User email is missing. Please try logging out and logging back in.");
       return;
     }
-    setSelectedSubjectId(subjectId);
+    setSelectedTutorId(TutorId);
     setShowDialog(true);
   };
 
@@ -167,9 +168,9 @@ function TutorListPage() {
      
       <Container 
         sx={{ 
-          pl: 2, // Reduce left padding
-          pr: 2, // Keep consistent right padding
-          maxWidth: 'none' // Remove default maxWidth constraint
+          pl: 2, 
+          pr: 2, 
+          maxWidth: 'none' 
         }}
       >
         <Typography

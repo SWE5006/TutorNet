@@ -10,12 +10,11 @@ export interface TimeSlotDto {
 
 export interface InterestRequestDto {
   userId: string;
-  subjectId: string;
+  tutorId: string;
   availableTimeSlots: TimeSlotDto[];
 }
 
 export const submitInterest = async (data: InterestRequestDto) => {
-  // 从 Redux 获取 token
   const state: RootState = store.getState();
   const token = state.auth.userInfo?.access_token;
   const response = await fetch(`${process.env.GATSBY_BACKEND_API_URL}/api/interest`, {

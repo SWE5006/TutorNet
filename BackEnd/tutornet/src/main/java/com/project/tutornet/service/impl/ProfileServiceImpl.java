@@ -58,7 +58,9 @@ public class ProfileServiceImpl implements ProfileService {
         try {
             switch (user.getRoles()) {
                 case "STUDENT":
-                    Student student = studentRepository.findByUserInfoId(user.getId())
+                System.out.println("user id is:" + user.getId());    
+                Student student = studentRepository.findByUserInfoId(user.getId())
+                    
                         .orElseThrow(() -> new RuntimeException("Student profile not found"));
                     return ProfileResponse.builder()
                         .userId(user.getId())

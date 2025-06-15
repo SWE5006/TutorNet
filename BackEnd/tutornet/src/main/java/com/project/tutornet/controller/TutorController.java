@@ -5,6 +5,7 @@ import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -47,6 +48,7 @@ public class TutorController {
     }
 
      @PostMapping("/{tutorid}/subjects")
+     
     public ResponseEntity<?> addSubject(@PathVariable UUID id, @RequestBody SubjectRequest dto) {
         Tutor tutor = tutorRepository.findById(id).orElseThrow(() -> new RuntimeException("Tutor not found"));
 
@@ -59,6 +61,7 @@ public class TutorController {
     }
 
     @PostMapping("/{tutorid}/timeslots")
+    @PreAuthorize("hasAuthority('SCOPE_USER')")
     public ResponseEntity<?> addTimeSlot(@PathVariable("tutorid") UUID tutorId, 
                                        @RequestBody TimeSlotRequest request) {
         try {
@@ -79,9 +82,21 @@ public class TutorController {
     }
 
     @GetMapping("/timeslots/by-email/{email}")
+    @PreAuthorize("hasAuthority('SCOPE_USER')")
     public ResponseEntity<?> getTimeSlotsByTutorEmail(@PathVariable String email) {
         try {
             List<TimeSlot> timeSlots = tutorService.getTimeSlotsByTutorEmail(email);
+            return ResponseEntity.ok(timeSlots);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest()
+                .body("Failed to get time slots: " + e.getMessage());
+        }
+    }
+
+    @GetMapping("/timeslots/by-id/{id}")
+    public ResponseEntity<?> getTimeSlotsByTutorId(@PathVariable("id") UUID tutorId) {
+        try {
+            List<TimeSlot> timeSlots = tutorService.getTimeSlotsByTutorId(tutorId);
             return ResponseEntity.ok(timeSlots);
         } catch (Exception e) {
             return ResponseEntity.badRequest()

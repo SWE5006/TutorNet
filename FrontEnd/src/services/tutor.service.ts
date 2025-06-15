@@ -34,8 +34,8 @@ export const tutorApi = createApi({
           : [{ type: 'Tutor', id: 'LIST' }],
     }),
     getTutorTimeSlots: builder.query<TutorTimeSlot[], string>({
-      query: (email) => ({
-        url: `/timeslots/by-email/${email}`,
+      query: (tutorid) => ({
+        url: `/timeslots/by-id/${tutorid}`,
         method: 'GET'
       }),
       providesTags: ['Tutor']
