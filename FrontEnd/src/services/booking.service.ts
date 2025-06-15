@@ -22,6 +22,8 @@ export const bookingApi = createApi({
 
 export const { useGetBookingsByStudentIdQuery } = bookingApi;
 
+const API_URL = process.env.GATSBY_BACKEND_API_URL + "/api/booking";
+
 export const createBooking = async (data: {
   studentId: string;
   slotId: string;
@@ -29,7 +31,7 @@ export const createBooking = async (data: {
   bookingStatus?: string;
 }) => {
   const token = localStorage.getItem('token');
-  const res = await fetch(`${process.env.GATSBY_BACKEND_API_URL}/api/booking`, {
+  const res = await fetch(`${API_URL}`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -39,4 +41,26 @@ export const createBooking = async (data: {
   });
   if (!res.ok) throw new Error('Failed to create booking');
   return res.json();
+};
+
+export const getBookingsByStudentId = async (studentId: string) => {
+  const token = localStorage.getItem('token');
+  const res = await fetch(`${API_URL}/student/${studentId}`, {
+    headers: {
+      ...(token ? { Authorization: `Bearer ${token}` } : {})
+    }
+  });
+  if (!res.ok) throw new Error('Failed to fetch bookings');
+  return res.json();
+};
+
+export const deleteBooking = async (bookingId: string) => {
+  const token = localStorage.getItem('token');
+  const res = await fetch(`${API_URL}/${bookingId}`, {
+    method: 'DELETE',
+    headers: {
+      ...(token ? { Authorization: `Bearer ${token}` } : {})
+    }
+  });
+  if (!res.ok) throw new Error('Failed to delete booking');
 };

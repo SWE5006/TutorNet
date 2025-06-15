@@ -38,6 +38,7 @@ interface Tutor {
   experience: string;   // Added new field
   hourlyRate: number;   // Added new field
   subjects: string;     // Changed from subject to subjects
+  email: string;        // Added new field
 }
 
 function TutorListPage() {
@@ -47,14 +48,15 @@ function TutorListPage() {
   const [selectedSubjectId, setSelectedSubjectId] = useState<string | null>(null);
   const [selectedSubject, setSelectedSubject] = useState<string>("All");
   const [selectedTimeSlots, setSelectedTimeSlots] = useState<number[]>([]);
+  const [selectedTutorEmail, setSelectedTutorEmail] = useState<string | null>(null);
   const { userInfo, isLoggedIn } = useSelector((state) => selectAuthSlice(state));
   const userEmail = userInfo?.email_address || userInfo?.userEmail || "";
 
   const { data: allTutors = [], isLoading: loading, error } = useGetTutorsQuery();
   const { data: timeSlots = [], isLoading: timeSlotsLoading } = useGetTutorTimeSlotsQuery(
-    selectedSubjectId ?? '', 
+    selectedTutorEmail ?? '',
     {
-      skip: !selectedSubjectId,
+      skip: !selectedTutorEmail,
     }
   );
 
@@ -76,7 +78,8 @@ function TutorListPage() {
       education: tutor.education ?? "",
       experience: tutor.experience ?? "",
       hourlyRate: tutor.hourlyRate ?? 0,
-      subjects: tutor.subjects ?? ""
+      subjects: tutor.subjects ?? "",
+      email: tutor.email || tutor.emailAddress || ""
     }));
 
     if (searchTerm || selectedSubject !== "All") {
@@ -103,7 +106,7 @@ function TutorListPage() {
     setSearchTerm(event.target.value);
   };
 
-  const handleInterest = (subjectId: string) => {
+  const handleInterest = (tutorEmail: string) => {
     if (!isLoggedIn) {
       alert("Please login first.");
       return;
@@ -113,7 +116,7 @@ function TutorListPage() {
       alert("User email is missing. Please try logging out and logging back in.");
       return;
     }
-    setSelectedSubjectId(subjectId);
+    setSelectedTutorEmail(tutorEmail);
     setShowDialog(true);
   };
 
@@ -161,6 +164,8 @@ function TutorListPage() {
   const handleSubjectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedSubject(event.target.value);
   };
+
+  console.log('selectedTutorEmail', selectedTutorEmail, 'timeSlots', timeSlots);
 
   return (
     <Layout isLoading={false}>
@@ -236,13 +241,13 @@ function TutorListPage() {
         ) : (
           <Grid container>
             {filteredTutors.map((tutor) => (
-              <Grid key={tutor.id}>
+              <Grid item xs={12} sm={6} md={6} key={tutor.id}>
                 <Card sx={{ inlineSize: 520, blockSize: 380, display: 'flex', flexDirection: 'column', boxShadow: 6, m: 1 }}>
-                  <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'flex-start' }}>
+                  <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center', minHeight: 120 }}>
                     <Box
                       sx={{
-                        inlineSize: 310,
-                        blockSize: 200,
+                        width: 120,
+                        height: 120,
                         bgcolor: 'grey.300',
                         display: 'flex',
                         alignItems: 'center',
@@ -252,16 +257,16 @@ function TutorListPage() {
                         borderRadius: 2,
                         overflow: 'hidden',
                         mr: 2,
-                        float: 'left',
+                        flexShrink: 0,
                       }}
                     >
                       <img
                         src="/images/profileicon.png"
                         alt={tutor.username}
-                        style={{ inlineSize: '100%', blockSize: '100%', objectFit: 'cover' }}
+                        style={{ width: '100px', height: '100px', objectFit: 'cover', borderRadius: '50%' }}
                       />
                     </Box>
-                    <CardContent sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', p: 2 }}>
+                    <CardContent sx={{ flexGrow: 1, minHeight: 120, display: 'flex', flexDirection: 'column', justifyContent: 'center', p: 2 }}>
                       <Box>
                         <Typography variant="h6" component="div" gutterBottom>
                           {tutor.username}
@@ -283,7 +288,7 @@ function TutorListPage() {
                         </Typography>
                       </Box>
                       <Box sx={{ mt: 2 }}>
-                        <Button variant="contained" color="primary" fullWidth onClick={() => handleInterest(tutor.id)}>
+                        <Button variant="contained" color="primary" fullWidth onClick={() => handleInterest(tutor.email)}>
                           Interested
                         </Button>
                       </Box>
@@ -331,7 +336,7 @@ function TutorListPage() {
                       />
                     </ListItemIcon>
                     <ListItemText
-                      primary={`${slot.dayOfWeek}`}
+                      primary={DAYS_OF_WEEK[parseInt(String(slot.dayOfWeek))]}
                       secondary={`${slot.startTime} - ${slot.endTime}`}
                       sx={{
                         '& .MuiListItemText-primary': {
@@ -342,6 +347,7 @@ function TutorListPage() {
                   </ListItem>
                 ))}
               </List>
+              <pre style={{fontSize:12, color:'#888', marginTop:8}}>{JSON.stringify(timeSlots, null, 2)}</pre>
             </Box>
             <Typography sx={{ mb: 2 }}>
               Would you like to express interest in this tutor?

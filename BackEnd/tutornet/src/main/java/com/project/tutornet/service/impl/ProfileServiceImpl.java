@@ -106,8 +106,8 @@ public class ProfileServiceImpl implements ProfileService {
     @Override
     @Transactional
     public ProfileResponse updateProfile(UUID userId, ProfileRequest request) {
-        log.info("[ProfileServiceImpl:updateProfile] Updating profile for user: {}", request.getUserId());
-        UserInfoEntity user = userRepository.findById(request.getUserId())
+        log.info("[ProfileServiceImpl:updateProfile] Updating profile for user: {}", userId);
+        UserInfoEntity user = userRepository.findById(userId)
             .orElseThrow(() -> new RuntimeException("User not found"));
 
         if ("STUDENT".equals(user.getRoles())) {
@@ -200,7 +200,7 @@ public class ProfileServiceImpl implements ProfileService {
         log.info("[ProfileServiceImpl:updateTutorProfile] Updating tutor profile for user: {}", request.getUserId());
         UserInfoEntity user = userRepository.findById(request.getUserId())
             .orElseThrow(() -> new RuntimeException("User not found"));
-            
+        
         Tutor tutor = tutorRepository.findByUserInfoId(request.getUserId())
             .orElseThrow(() -> new RuntimeException("Tutor not found"));
 
@@ -208,11 +208,23 @@ public class ProfileServiceImpl implements ProfileService {
         tutor.setBio(request.getBio());
         tutor.setEducation(request.getEducation());
         tutor.setExperience(request.getExperience());
-        //tutor.setTeachingSubjects(request.getTeachingSubjects());
         tutor.setHourlyRate(request.getHourlyRate());
-        tutor.setTeachingAvailability(convertToTimeSlots(request.getTeachingAvailability()));
-        tutor.setUpdatedAt(LocalDateTime.now());
 
+        // Clear existing time slots
+        if (tutor.getTeachingAvailability() != null) {
+            tutor.getTeachingAvailability().clear();
+        }
+
+        // Add new time slots
+        if (request.getTeachingAvailability() != null) {
+            List<TimeSlot> slots = convertToTimeSlots(request.getTeachingAvailability());
+            for (TimeSlot slot : slots) {
+                slot.setTutor(tutor);
+                tutor.getTeachingAvailability().add(slot);
+            }
+        }
+
+        tutor.setUpdatedAt(LocalDateTime.now());
         tutorRepository.save(tutor);
         return getTutorProfile(user.getId());
     }

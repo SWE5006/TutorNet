@@ -42,13 +42,16 @@ export interface PriceRange {
 }
 
 export interface ProfileUpdateRequest {
+  userId: string;
   subjects: string[];
   interests: string[];
   topics: string[];
   availability: TimeSlot[];
   priceRange?: PriceRange;
   hourlyRate?: number;
-  experience:string;
-  education:string;
-  bio:string;
+  experience: string;
+  education: string;
+  bio: string;
+  teachingAvailability?: TimeSlot[];
+  teachingSubjects?: string[];
 }

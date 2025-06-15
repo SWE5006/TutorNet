@@ -88,4 +88,15 @@ public class TutorController {
                 .body("Failed to get time slots: " + e.getMessage());
         }
     }
+
+    @GetMapping("/timeslots/by-id/{tutorId}")
+    public ResponseEntity<?> getTimeSlotsByTutorId(@PathVariable UUID tutorId) {
+        try {
+            List<TimeSlot> timeSlots = tutorService.getTimeSlotsByTutorId(tutorId);
+            return ResponseEntity.ok(timeSlots);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest()
+                .body("Failed to get time slots: " + e.getMessage());
+        }
+    }
 }

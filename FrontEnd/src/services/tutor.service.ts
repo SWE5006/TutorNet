@@ -15,6 +15,7 @@ export interface Tutor {
   experience: string;   // Added new field
   hourlyRate: number;   // Added new field as number type for Double
   subjects: string;     // Changed from subject
+  email: string;        // Added new field
 }
 
 export const tutorApi = createApi({

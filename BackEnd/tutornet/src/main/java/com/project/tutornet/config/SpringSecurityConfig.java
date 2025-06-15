@@ -101,16 +101,15 @@ public class SpringSecurityConfig {
     @Bean
     CorsConfigurationSource corsConfigurationSource(String[] allowedMethods) {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of(frontendUrl));
+        configuration.setAllowedOrigins(List.of("http://localhost:8000"));
         configuration.addAllowedHeader("*");
-
         for (String method : allowedMethods) {
             configuration.addAllowedMethod(method);
         }
-
         configuration.setAllowCredentials(true);
         UrlBasedCorsConfigurationSource urlBasedCorsConfigurationSource = new UrlBasedCorsConfigurationSource();
         urlBasedCorsConfigurationSource.registerCorsConfiguration("/**", configuration);
+        log.info("CORS allowedOrigins: {}", configuration.getAllowedOrigins());
         return urlBasedCorsConfigurationSource;
     }
 
@@ -142,7 +141,7 @@ public class SpringSecurityConfig {
     public SecurityFilterChain googleSecurityFilterChain(HttpSecurity httpSecurity) throws Exception {
         return httpSecurity
                 .securityMatcher("/api/auth/google/**", "/oauth2/**", "/login/oauth2/**")
-                .cors(cors -> cors.configurationSource(corsConfigurationSource(new String[] { "GET", "POST" })))
+                .cors(withDefaults())
                 .csrf(csrf -> csrf.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()))
                 .authorizeHttpRequests(authorizeRequests -> authorizeRequests.anyRequest().authenticated())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED))
@@ -158,7 +157,7 @@ public class SpringSecurityConfig {
     public SecurityFilterChain signInSecurityFilterChain(HttpSecurity httpSecurity) throws Exception {
         return httpSecurity
                 .securityMatcher(new AntPathRequestMatcher("/api/auth/sign-in/**"))
-                .cors(cors -> cors.configurationSource(corsConfigurationSource(new String[] { "GET", "POST" })))
+                .cors(withDefaults())
                 .csrf(csrf -> csrf.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()).disable())
                 .authorizeHttpRequests((authorize) -> {
                     authorize.anyRequest().authenticated();
@@ -180,7 +179,7 @@ public class SpringSecurityConfig {
 
         return httpSecurity
                 .securityMatcher(new OrRequestMatcher(signUpMatcher, studentCreateMatcher, tutorCreateMatcher))
-                .cors(cors -> cors.configurationSource(corsConfigurationSource(new String[] { "POST" })))
+                .cors(withDefaults())
                 .csrf(csrf -> csrf.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()).disable())
                 .authorizeHttpRequests(auth -> auth.anyRequest().permitAll())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
@@ -202,7 +201,7 @@ public class SpringSecurityConfig {
     public SecurityFilterChain refreshTokenSecurityFilterChain(HttpSecurity httpSecurity) throws Exception {
         return httpSecurity
                 .securityMatcher(new AntPathRequestMatcher("/api/auth/refresh-token/**"))
-                .cors(cors -> cors.configurationSource(corsConfigurationSource(new String[] { "POST"  })))
+                .cors(withDefaults())
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(new JwtRefreshTokenFilter(rsaKeyRecord, jwtTokenUtils, refreshTokenRepo),
@@ -221,7 +220,7 @@ public class SpringSecurityConfig {
     public SecurityFilterChain logoutSecurityFilterChain(HttpSecurity httpSecurity) throws Exception {
         return httpSecurity
                 .securityMatcher(new AntPathRequestMatcher("/api/auth/logout/**"))
-                .cors(cors -> cors.configurationSource(corsConfigurationSource(new String[] { "POST" })))
+                .cors(withDefaults())
                 .csrf(csrf -> csrf.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()))
                 .authorizeHttpRequests(auth -> auth.anyRequest().authenticated())
                 .oauth2ResourceServer(oauth2 -> oauth2.jwt(withDefaults()))
@@ -246,10 +245,12 @@ public class SpringSecurityConfig {
     public SecurityFilterChain apiSecurityFilterChain(HttpSecurity httpSecurity) throws Exception {
         return httpSecurity
                 .securityMatcher(new AntPathRequestMatcher("/api/**"))
-                .cors(cors -> cors
-                        .configurationSource(corsConfigurationSource(new String[] { "GET", "POST", "DELETE" })))
+                .cors(withDefaults())
                 .csrf(csrf -> csrf.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()))
-                .authorizeHttpRequests(auth -> auth.anyRequest().authenticated())
+                .authorizeHttpRequests(auth -> auth
+                    .requestMatchers(org.springframework.http.HttpMethod.OPTIONS, "/**").permitAll()
+                    .anyRequest().authenticated()
+                )
                 .oauth2ResourceServer(oauth2 -> oauth2.jwt(withDefaults()))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(new JwtAccessTokenFilter(rsaKeyRecord, jwtTokenUtils),
