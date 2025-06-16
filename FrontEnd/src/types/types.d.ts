@@ -71,6 +71,16 @@ interface SignupRequestTutor {
   teachingSubjects?: string[];
 }
 
+interface BookingResponse{
+
+  id: string;
+  studentId: string;
+  tutorId: string;
+  timeSlotId: string;
+  bookingDate: string;
+  status: string;
+}
+
 interface Tutor {
   id: string;           // UUID from backend
   username: string;     // Changed from name
