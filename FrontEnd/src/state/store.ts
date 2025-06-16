@@ -2,6 +2,7 @@ import { configureStore, combineReducers } from "@reduxjs/toolkit";
 import authReducer, { AUTH_SLICE_NAME } from "./auth/slice";
 import { authApi } from "../services/auth.service";
 import { userApi } from "../services/user.service";
+import { profileApi } from "../services/profile.service";
 
 import {
   persistStore,
@@ -14,6 +15,7 @@ import {
   REGISTER,
 } from "redux-persist";
 import createWebStorage from "redux-persist/lib/storage/createWebStorage";
+import { tutorApi } from "../services/tutor.service";
 
 const createNoopStorage = () => {
   return {
@@ -44,7 +46,10 @@ const rootReducer = combineReducers({
   [AUTH_SLICE_NAME]: authReducer,
   [authApi.reducerPath]: authApi.reducer,
   [userApi.reducerPath]: userApi.reducer,
+  [profileApi.reducerPath]: profileApi.reducer,
+  [tutorApi.reducerPath]: tutorApi.reducer,
 });
+
 
 const store = configureStore({
   reducer: persistReducer(persistConfig, rootReducer),
@@ -53,7 +58,7 @@ const store = configureStore({
       serializableCheck: {
         ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
       },
-    }).concat(authApi.middleware, userApi.middleware);
+    }).concat(authApi.middleware, userApi.middleware, profileApi.middleware,tutorApi.middleware);
   },
 });
 

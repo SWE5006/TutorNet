@@ -1,8 +1,6 @@
 package com.project.tutornet.model;
 
-
 import com.project.tutornet.entity.UserInfoEntity;
-import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -10,9 +8,12 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Arrays;
 import java.util.Collection;
 
-@RequiredArgsConstructor
 public class UserDetailModel implements UserDetails {
     private final UserInfoEntity userInfoEntity;
+
+    public UserDetailModel(UserInfoEntity userInfoEntity) {
+        this.userInfoEntity = userInfoEntity;
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -42,5 +43,4 @@ public class UserDetailModel implements UserDetails {
 
     @Override
     public boolean isEnabled() { return false; }
-
 }

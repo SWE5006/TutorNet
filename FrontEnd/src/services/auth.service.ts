@@ -5,6 +5,7 @@ import {
 } from "@reduxjs/toolkit/query/react";
 import { RootState } from "../state/store";
 import { commonHeader } from "../utils";
+import { LoginRequest, LoginResponse, SignupRequest, SignupRequestStudent, SignupRequestTutor } from "../types/types";
 
 export const authReducerName = "authApi";
 
@@ -60,6 +61,20 @@ export const authApi = createApi({
         body: userInfo,
       }),
     }),
+    signUpStudent: builder.mutation<LoginResponse, SignupRequestStudent>({
+      query: (userInfo) => ({
+        url: "/sign-up/student",
+        method: "POST",
+        body: userInfo,
+      }),
+    }),
+    signUpTutor: builder.mutation<LoginResponse, SignupRequestTutor>({
+      query: (userInfo) => ({
+        url: "/sign-up/tutor",
+        method: "POST",
+        body: userInfo,
+      }),
+    }),
     logout: builder.mutation<string, void>({
       query: () => ({
         url: "/logout",
@@ -75,5 +90,7 @@ export const {
   useLoginMutation,
   useLoginWithGoogleMutation,
   useSignUpMutation,
+  useSignUpStudentMutation,
+  useSignUpTutorMutation,
   useLogoutMutation,
 } = authApi;

@@ -1,9 +1,9 @@
 package com.project.tutornet.repository;
 
-import com.project.tutornet.entity.UserInfoEntity;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.ListCrudRepository;
@@ -11,10 +11,13 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.project.tutornet.entity.UserInfoEntity;
+
 @Repository
 public interface UserRepository
   extends ListCrudRepository<UserInfoEntity, UUID> {
   Optional<UserInfoEntity> findByEmailAddress(String email);
+  Optional<UserInfoEntity> findByUsername(String username);
 
   List<UserInfoEntity> findAll();
 

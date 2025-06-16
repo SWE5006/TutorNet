@@ -4,163 +4,175 @@ import {
   Typography,
   Box,
   TextField,
-  MenuItem,
-  Select,
-  FormControl,
-  InputLabel,
   Card,
   CardContent,
   Grid,
   CircularProgress,
   Alert,
-  SelectChangeEvent,
+  Button,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  List,
+  ListItem,
+  ListItemText,
+  Checkbox,
+  ListItemIcon,
 } from "@mui/material";
 import Layout from "../components/Layout";
+import { submitInterest } from "../services/interest.service";
+import { useSelector } from "react-redux";
+import { selectAuthSlice } from "../state/auth/slice";
+import { useGetTutorsQuery, useGetTutorTimeSlotsQuery } from "../services/tutor.service";
 
 interface Tutor {
-  id: string;
-  name: string;
-  subject: string;
-  description: string;
-  location: string;
-  rating: number;
+  id: string;           // UUID from backend
+  username: string;     // Changed from name to username
+  bio: string;         
+  education: string;    // Added new field
+  experience: string;   // Added new field
+  hourlyRate: number;   // Added new field
+  subjects: string;     // Changed from subject to subjects
 }
-
-const DUMMY_TUTORS: Tutor[] = [
-  {
-    id: "tutor1",
-    name: "Alice Wonderland",
-    subject: "Mathematics",
-    description:
-      "Experienced in algebra, calculus, and geometry. Passionate about making math fun!",
-    location: "Singapore",
-    rating: 4.8,
-  },
-  {
-    id: "tutor2",
-    name: "Bob The Builder",
-    subject: "Physics",
-    description:
-      "Specializes in classical mechanics and electromagnetism. Prepares students for competitive exams.",
-    location: "Jurong East",
-    rating: 4.5,
-  },
-  {
-    id: "tutor3",
-    name: "Charlie Chaplin",
-    subject: "English",
-    description:
-      "Focuses on essay writing, grammar, and literature analysis. Helps improve verbal communication.",
-    location: "Tampines",
-    rating: 4.9,
-  },
-  {
-    id: "tutor4",
-    name: "Diana Prince",
-    subject: "Chemistry",
-    description:
-      "Expert in organic and inorganic chemistry. Provides clear explanations and problem-solving strategies.",
-    location: "Ang Mo Kio",
-    rating: 4.7,
-  },
-  {
-    id: "tutor5",
-    name: "Eve Adams",
-    subject: "Mathematics",
-    description:
-      "Certified tutor for primary and secondary school mathematics. Patient and encouraging.",
-    location: "Woodlands",
-    rating: 4.6,
-  },
-  {
-    id: "tutor6",
-    name: "Frank Ocean",
-    subject: "Biology",
-    description:
-      "Covers cell biology, genetics, and ecology. Makes complex topics easy to understand.",
-    location: "Novena",
-    rating: 4.4,
-  },
-  {
-    id: "tutor7",
-    name: "Grace Hopper",
-    subject: "Computer Science",
-    description:
-      "Programming fundamentals (Python, Java), data structures, and algorithms.",
-    location: "Bishan",
-    rating: 5.0,
-  },
-];
-
-const ALL_SUBJECTS: string[] = [
-  "All Subjects",
-  ...new Set(DUMMY_TUTORS.map((tutor) => tutor.subject)),
-];
 
 function TutorListPage() {
   const [searchTerm, setSearchTerm] = useState<string>("");
-  const [selectedSubject, setSelectedSubject] =
-    useState<string>("All Subjects");
   const [filteredTutors, setFilteredTutors] = useState<Tutor[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
+  const [showDialog, setShowDialog] = useState(false);
+  const [selectedTutorId, setSelectedTutorId] = useState<string | null>(null);
+  
+  const [selectedSubject, setSelectedSubject] = useState<string>("All");
+  const [selectedTimeSlots, setSelectedTimeSlots] = useState<number[]>([]);
+  const { userInfo, isLoggedIn } = useSelector((state) => selectAuthSlice(state));
+  const userEmail = userInfo?.email_address || userInfo?.userEmail || "";
 
-  useEffect(() => {
-    const fetchTutors = async () => {
-      try {
-        setLoading(true);
-        setError(null);
-        await new Promise((resolve) => setTimeout(resolve, 500));
-        setFilteredTutors(DUMMY_TUTORS);
-      } catch (err: any) {
-        setError("Failed to load tutors. Please try again.");
-        console.error("Error fetching tutors:", err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchTutors();
-  }, []);
-
-  // Filter tutors whenever search term or subject changes
-  useEffect(() => {
-    let currentTutors: Tutor[] = DUMMY_TUTORS; // Explicitly type currentTutors
-
-    if (selectedSubject !== "All Subjects") {
-      currentTutors = currentTutors.filter(
-        (tutor) => tutor.subject === selectedSubject
-      );
+  const { data: allTutors = [], isLoading: loading, error } = useGetTutorsQuery();
+  const { data: timeSlots = [], isLoading: timeSlotsLoading } = useGetTutorTimeSlotsQuery(
+    selectedTutorId ?? '', 
+    {
+      skip: !selectedTutorId,
     }
+  );
 
-    if (searchTerm) {
+  const SUBJECTS = [
+    "All",
+    "Mathematics",
+    "Physics",
+    "Chemistry",
+    "Biology",
+    "Computer Science",
+    "English"
+  ];
+
+  useEffect(() => {
+    let currentTutors: Tutor[] = (allTutors as any[]).map((tutor: any) => ({
+      id: tutor.id,
+      username: tutor.username,
+      bio: tutor.bio ?? "",
+      education: tutor.education ?? "",
+      experience: tutor.experience ?? "",
+      hourlyRate: tutor.hourlyRate ?? 0,
+      subjects: tutor.subjects ?? ""
+    }));
+
+    if (searchTerm || selectedSubject !== "All") {
       const lowerCaseSearchTerm = searchTerm.toLowerCase();
-      currentTutors = currentTutors.filter(
-        (tutor) =>
-          tutor.name.toLowerCase().includes(lowerCaseSearchTerm) ||
-          tutor.subject.toLowerCase().includes(lowerCaseSearchTerm) ||
-          tutor.description.toLowerCase().includes(lowerCaseSearchTerm) ||
-          tutor.location.toLowerCase().includes(lowerCaseSearchTerm)
-      );
+      currentTutors = currentTutors.filter((tutor) => {
+        const matchesSearch = 
+          tutor.username.toLowerCase().includes(lowerCaseSearchTerm) ||
+          tutor.subjects.toLowerCase().includes(lowerCaseSearchTerm) ||
+          tutor.bio.toLowerCase().includes(lowerCaseSearchTerm) ||
+          tutor.education.toLowerCase().includes(lowerCaseSearchTerm) ||
+          tutor.experience.toLowerCase().includes(lowerCaseSearchTerm);
+        
+        const matchesSubject = selectedSubject === "All" || 
+          tutor.subjects.toLowerCase().includes(selectedSubject.toLowerCase());
+
+        return matchesSearch && matchesSubject;
+      });
     }
 
     setFilteredTutors(currentTutors);
-  }, [searchTerm, selectedSubject]);
+  }, [searchTerm, selectedSubject, allTutors]);
 
-  // Event handler for TextField change
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(event.target.value);
   };
 
-  // Event handler for Select (dropdown) change
-  const handleSubjectChange = (event: SelectChangeEvent<string>) => {
-    // Use SelectChangeEvent
+  const handleInterest = (TutorId: string) => {
+    if (!isLoggedIn) {
+      alert("Please login first.");
+      return;
+    }
+    if (!userEmail) {
+      console.error('User email is missing:', { userInfo, isLoggedIn, userEmail });
+      alert("User email is missing. Please try logging out and logging back in.");
+      return;
+    }
+    setSelectedTutorId(TutorId);
+    setShowDialog(true);
+  };
+
+  const handleTimeSlotToggle = (slotId: number) => {
+    setSelectedTimeSlots(prev => {
+      if (prev.includes(slotId)) {
+        return prev.filter(id => id !== slotId);
+      } else {
+        return [...prev, slotId];
+      }
+    });
+  };
+
+  const handleSubmit = async () => {
+    try {
+      if (selectedTimeSlots.length === 0) {
+        alert("Please select at least one time slot.");
+        return;
+      }
+
+      const selectedSlots = timeSlots
+        .filter(slot => selectedTimeSlots.includes(Number(slot.id)))
+        .map(slot => ({
+          dayOfWeek: Number(slot.dayOfWeek),
+          startTime: slot.startTime,
+          endTime: slot.endTime
+        }));
+
+      await submitInterest({
+        userId: userEmail,
+        subjectId: selectedSubjectId!,
+        availableTimeSlots: selectedSlots
+      });
+      
+      setShowDialog(false);
+      setSelectedSubjectId(null);
+      setSelectedTimeSlots([]); // Reset selected slots
+      alert("Interest submitted successfully!");
+    } catch (err) {
+      alert("Failed to submit interest. Please try again.");
+      console.error(err);
+    }
+  };
+
+  const handleSubjectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedSubject(event.target.value);
   };
 
   return (
     <Layout isLoading={false}>
-      <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
+     
+      <Container 
+        sx={{ 
+          pl: 2, 
+          pr: 2, 
+          maxWidth: 'none' 
+        }}
+      >
         <Typography
           variant="h4"
           component="h1"
@@ -171,7 +183,6 @@ function TutorListPage() {
           Recommended Tutors
         </Typography>
 
-        {/* Filter Section */}
         <Box
           sx={{
             mb: 4,
@@ -190,19 +201,17 @@ function TutorListPage() {
             label="Search Tutors"
             variant="outlined"
             value={searchTerm}
-            onChange={handleSearchChange} // Use typed handler
+            onChange={handleSearchChange}
             sx={{ width: { xs: "100%", sm: "auto" }, flexGrow: 1 }}
           />
-          <FormControl sx={{ width: { xs: "100%", sm: 200 } }}>
-            <InputLabel id="subject-select-label">Subject</InputLabel>
+          <FormControl sx={{ minWidth: 200 }}>
+            <InputLabel>Filter by Subject</InputLabel>
             <Select
-              labelId="subject-select-label"
-              id="subject-select"
               value={selectedSubject}
-              label="Subject"
-              onChange={handleSubjectChange} // Use typed handler
+              label="Filter by Subject"
+              onChange={(e) => handleSubjectChange(e as any)}
             >
-              {ALL_SUBJECTS.map((subject) => (
+              {SUBJECTS.map((subject) => (
                 <MenuItem key={subject} value={subject}>
                   {subject}
                 </MenuItem>
@@ -211,7 +220,6 @@ function TutorListPage() {
           </FormControl>
         </Box>
 
-        {/* Tutor List Section */}
         {loading ? (
           <Box
             display="flex"
@@ -224,58 +232,127 @@ function TutorListPage() {
               Loading tutors...
             </Typography>
           </Box>
-        ) : error ? (
-          <Alert severity="error">{error}</Alert>
         ) : filteredTutors.length === 0 ? (
           <Alert severity="info">No tutors found matching your criteria.</Alert>
         ) : (
-          <Grid container spacing={3}>
+          <Grid container>
             {filteredTutors.map((tutor) => (
-              <Grid item xs={12} sm={6} md={4} key={tutor.id}>
-                <Card
-                  sx={{
-                    height: "100%",
-                    display: "flex",
-                    flexDirection: "column",
-                    boxShadow: 6,
-                  }}
-                >
-                  <CardContent sx={{ flexGrow: 1 }}>
-                    <Typography variant="h6" component="div" gutterBottom>
-                      {tutor.name}
-                    </Typography>
-                    <Typography
-                      variant="subtitle1"
-                      color="primary"
-                      sx={{ mb: 1 }}
+              <Grid key={tutor.id}>
+                <Card sx={{ inlineSize: 520, blockSize: 380, display: 'flex', flexDirection: 'column', boxShadow: 6, m: 1 }}>
+                  <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'flex-start' }}>
+                    <Box
+                      sx={{
+                        inlineSize: 310,
+                        blockSize: 200,
+                        bgcolor: 'grey.300',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        fontSize: 32,
+                        color: '#888',
+                        borderRadius: 2,
+                        overflow: 'hidden',
+                        mr: 2,
+                        float: 'left',
+                      }}
                     >
-                      {tutor.subject}
-                    </Typography>
-                    <Typography
-                      variant="body2"
-                      color="text.secondary"
-                      sx={{ mb: 1.5 }}
-                    >
-                      {tutor.description}
-                    </Typography>
-                    <Typography variant="body2" color="text.secondary">
-                      <Box component="span" fontWeight="medium">
-                        Location:
-                      </Box>{" "}
-                      {tutor.location}
-                    </Typography>
-                    <Typography variant="body2" color="text.secondary">
-                      <Box component="span" fontWeight="medium">
-                        Rating:
-                      </Box>{" "}
-                      {tutor.rating} / 5
-                    </Typography>
-                  </CardContent>
+                      <img
+                        src="/images/profileicon.png"
+                        alt={tutor.username}
+                        style={{ inlineSize: '100%', blockSize: '100%', objectFit: 'cover' }}
+                      />
+                    </Box>
+                    <CardContent sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', p: 2 }}>
+                      <Box>
+                        <Typography variant="h6" component="div" gutterBottom>
+                          {tutor.username}
+                        </Typography>
+                        <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+                          {tutor.bio}
+                        </Typography>
+                        <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+                          <Box component="span" fontWeight="medium">Education:</Box> {tutor.education}
+                        </Typography>
+                        <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+                          <Box component="span" fontWeight="medium">Experience:</Box> {tutor.experience}
+                        </Typography>
+                        <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+                          <Box component="span" fontWeight="medium">Rate:</Box> ${tutor.hourlyRate}/hour
+                        </Typography>
+                        <Typography variant="body2" color="text.secondary">
+                          <Box component="span" fontWeight="medium">Subjects:</Box> {tutor.subjects}
+                        </Typography>
+                      </Box>
+                      <Box sx={{ mt: 2 }}>
+                        <Button variant="contained" color="primary" fullWidth onClick={() => handleInterest(tutor.id)}>
+                          Interested
+                        </Button>
+                      </Box>
+                    </CardContent>
+                  </Box>
                 </Card>
               </Grid>
             ))}
           </Grid>
         )}
+
+        <Dialog open={showDialog} onClose={() => setShowDialog(false)} maxWidth="sm" fullWidth>
+          <DialogTitle>Express Your Interest</DialogTitle>
+          <DialogContent sx={{ width: 400, minHeight: 300 }}>
+            <Typography variant="h6" sx={{ mb: 2 }}>
+              Available Time Slots
+            </Typography>
+            <Box sx={{ mb: 2 }}>
+              <List sx={{ 
+                width: '100%', 
+                bgcolor: 'background.paper',
+                border: '1px solid',
+                borderColor: 'grey.300',
+                borderRadius: 1,
+                maxHeight: 200,
+                overflow: 'auto'
+              }}>
+                {timeSlots.map((slot) => (
+                  <ListItem
+                    key={slot.id}
+                    sx={{
+                      borderBottom: '1px solid',
+                      borderColor: 'grey.200',
+                      '&:last-child': {
+                        borderBottom: 'none'
+                      }
+                    }}
+                  >
+                    <ListItemIcon>
+                      <Checkbox
+                        edge="start"
+                        checked={selectedTimeSlots.includes(Number(slot.id))}
+                        onChange={() => handleTimeSlotToggle(Number(slot.id))}
+                        tabIndex={-1}
+                      />
+                    </ListItemIcon>
+                    <ListItemText
+                      primary={`${slot.dayOfWeek}`}
+                      secondary={`${slot.startTime} - ${slot.endTime}`}
+                      sx={{
+                        '& .MuiListItemText-primary': {
+                          fontWeight: 'medium'
+                        }
+                      }}
+                    />
+                  </ListItem>
+                ))}
+              </List>
+            </Box>
+            <Typography sx={{ mb: 2 }}>
+              Would you like to express interest in this tutor?
+            </Typography>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={() => setShowDialog(false)}>Cancel</Button>
+            <Button variant="contained" onClick={handleSubmit}>Book Tutor</Button>
+          </DialogActions>
+        </Dialog>
       </Container>
     </Layout>
   );
