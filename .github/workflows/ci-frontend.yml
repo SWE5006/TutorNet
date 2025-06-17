@@ -1,4 +1,4 @@
-name: Frontend CI (Gatsby + TypeScript + Yarn)
+name: Frontend CI Pipeline
 
 on:
   push:
