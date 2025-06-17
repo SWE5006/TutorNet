@@ -81,6 +81,14 @@ interface BookingResponse{
   status: string;
 }
 
+interface BookingResquest{
+  id: string;
+  studentId: string;
+  subjectName: string;
+  timeSlotId: string;
+  numberOfSession:number;
+}
+
 interface Tutor {
   id: string;           // UUID from backend
   username: string;     // Changed from name

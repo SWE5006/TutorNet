@@ -45,8 +45,10 @@ function TutorListPage() {
   const [filteredTutors, setFilteredTutors] = useState<Tutor[]>([]);
   const [showDialog, setShowDialog] = useState(false);
   const [selectedTutorId, setSelectedTutorId] = useState<string | null>(null);
+  const [selectedTutorName, setSelectedTutorName] = useState<string | null>(null);
   
   const [selectedSubject, setSelectedSubject] = useState<string>("All");
+  const [interestedSubject, setinterestedSubject] = useState<string>("All");
   const [selectedTimeSlots, setSelectedTimeSlots] = useState<number[]>([]);
   const { userInfo, isLoggedIn } = useSelector((state) => selectAuthSlice(state));
   const userEmail = userInfo?.email_address || userInfo?.userEmail || "";
@@ -118,6 +120,7 @@ function TutorListPage() {
       return;
     }
     setSelectedTutorId(TutorId);
+    setSelectedTutorName(filteredTutors.find(tutor => tutor.id === TutorId)?.username || null);
     setShowDialog(true);
   };
 
@@ -147,13 +150,15 @@ function TutorListPage() {
         }));
 
       await submitInterest({
-        userId: userEmail,
-        tutorId: selectedTutorId!,
-        availableTimeSlots: selectedSlots
+        subjectName: interestedSubject!,
+        slotId: selectedTimeSlots.join(","),
+        studentId: userInfo?.id || userInfo?.userId || "",
+        numberOfBooking: selectedTimeSlots.length
       });
       
       setShowDialog(false);
       setSelectedTutorId(null);
+      setSelectedTutorName(null);
       setSelectedTimeSlots([]); // Reset selected slots
       alert("Interest submitted successfully!");
     } catch (err) {
@@ -164,6 +169,10 @@ function TutorListPage() {
 
   const handleSubjectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedSubject(event.target.value);
+  };
+
+   const handleInterestSubjectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    setinterestedSubject(event.target.value);
   };
 
   return (
@@ -300,10 +309,10 @@ function TutorListPage() {
         )}
 
         <Dialog open={showDialog} onClose={() => setShowDialog(false)} maxWidth="sm" fullWidth>
-          <DialogTitle>Express Your Interest</DialogTitle>
+          <DialogTitle><h1>Booking Tutor</h1></DialogTitle>
           <DialogContent sx={{ width: 400, minHeight: 300 }}>
             <Typography variant="h6" sx={{ mb: 2 }}>
-              Available Time Slots
+              {selectedTutorName} - Available Time Slots
             </Typography>
             <Box sx={{ mb: 2 }}>
               <List sx={{ 
@@ -346,10 +355,20 @@ function TutorListPage() {
                   </ListItem>
                 ))}
               </List>
+              <InputLabel>Subject</InputLabel>
+              <Select fullWidth
+                value={interestedSubject}
+                label="Filter by Subject"
+                onChange={(e) => handleInterestSubjectChange(e as any)}
+              >
+                {SUBJECTS.map((subject) => (
+                  <MenuItem key={subject} value={subject}>
+                    {subject}
+                  </MenuItem>
+                ))}
+              </Select>
             </Box>
-            <Typography sx={{ mb: 2 }}>
-              Would you like to express interest in this tutor?
-            </Typography>
+        
           </DialogContent>
           <DialogActions>
             <Button onClick={() => setShowDialog(false)}>Cancel</Button>

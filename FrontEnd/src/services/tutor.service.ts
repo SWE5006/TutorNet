@@ -33,6 +33,7 @@ export const tutorApi = createApi({
           ? [...result.map(({ id }) => ({ type: 'Tutor' as const, id })), { type: 'Tutor', id: 'LIST' }]
           : [{ type: 'Tutor', id: 'LIST' }],
     }),
+    
     getTutorTimeSlots: builder.query<TutorTimeSlot[], string>({
       query: (tutorid) => ({
         url: `/timeslots/by-id/${tutorid}`,
@@ -41,6 +42,7 @@ export const tutorApi = createApi({
       providesTags: ['Tutor']
     }),
   }),
+  refetchOnMountOrArgChange: true,
   
 });
 

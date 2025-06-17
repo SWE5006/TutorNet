@@ -67,10 +67,8 @@ const BookingPage: React.FC = () => {
                         <Typography component="span" variant="body2" color="text.primary">
                           Date: {new Date(booking.date).toLocaleDateString()}
                         </Typography>
-                        <br />
-                        <Typography component="span" variant="body2">
-                          Time: {booking.slot?.startTime} - {booking.slot?.endTime}
-                        </Typography>
+                        
+                        
                         <br />
                         <Typography component="span" variant="body2">
                           Tutor ID: {booking.tutorId}
