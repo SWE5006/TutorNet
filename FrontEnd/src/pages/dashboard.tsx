@@ -69,6 +69,9 @@ function TutorListPage() {
     "English"
   ];
 
+  const DAYS_OF_WEEK = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+
+
   useEffect(() => {
     let currentTutors: Tutor[] = (allTutors as any[]).map((tutor: any) => ({
       id: tutor.id,
@@ -145,12 +148,12 @@ function TutorListPage() {
 
       await submitInterest({
         userId: userEmail,
-        subjectId: selectedSubjectId!,
+        tutorId: selectedTutorId!,
         availableTimeSlots: selectedSlots
       });
       
       setShowDialog(false);
-      setSelectedSubjectId(null);
+      setSelectedTutorId(null);
       setSelectedTimeSlots([]); // Reset selected slots
       alert("Interest submitted successfully!");
     } catch (err) {
@@ -332,7 +335,7 @@ function TutorListPage() {
                       />
                     </ListItemIcon>
                     <ListItemText
-                      primary={`${slot.dayOfWeek}`}
+                      primary={DAYS_OF_WEEK[parseInt(slot.dayOfWeek) - 1]}
                       secondary={`${slot.startTime} - ${slot.endTime}`}
                       sx={{
                         '& .MuiListItemText-primary': {

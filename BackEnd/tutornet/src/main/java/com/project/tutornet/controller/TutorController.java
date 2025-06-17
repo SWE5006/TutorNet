@@ -2,6 +2,7 @@ package com.project.tutornet.controller;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.project.tutornet.dto.SubjectRequest;
 import com.project.tutornet.dto.TimeSlotRequest;
+import com.project.tutornet.dto.TimeSlotResponse;
 import com.project.tutornet.dto.TutorResponse;
 import com.project.tutornet.entity.Subject;
 import com.project.tutornet.entity.TimeSlot;
@@ -96,7 +98,18 @@ public class TutorController {
     @GetMapping("/timeslots/by-id/{id}")
     public ResponseEntity<?> getTimeSlotsByTutorId(@PathVariable("id") UUID tutorId) {
         try {
-            List<TimeSlot> timeSlots = tutorService.getTimeSlotsByTutorId(tutorId);
+            List<TimeSlotResponse> timeSlots = tutorService.getTimeSlotsByTutorId(tutorId)
+                .stream()
+                .map(slot -> {
+                    TimeSlotResponse response = new TimeSlotResponse();
+                    response.setId(slot.getId());
+                    response.setDayOfWeek(slot.getDayOfWeek());
+                    response.setStartTime(slot.getStartTime());
+                    response.setEndTime(slot.getEndTime());
+                    response.setStatus(slot.getStatus());
+                    return response;
+                })
+                .collect(Collectors.toList());
             return ResponseEntity.ok(timeSlots);
         } catch (Exception e) {
             return ResponseEntity.badRequest()

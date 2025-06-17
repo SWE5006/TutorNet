@@ -13,7 +13,6 @@ import org.springframework.transaction.annotation.Transactional;
 import com.project.tutornet.dto.ProfileRequest;
 import com.project.tutornet.dto.ProfileResponse;
 import com.project.tutornet.dto.TimeSlotRequest;
-import com.project.tutornet.dto.TimeSlotResponse;
 import com.project.tutornet.entity.Student;
 import com.project.tutornet.entity.TimeSlot;
 import com.project.tutornet.entity.Tutor;
@@ -84,7 +83,7 @@ public class ProfileServiceImpl implements ProfileService {
                         .education(tutor.getEducation())
                         .experience(tutor.getExperience())
                         .hourlyRate(tutor.getHourlyRate())
-                        .teachingAvailability(convertToTimeSlotResponses(tutor.getTeachingAvailability()))
+                       // .teachingAvailability(convertToTimeSlotResponses(tutor.getTeachingAvailability()))
                         .teachingSubjects(
                             tutor.getSubjects() != null 
                                 ? tutor.getSubjects().toString() 
@@ -166,7 +165,7 @@ public class ProfileServiceImpl implements ProfileService {
             .experience(tutor.getExperience())
            // .teachingSubjects(tutor.getTeachingSubjects())
             .hourlyRate(tutor.getHourlyRate())
-            .teachingAvailability(convertToTimeSlotResponses(tutor.getTeachingAvailability()))
+            //.teachingAvailability(convertToTimeSlotResponses(tutor.getTeachingAvailability()))
             .createdAt(tutor.getCreatedAt().toString())
             .lastUpdated(tutor.getUpdatedAt().toString())
             .build();
@@ -219,19 +218,7 @@ public class ProfileServiceImpl implements ProfileService {
         return getTutorProfile(user.getId());
     }
 
-    private List<TimeSlotResponse> convertToTimeSlotResponses(List<TimeSlot> timeSlots) {
-        if (timeSlots == null) {
-            return List.of();
-        }
-        return timeSlots.stream()
-            .map(slot -> TimeSlotResponse.builder()
-                .dayOfWeek(slot.getDayOfWeek())
-                .startTime(slot.getStartTime())
-                .endTime(slot.getEndTime())
-                .status(slot.getStatus())
-                .build())
-            .collect(Collectors.toList());
-    }
+   
 
     private List<TimeSlot> convertToTimeSlots(List<TimeSlotRequest> requests) {
         if (requests == null) {
