@@ -35,6 +35,9 @@ jobs:
       - name: Clean cache
         run: yarn clean
 
+      - name: Manually delete caches
+        run: rm -rf .cache public node_modules/.cache
+
       - name: Build
         run: yarn build
         continue-on-error: true
