@@ -30,8 +30,6 @@ public class BookingService {
         Booking booking = new Booking();
         booking.setBookingStatus("ACTIVE");
         booking.setBookingDate(new Date());
-        booking.setScheduleStart(request.getScheduleStart());
-        booking.setScheduleEnd(request.getScheduleEnd());
         booking.setSubjectName(request.getSubjectName());
         booking.setStudent(student);
 
