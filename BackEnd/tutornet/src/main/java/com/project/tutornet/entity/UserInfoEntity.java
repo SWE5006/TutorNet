@@ -1,6 +1,7 @@
 package com.project.tutornet.entity;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -14,7 +15,6 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -25,7 +25,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name="users")
+
 public class UserInfoEntity {
 
 	@Id
@@ -40,8 +40,11 @@ public class UserInfoEntity {
 	private String mobileNumber;
 	private String roles;
 	private LocalDateTime createDatetime;
+	private String photoUrl;
 
-	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
 	private List<RefreshTokenEntity> refreshTokens;
 
+	@OneToMany(mappedBy = "userInfo", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Tutor> tutors = new ArrayList<>(); // Added relationship to Tutor
 }

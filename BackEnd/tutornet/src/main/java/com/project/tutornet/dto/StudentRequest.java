@@ -1,19 +1,35 @@
 package com.project.tutornet.dto;
 
-import jakarta.validation.constraints.Min;
+import java.util.List;
+
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
+import lombok.Data;
 
-public class StudentRequest extends UserRequest {
-    @Min(0)
-    private int age;
-    @NotNull
-    private String classLevel;
-    
-    
-    // Getters and setters
-    public int getAge() { return age; }
-    public void setAge(int age) { this.age = age; }
-    public String getClassLevel() { return classLevel; }
-    public void setClassLevel(String classLevel) { this.classLevel = classLevel; }
+@Data
+public class StudentRequest {
+    @NotBlank(message = "Username is required")
+    @Size(min = 3, max = 50, message = "Username must be between 3 and 50 characters")
+    private String username;
 
+    @NotBlank(message = "Password is required")
+    @Size(min = 6, message = "Password must be at least 6 characters")
+    private String password;
+
+    @NotBlank(message = "Email is required")
+    @Email(message = "Invalid email format")
+    private String emailAddress;
+
+    @NotBlank(message = "Mobile number is required")
+    private String mobileNumber;
+
+    private String bio;
+    private String education;
+    private String experience;
+    private List<String> interestedSubjects;
+    private List<String> topics;
+    private Double minBudget;
+    private Double maxBudget;
 }

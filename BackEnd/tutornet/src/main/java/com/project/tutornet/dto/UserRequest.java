@@ -5,10 +5,9 @@ package com.project.tutornet.dto;
 import com.project.tutornet.component.EncryptAttributeConverter;
 
 import jakarta.persistence.Convert;
-import jakarta.persistence.Id;
 
 public abstract class UserRequest {
-  @Id
+
 	
 	
   public void setUsername(String username) {
@@ -40,7 +39,7 @@ public abstract class UserRequest {
     return mobileNumber;
   }
  
-    private String username;
+  private String username;
 	private String password;
 	@Convert(converter = EncryptAttributeConverter.class)
 	private String emailAddress;
