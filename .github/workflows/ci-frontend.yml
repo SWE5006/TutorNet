@@ -32,6 +32,9 @@ jobs:
         run: yarn lint
         continue-on-error: true
 
+      - name: Clean cache
+        run: yarn clean
+
       - name: Build
         run: yarn build
         continue-on-error: true
