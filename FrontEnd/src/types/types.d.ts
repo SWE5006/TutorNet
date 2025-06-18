@@ -72,21 +72,25 @@ interface SignupRequestTutor {
 }
 
 interface BookingResponse{
+ id: string;
+  bookingDate: string;
+  bookingStatus: string;
+  subjectName: string;
+  numberOfSession:number;
+  studentName: string;
+  timeslots: string;
+  tutorName: string;
 
-  id: string;
+}
+
+interface BookingRequest{
+   id: string;
   studentId: string;
   tutorId: string;
   timeSlotId: string;
   bookingDate: string;
   status: string;
-}
-
-interface BookingResquest{
-  id: string;
-  studentId: string;
-  subjectName: string;
-  timeSlotId: string;
-  numberOfSession:number;
+  
 }
 
 interface Tutor {

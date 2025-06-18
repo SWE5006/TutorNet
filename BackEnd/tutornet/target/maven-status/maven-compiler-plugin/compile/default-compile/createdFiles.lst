@@ -1,3 +1,4 @@
+com\project\tutornet\dto\BookingResponseDto.class
 com\project\tutornet\controller\InterestController.class
 com\project\tutornet\repository\TutorRepository.class
 com\project\tutornet\dto\StudentRequest.class
@@ -46,6 +47,7 @@ com\project\tutornet\entity\Assignment.class
 com\project\tutornet\entity\SessionDocument.class
 com\project\tutornet\repository\RefreshTokenRepo.class
 com\project\tutornet\service\InterestService.class
+com\project\tutornet\dto\StudentDto.class
 com\project\tutornet\controller\GlobalExceptionHandler.class
 com\project\tutornet\dto\UpdateBookingStatusDto.class
 com\project\tutornet\service\impl\UserInfoServiceImpl.class
@@ -85,7 +87,6 @@ com\project\tutornet\entity\Announcement.class
 com\project\tutornet\controller\TutorController.class
 com\project\tutornet\dto\TutorResponse.class
 com\project\tutornet\component\SecurityFailureListener$AuthorizationDeniedEventListener.class
-com\project\tutornet\dto\TimeSlotResponse$TimeSlotResponseBuilder.class
 com\project\tutornet\entity\RefreshTokenEntity$RefreshTokenEntityBuilder.class
 com\project\tutornet\dto\ManageUserRequest.class
 com\project\tutornet\entity\Dispute.class

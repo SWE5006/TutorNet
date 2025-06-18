@@ -1,7 +1,7 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { RootState } from "../state/store";
 import { commonHeader } from "../utils";
-import { BookingResponse, BookingResquest, Tutor, TutorTimeSlot } from "../types/types";
+import { BookingResponse, BookingRequest, Tutor, TutorTimeSlot } from "../types/types";
 
 
 export const tutorReducerName = "bookingApi";
@@ -29,7 +29,7 @@ export const tutorApi = createApi({
       }),
       providesTags: ['Booking']
     }),
-      addBooking: builder.mutation<void, BookingResquest>({
+      addBooking: builder.mutation<void, BookingRequest>({
           query: (payload) => ({
             url: "/create",
             method: "POST",
@@ -43,4 +43,4 @@ export const tutorApi = createApi({
   
 });
 
-export const { useGetBookingByStudentIdQuery } = tutorApi;
+export const { useGetBookingByStudentIdQuery,useAddBookingMutation,useGetBookingByTutorIdQuery } = tutorApi;

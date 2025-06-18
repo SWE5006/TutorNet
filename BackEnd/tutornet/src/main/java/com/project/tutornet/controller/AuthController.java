@@ -19,7 +19,6 @@ import com.project.tutornet.dto.TutorRequest;
 import com.project.tutornet.dto.UserRegistrationRequest;
 import com.project.tutornet.entity.Student;
 import com.project.tutornet.entity.Tutor;
-import com.project.tutornet.entity.UserInfoEntity;
 import com.project.tutornet.service.StudentService;
 import com.project.tutornet.service.TutorService;
 import com.project.tutornet.service.impl.AuthServiceImpl;

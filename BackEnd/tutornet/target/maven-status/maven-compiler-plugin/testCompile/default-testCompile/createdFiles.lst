@@ -1,2 +1,5 @@
-com\project\tutornet\UserRegistrationIntegrationTest.class
+com\project\tutornet\TutorControllerIntegrationTest.class
 com\project\tutornet\TutornetApplicationTests.class
+com\project\tutornet\UserRegistrationIntegrationTest.class
+com\project\tutornet\BookingControllerTest.class
+com\project\tutornet\ProfileControllerTest.class

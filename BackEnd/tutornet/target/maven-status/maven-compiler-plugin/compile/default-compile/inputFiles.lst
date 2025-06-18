@@ -19,6 +19,7 @@ c:\CapStoneCodes\TutorNet\TutorNet\BackEnd\tutornet\src\main\java\com\project\tu
 c:\CapStoneCodes\TutorNet\TutorNet\BackEnd\tutornet\src\main\java\com\project\tutornet\controller\TutorController.java
 c:\CapStoneCodes\TutorNet\TutorNet\BackEnd\tutornet\src\main\java\com\project\tutornet\dto\ApiResponse.java
 c:\CapStoneCodes\TutorNet\TutorNet\BackEnd\tutornet\src\main\java\com\project\tutornet\dto\AuthResponse.java
+c:\CapStoneCodes\TutorNet\TutorNet\BackEnd\tutornet\src\main\java\com\project\tutornet\dto\BookingResponseDto.java
 c:\CapStoneCodes\TutorNet\TutorNet\BackEnd\tutornet\src\main\java\com\project\tutornet\dto\CreateBookingDto.java
 c:\CapStoneCodes\TutorNet\TutorNet\BackEnd\tutornet\src\main\java\com\project\tutornet\dto\CreateBookingRequest.java
 c:\CapStoneCodes\TutorNet\TutorNet\BackEnd\tutornet\src\main\java\com\project\tutornet\dto\CreateUserRequest.java
@@ -30,6 +31,7 @@ c:\CapStoneCodes\TutorNet\TutorNet\BackEnd\tutornet\src\main\java\com\project\tu
 c:\CapStoneCodes\TutorNet\TutorNet\BackEnd\tutornet\src\main\java\com\project\tutornet\dto\ManageUserRequest.java
 c:\CapStoneCodes\TutorNet\TutorNet\BackEnd\tutornet\src\main\java\com\project\tutornet\dto\ProfileRequest.java
 c:\CapStoneCodes\TutorNet\TutorNet\BackEnd\tutornet\src\main\java\com\project\tutornet\dto\ProfileResponse.java
+c:\CapStoneCodes\TutorNet\TutorNet\BackEnd\tutornet\src\main\java\com\project\tutornet\dto\StudentDto.java
 c:\CapStoneCodes\TutorNet\TutorNet\BackEnd\tutornet\src\main\java\com\project\tutornet\dto\StudentRequest.java
 c:\CapStoneCodes\TutorNet\TutorNet\BackEnd\tutornet\src\main\java\com\project\tutornet\dto\SubjectRequest.java
 c:\CapStoneCodes\TutorNet\TutorNet\BackEnd\tutornet\src\main\java\com\project\tutornet\dto\TimeSlotDto.java

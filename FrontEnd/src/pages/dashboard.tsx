@@ -29,6 +29,7 @@ import { submitInterest } from "../services/interest.service";
 import { useSelector } from "react-redux";
 import { selectAuthSlice } from "../state/auth/slice";
 import { useGetTutorsQuery, useGetTutorTimeSlotsQuery } from "../services/tutor.service";
+import { log } from "console";
 
 interface Tutor {
   id: string;           // UUID from backend
@@ -49,7 +50,7 @@ function TutorListPage() {
   
   const [selectedSubject, setSelectedSubject] = useState<string>("All");
   const [interestedSubject, setinterestedSubject] = useState<string>("All");
-  const [selectedTimeSlots, setSelectedTimeSlots] = useState<number[]>([]);
+  const [selectedTimeSlots, setSelectedTimeSlots] = useState<string[]>([]);
   const { userInfo, isLoggedIn } = useSelector((state) => selectAuthSlice(state));
   const userEmail = userInfo?.email_address || userInfo?.userEmail || "";
 
@@ -73,6 +74,8 @@ function TutorListPage() {
 
   const DAYS_OF_WEEK = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
+  console.log("userInfo Email", userInfo.email_address);
+  
 
   useEffect(() => {
     let currentTutors: Tutor[] = (allTutors as any[]).map((tutor: any) => ({
@@ -124,7 +127,7 @@ function TutorListPage() {
     setShowDialog(true);
   };
 
-  const handleTimeSlotToggle = (slotId: number) => {
+  const handleTimeSlotToggle = (slotId: string) => {
     setSelectedTimeSlots(prev => {
       if (prev.includes(slotId)) {
         return prev.filter(id => id !== slotId);
@@ -136,35 +139,37 @@ function TutorListPage() {
 
   const handleSubmit = async () => {
     try {
+
       if (selectedTimeSlots.length === 0) {
         alert("Please select at least one time slot.");
         return;
       }
 
       const selectedSlots = timeSlots
-        .filter(slot => selectedTimeSlots.includes(Number(slot.id)))
+        .filter(slot => selectedTimeSlots.includes(slot.id))
         .map(slot => ({
           dayOfWeek: Number(slot.dayOfWeek),
           startTime: slot.startTime,
           endTime: slot.endTime
         }));
 
-      await submitInterest({
+      submitInterest({
         subjectName: interestedSubject!,
-        slotId: selectedTimeSlots.join(","),
-        studentId: userInfo?.id || userInfo?.userId || "",
-        numberOfBooking: selectedTimeSlots.length
+        slotId: selectedTimeSlots,
+        studentEmail: userEmail,
+        numberOfBooking: selectedTimeSlots.length,
+        tutorId: selectedTutorId!,
+        bookingDate: new Date().toISOString().split('T')[0], // Use current
       });
       
+      alert("Tutor booked successfully!");
+      console.log("Booking submitted successfully");
       setShowDialog(false);
-      setSelectedTutorId(null);
-      setSelectedTutorName(null);
-      setSelectedTimeSlots([]); // Reset selected slots
-      alert("Interest submitted successfully!");
-    } catch (err) {
-      alert("Failed to submit interest. Please try again.");
-      console.error(err);
+    } catch (error) {
+      console.error("Error submitting booking:", error);
+      alert("Failed to book tutor." + (error instanceof Error ? error.message : ""));
     }
+   
   };
 
   const handleSubjectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
@@ -338,8 +343,9 @@ function TutorListPage() {
                     <ListItemIcon>
                       <Checkbox
                         edge="start"
-                        checked={selectedTimeSlots.includes(Number(slot.id))}
-                        onChange={() => handleTimeSlotToggle(Number(slot.id))}
+                        checked={selectedTimeSlots.includes(slot.id)}
+                        onChange={() => handleTimeSlotToggle(slot.id)}
+                        disableRipple
                         tabIndex={-1}
                       />
                     </ListItemIcon>

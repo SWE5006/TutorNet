@@ -5,10 +5,12 @@ import store from '../state/store';
 
 
 export interface InterestRequestDto {
-  studentId:string;
+  studentEmail:string;
   subjectName: string;
-  slotId: string;
+  slotId: string[];
   numberOfBooking: number;
+  tutorId: string;
+  bookingDate: String;
 }
 
 
