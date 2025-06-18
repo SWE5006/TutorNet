@@ -1,18 +1,19 @@
-# Use Eclipse Temurin JDK 24 base image
-FROM eclipse-temurin:24-jdk-alpine
+FROM azul/zulu-openjdk-alpine:21-latest AS builder
 
-# Set environment variables
-ENV APP_HOME=/app \
-    JAVA_OPTS=""
+WORKDIR /app
 
-# Create application directory
-WORKDIR $APP_HOME
+COPY . .
 
-# Copy the jar file (adjust the filename if needed)
-COPY target/tutornet-0.0.1-SNAPSHOT.jar app.jar
+RUN ./mvnw clean package
 
-# Expose the port the app runs on
+FROM azul/zulu-openjdk-alpine:21-latest AS optimizer
+
+WORKDIR /app
+
+COPY --from=builder /app/target/*.jar tutor-net.jar
+
+COPY entrypoint.sh /app/entrypoint.sh
+RUN chmod +x /app/entrypoint.sh
+
 EXPOSE 8080
-
-# Run the app
-ENTRYPOINT ["sh", "-c", "java $JAVA_OPTS -jar app.jar"]
+ENTRYPOINT ["/app/entrypoint.sh"]
