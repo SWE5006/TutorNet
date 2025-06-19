@@ -26,6 +26,9 @@ export const submitInterest = async (data: InterestRequestDto) => {
     credentials: 'include',
     body: JSON.stringify(data),
   });
-  if (!response.ok) throw new Error('Failed to submit interest');
+  if (!response.ok) {
+    console.error('Failed to submit interest:', response.statusText);
+    throw new Error(`HTTP error! status: ${response.status}`);
+  }
   return response.json();
 }; 

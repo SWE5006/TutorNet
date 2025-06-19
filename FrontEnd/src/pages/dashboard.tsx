@@ -30,6 +30,7 @@ import { useSelector } from "react-redux";
 import { selectAuthSlice } from "../state/auth/slice";
 import { useGetTutorsQuery, useGetTutorTimeSlotsQuery } from "../services/tutor.service";
 import { log } from "console";
+import { navigate } from "gatsby";
 
 interface Tutor {
   id: string;           // UUID from backend
@@ -163,8 +164,10 @@ function TutorListPage() {
       });
       
       alert("Tutor booked successfully!");
+      
       console.log("Booking submitted successfully");
       setShowDialog(false);
+      navigate("/booking");
     } catch (error) {
       console.error("Error submitting booking:", error);
       alert("Failed to book tutor." + (error instanceof Error ? error.message : ""));

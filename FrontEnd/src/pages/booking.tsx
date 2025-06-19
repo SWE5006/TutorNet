@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useSelector } from "react-redux";
 import {
   Container,
@@ -21,14 +21,22 @@ import {
 import { selectAuthSlice } from "../state/auth/slice";
 import Layout from "../components/Layout";
 import { useGetBookingByEmailQuery } from "../services/booking.service";
+
+
 import { Add as AddIcon, Delete as DeleteIcon, Edit as EditIcon } from "@mui/icons-material";
 
-interface TimeSlot {
-  slotId: string; // UUID
-  dayOfWeek: number;
-  startTime: string;
-  endTime: string;
+// Define the Booking type to match the booking object structure
+interface Booking {
+  id: string;
+  bookingDate: string;
+  bookingStatus: string;
+  subjectName: string;
+  numberOfSession: number;
+  studentName: string;
+  timeslots: string;
+  tutorName: string;
 }
+
 
 const handleCancelBooking = async (bookingId: string) => {
   console.log(`Cancel booking with ID: ${bookingId}`);
@@ -37,12 +45,45 @@ const handleCancelBooking = async (bookingId: string) => {
 const BookingPage: React.FC = () => {
   const { userInfo, isLoggedIn } = useSelector((state) => selectAuthSlice(state));
   const {
-    data: bookings = [],
+    data: bookings,
     error,
     isLoading,
+    refetch
   } = useGetBookingByEmailQuery(userInfo?.email_address ?? "", {
     skip: !isLoggedIn || !userInfo?.email_address,
   });
+
+  // Refetch data when component mounts or page is navigated to
+  useEffect(() => {
+    if (userInfo?.email_address) {
+      refetch();
+    }
+  }, [userInfo?.email_address, refetch]);
+
+  if (isLoading) {
+    return (
+      <Container maxWidth="lg">
+        <Paper elevation={3} sx={{ p: 3, my: 2, textAlign: 'center' }}>
+          <CircularProgress />
+          <Typography variant="h6" sx={{ mt: 2 }}>
+            Loading bookings...
+          </Typography>
+        </Paper>
+      </Container>
+    );
+  }
+
+  if (error) {
+    return (
+      <Container maxWidth="lg">
+        <Paper elevation={3} sx={{ p: 3, my: 2 }}>
+          <Alert severity="error">
+            Error loading bookings. Please try again.
+          </Alert>
+        </Paper>
+      </Container>
+    );
+  }
 
   return (
     <Layout isLoading={isLoading}>
@@ -61,13 +102,13 @@ const BookingPage: React.FC = () => {
             My Bookings
           </Typography>
           <List>
-            {bookings.length === 0 ? (
+            {!bookings || bookings.length === 0 ? (
               <Typography variant="body1" color="textSecondary" align="center">
                 No bookings found
               </Typography>
             ) : (
-              bookings.map((booking) => (
-                <React.Fragment key={booking.id}>
+              bookings.map((booking: Booking) => (
+                 <React.Fragment key={booking.id}>
                   <ListItem>
                     <ListItemText
                       primary={
@@ -91,9 +132,7 @@ const BookingPage: React.FC = () => {
                           </Button>
                         </Box>
                       }
-                      secondary={`Date: ${new Date(booking.bookingDate).toLocaleDateString()
-                        }, Subject: ${booking.subjectName}`}
-                      
+                      secondary={`Date: ${new Date(booking.bookingDate).toLocaleDateString()}, Subject: ${booking.subjectName}`}
                     />
                   </ListItem>
                   <Divider />

@@ -80,7 +80,6 @@ interface BookingResponse{
   studentName: string;
   timeslots: string;
   tutorName: string;
-
 }
 
 interface BookingRequest{
