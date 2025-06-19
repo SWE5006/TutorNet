@@ -19,5 +19,5 @@ RUN chmod +x ./tutor-net.jar
 COPY entrypoint.sh /app/entrypoint.sh
 RUN chmod +x /app/entrypoint.sh
 
-EXPOSE 8080
+EXPOSE 8083
 ENTRYPOINT ["/app/entrypoint.sh"]
