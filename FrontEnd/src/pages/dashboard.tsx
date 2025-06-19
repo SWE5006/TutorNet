@@ -350,7 +350,7 @@ function TutorListPage() {
                       />
                     </ListItemIcon>
                     <ListItemText
-                      primary={DAYS_OF_WEEK[parseInt(slot.dayOfWeek) - 1]}
+                      primary={slot.dayOfWeek}
                       secondary={`${slot.startTime} - ${slot.endTime}`}
                       sx={{
                         '& .MuiListItemText-primary': {
