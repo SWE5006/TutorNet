@@ -27,9 +27,9 @@ public class BookingController {
        
     }
 
-    @GetMapping("/{studentid}")
-    public ResponseEntity<List<BookingResponseDto>> getBookingsByStudentId(@PathVariable("studentid") String studentId) {
-        List<BookingResponseDto> bookings = bookingService.getBookingsByStudentId(studentId);
+    @GetMapping("/{email}")
+    public ResponseEntity<List<BookingResponseDto>> getBookingsByEmail(@PathVariable("email") String email) {
+        List<BookingResponseDto> bookings = bookingService.getBookingsByEmail(email);
         return ResponseEntity.ok(bookings);
     }
     

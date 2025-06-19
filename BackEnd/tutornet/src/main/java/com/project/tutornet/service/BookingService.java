@@ -74,6 +74,25 @@ public class BookingService {
                        .collect(Collectors.toList());
     }
 
+    
+public List<BookingResponseDto> getBookingsByEmail(String emailAddress) {
+
+        Student student = studentRepository.findByUserInfoEmailAddress(emailAddress)
+            .orElseThrow(() -> new RuntimeException("Student not found"));
+        List<Booking> bookings = bookingRepository.findByStudentId(student.getId().toString());
+        return bookings.stream()
+                       .map(booking -> new BookingResponseDto(
+                           booking.getBookingId(),
+                           booking.getBookingDate(),
+                           booking.getBookingStatus(),
+                           booking.getSubjectName(),
+                           booking.getNumberOfBooking(),
+                           booking.getStudentName(),
+                           booking.getSlot().getDayOfWeek() + "" + " " + booking.getSlot().getStartTime() + " - " + booking.getSlot().getEndTime(),
+                           booking.getSlot().getTutor().getUsername()
+                            ))
+                       .collect(Collectors.toList());
+    }
 
 
     

@@ -4,20 +4,20 @@ import { commonHeader } from "../utils";
 import { BookingResponse, BookingRequest, Tutor, TutorTimeSlot } from "../types/types";
 
 
-export const tutorReducerName = "bookingApi";
+export const bookingReducerName = "bookingApi";
 
-export const tutorApi = createApi({
-  reducerPath: tutorReducerName,
+export const bookingApi = createApi({
+  reducerPath: bookingReducerName,
   baseQuery: fetchBaseQuery({
-    baseUrl: process.env.GATSBY_BACKEND_API_URL + "/api/bookings",
+    baseUrl: process.env.GATSBY_BACKEND_API_URL + "/api/booking",
     credentials: "include",
     prepareHeaders: commonHeader,
   }),
   tagTypes: ['Booking'],
   endpoints: (builder) => ({
-    getBookingByStudentId: builder.query<BookingResponse[], string>({
-      query: (studentid) => ({
-        url: `/${studentid}`,
+    getBookingByEmail: builder.query<BookingResponse[], string>({
+      query: (email) => ({
+        url: `/${email}`,
         method: 'GET'
       }),
       providesTags: ['Booking']
@@ -43,4 +43,4 @@ export const tutorApi = createApi({
   
 });
 
-export const { useGetBookingByStudentIdQuery,useAddBookingMutation,useGetBookingByTutorIdQuery } = tutorApi;
+export const { useGetBookingByEmailQuery,useAddBookingMutation,useGetBookingByTutorIdQuery } = bookingApi;

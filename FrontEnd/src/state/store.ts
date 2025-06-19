@@ -3,6 +3,7 @@ import authReducer, { AUTH_SLICE_NAME } from "./auth/slice";
 import { authApi } from "../services/auth.service";
 import { userApi } from "../services/user.service";
 import { profileApi } from "../services/profile.service";
+import { bookingApi } from "../services/booking.service";
 
 import {
   persistStore,
@@ -48,6 +49,7 @@ const rootReducer = combineReducers({
   [userApi.reducerPath]: userApi.reducer,
   [profileApi.reducerPath]: profileApi.reducer,
   [tutorApi.reducerPath]: tutorApi.reducer,
+  [bookingApi.reducerPath]: bookingApi.reducer,
 });
 
 
@@ -58,7 +60,7 @@ const store = configureStore({
       serializableCheck: {
         ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
       },
-    }).concat(authApi.middleware, userApi.middleware, profileApi.middleware,tutorApi.middleware);
+    }).concat(authApi.middleware, userApi.middleware, profileApi.middleware,tutorApi.middleware, bookingApi.middleware);
   },
 });
 
