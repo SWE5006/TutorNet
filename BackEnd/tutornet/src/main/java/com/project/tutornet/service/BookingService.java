@@ -88,7 +88,7 @@ public List<BookingResponseDto> getBookingsByEmail(String emailAddress) {
                            booking.getSubjectName(),
                            booking.getNumberOfBooking(),
                            booking.getStudentName(),
-                           booking.getSlot().getDayOfWeek() + "" + " " + booking.getSlot().getStartTime() + " - " + booking.getSlot().getEndTime(),
+                           booking.getSlot().getDayOfWeek() + booking.getSlot().getStartTime() + " - " + booking.getSlot().getEndTime(),
                            booking.getSlot().getTutor().getUsername()
                             ))
                        .collect(Collectors.toList());
