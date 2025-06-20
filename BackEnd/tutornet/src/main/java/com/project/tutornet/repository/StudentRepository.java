@@ -10,4 +10,5 @@ import com.project.tutornet.entity.Student;
 @Repository
 public interface StudentRepository extends JpaRepository<Student, UUID> {
     Optional<Student> findByUserInfoId(UUID userInfoId);
+    Optional<Student> findByUserInfoEmailAddress(String emailAddress);
 }

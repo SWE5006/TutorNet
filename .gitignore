@@ -50,3 +50,7 @@ replay_pid*
 # OS
 .DS_Store
 Thumbs.db
+BackEnd/tutornet/target/classes/com/project/tutornet/repository/TutorRepository.class
+BackEnd/tutornet/target/classes/com/project/tutornet/repository/UserRepository.class
+BackEnd/tutornet/target/classes/com/project/tutornet/TutornetApplication.class
+BackEnd/tutornet/target/test-classes/com/project/tutornet/TutornetApplicationTests.class

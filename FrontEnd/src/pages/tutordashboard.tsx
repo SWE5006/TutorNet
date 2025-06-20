@@ -15,7 +15,7 @@ import AddIcon from "@mui/icons-material/Add";
 import DeleteIcon from "@mui/icons-material/Delete";
 import Layout from "../components/Layout";
 import {
-  useGetTutorTimeSlotsQuery,
+  useGetTutorTimeSlotsByUserIdQuery,
   useAddTimeSlotMutation,
   useDeleteTimeSlotMutation,
 } from "../services/tutor.service";
@@ -27,7 +27,7 @@ function TutorDashboard() {
   const { userInfo } = useSelector((state) => selectAuthSlice(state));
   const [timeslotOpen, setTimeSlotOpen] = useState(false);
 
-  const { data: timeSlots, isLoading } = useGetTutorTimeSlotsQuery(
+  const { data: timeSlots, isLoading } = useGetTutorTimeSlotsByUserIdQuery(
     userInfo?.email_address ?? "",
     {
       skip: !userInfo?.email_address,

@@ -5,6 +5,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import com.project.tutornet.dto.*;
+import com.project.tutornet.service.BookingService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.extern.slf4j.Slf4j;
@@ -36,6 +37,9 @@ public class TutorController {
 
     @Autowired
     private SubjectRepository subjectRepository;
+
+    @Autowired
+    private BookingService bookingService;
 
     @GetMapping("/by-subject")
     public ResponseEntity<List<TutorResponse>> getTutorsBySubject(@RequestParam String subject) {
@@ -97,13 +101,35 @@ public class TutorController {
         }
     }
 
-    @GetMapping("/timeslots/by-id")
-    public ResponseEntity<?> getTimeSlotsByTutorId(Authentication authentication) {
+    @GetMapping("/timeslots/id")
+    public ResponseEntity<?> getTimeSlotsByUserId(Authentication authentication) {
         try {
             // get userid from token
             Jwt jwt = (Jwt) authentication.getCredentials();
             String userid = (String) jwt.getClaims().get("userid");
             UUID tutorId = UUID.fromString(userid);
+            List<TimeSlotResponse> timeSlots = tutorService.getTimeSlotsByUserId(tutorId)
+                .stream()
+                .map(slot -> {
+                    TimeSlotResponse response = new TimeSlotResponse();
+                    response.setId(slot.getId());
+                    response.setDayOfWeek(slot.getDayOfWeek());
+                    response.setStartTime(slot.getStartTime());
+                    response.setEndTime(slot.getEndTime());
+                    response.setStatus(slot.getStatus());
+                    return response;
+                })
+                .collect(Collectors.toList());
+            return ResponseEntity.ok(timeSlots);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest()
+                .body("Failed to get time slots: " + e.getMessage());
+        }
+    }
+
+    @GetMapping("/timeslots/by-id/{id}")
+    public ResponseEntity<?> getTimeSlotsByTutorId(@PathVariable("id") UUID tutorId) {
+        try {
             List<TimeSlotResponse> timeSlots = tutorService.getTimeSlotsByTutorId(tutorId)
                 .stream()
                 .map(slot -> {
@@ -139,5 +165,11 @@ public class TutorController {
                     HttpStatus.INTERNAL_SERVER_ERROR.value(), null);
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
+
+    @GetMapping(path= "/{email}/booking")
+    public ResponseEntity<List<BookingResponseDto>> getBookingsByEmail(@PathVariable("email") String email) {
+        List<BookingResponseDto> bookings = bookingService.getBookingsByEmail(email);
+        return ResponseEntity.ok(bookings);
     }
 }

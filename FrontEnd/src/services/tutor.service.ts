@@ -1,7 +1,7 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { RootState } from "../state/store";
 import { commonHeader } from "../utils";
-import { TutorTimeSlot } from "../types/types";
+import { TutorTimeSlot,BookingResponse } from "../types/types";
 
 export const tutorReducerName = "tutorApi";
 
@@ -35,9 +35,18 @@ export const tutorApi = createApi({
             ]
           : [{ type: "Tutor", id: "LIST" }],
     }),
+    
     getTutorTimeSlots: builder.query<TutorTimeSlot[], string>({
+      query: (tutorid) => ({
+        url: `/timeslots/by-id/${tutorid}`,
+        method: "GET",
+      }),
+      providesTags: ["TimeSlots"],
+    }),
+     
+    getTutorTimeSlotsByUserId: builder.query<TutorTimeSlot[], string>({
       query: () => ({
-        url: `/timeslots/by-id`,
+        url: `/timeslots/id`,
         method: "GET",
       }),
       providesTags: ["TimeSlots"],
@@ -57,12 +66,22 @@ export const tutorApi = createApi({
       }),
       invalidatesTags: ["TimeSlots"],
     }),
+       getBookingByEmail: builder.query<BookingResponse[], string>({
+          query: (email) => ({
+            url: `/${email}/booking`,
+            method: 'GET',
+          }),
+        }),
   }),
+  refetchOnMountOrArgChange: true,
+  
 });
 
 export const {
   useGetTutorsQuery,
+  useGetTutorTimeSlotsByUserIdQuery,
   useGetTutorTimeSlotsQuery,
   useAddTimeSlotMutation,
   useDeleteTimeSlotMutation,
+  useGetBookingByEmailQuery,
 } = tutorApi;

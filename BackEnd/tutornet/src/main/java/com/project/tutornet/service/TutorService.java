@@ -136,6 +136,16 @@ public class TutorService {
   @Transactional(readOnly = true)
   public List<TimeSlot> getTimeSlotsByTutorId(UUID tutorId) {
     Tutor tutor = tutorRepository
+      .findById(tutorId)
+      .orElseThrow(() ->
+        new RuntimeException("Tutor not found with id: " + tutorId)
+      );
+    return timeSlotRepository.findByTutorId(tutor.getId());
+  }
+
+    @Transactional(readOnly = true)
+  public List<TimeSlot> getTimeSlotsByUserId(UUID tutorId) {
+    Tutor tutor = tutorRepository
       .findByUserInfoId(tutorId)
       .orElseThrow(() ->
         new RuntimeException("Tutor not found with id: " + tutorId)

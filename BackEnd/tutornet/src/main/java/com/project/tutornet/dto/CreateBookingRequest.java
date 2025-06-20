@@ -1,6 +1,5 @@
 package com.project.tutornet.dto;
 
-import java.util.UUID;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
@@ -8,25 +7,39 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CreateBookingRequest {
-    private UUID studentId;
+    private String studentEmail;
+   
+    
     private String subjectName;
-    private String bookingStatus;
-    private UUID slotId;
+    private String[] slotId;
     private int numberOfBooking;
-
-    public UUID getStudentId() {
-        return studentId;
+    
+    public String getStudentEmail() {
+        return studentEmail;
     }
-
-    public void setStudentId(UUID studentId) {
-        this.studentId = studentId;
+    
+    public void setStudentEmail(String studentEmail) {
+        this.studentEmail = studentEmail;
     }
-
-    public String getSubjectName() {
-        return subjectName;
-    }
-
+    
     public void setSubjectName(String subjectName) {
         this.subjectName = subjectName;
     }
+    public void setSlotId(String[] slotId) {
+        this.slotId = slotId;
+    }
+    public void setNumberOfBooking(int numberOfBooking) {
+        this.numberOfBooking = numberOfBooking;
+    }
+   
+    public String getSubjectName() {
+        return subjectName;
+    }
+    public String[] getSlotId() {
+        return slotId;
+    }
+    public int getNumberOfBooking() {
+        return numberOfBooking;
+    }
+
 }
