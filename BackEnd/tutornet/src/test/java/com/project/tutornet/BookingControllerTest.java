@@ -47,11 +47,11 @@ public class BookingControllerTest {
         // Mock BookingResponse
         String authToken = generateAuthToken();
        
-        UUID studentId = UUID.randomUUID();
+      //  UUID studentId = UUID.randomUUID();
      
 
         // Perform GET request and verify response
-        mockMvc.perform(get("/api/booking/" + studentId)
+        mockMvc.perform(get("/api/booking/" + "kokyawlin@gmail.com") // Use the generated auth token
                 .header("Authorization", authToken) // Add the Authorization header
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
