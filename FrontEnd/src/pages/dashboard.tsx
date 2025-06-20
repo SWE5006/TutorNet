@@ -29,6 +29,8 @@ import { submitInterest } from "../services/interest.service";
 import { useSelector } from "react-redux";
 import { selectAuthSlice } from "../state/auth/slice";
 import { useGetTutorsQuery, useGetTutorTimeSlotsQuery } from "../services/tutor.service";
+import { log } from "console";
+import { navigate } from "gatsby";
 
 interface Tutor {
   id: string;           // UUID from backend
@@ -45,9 +47,11 @@ function TutorListPage() {
   const [filteredTutors, setFilteredTutors] = useState<Tutor[]>([]);
   const [showDialog, setShowDialog] = useState(false);
   const [selectedTutorId, setSelectedTutorId] = useState<string | null>(null);
+  const [selectedTutorName, setSelectedTutorName] = useState<string | null>(null);
   
   const [selectedSubject, setSelectedSubject] = useState<string>("All");
-  const [selectedTimeSlots, setSelectedTimeSlots] = useState<number[]>([]);
+  const [interestedSubject, setinterestedSubject] = useState<string>("All");
+  const [selectedTimeSlots, setSelectedTimeSlots] = useState<string[]>([]);
   const { userInfo, isLoggedIn } = useSelector((state) => selectAuthSlice(state));
   const userEmail = userInfo?.email_address || userInfo?.userEmail || "";
 
@@ -68,6 +72,11 @@ function TutorListPage() {
     "Computer Science",
     "English"
   ];
+
+  const DAYS_OF_WEEK = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+
+  console.log("userInfo Email", userInfo.email_address);
+  
 
   useEffect(() => {
     let currentTutors: Tutor[] = (allTutors as any[]).map((tutor: any) => ({
@@ -115,10 +124,11 @@ function TutorListPage() {
       return;
     }
     setSelectedTutorId(TutorId);
+    setSelectedTutorName(filteredTutors.find(tutor => tutor.id === TutorId)?.username || null);
     setShowDialog(true);
   };
 
-  const handleTimeSlotToggle = (slotId: number) => {
+  const handleTimeSlotToggle = (slotId: string) => {
     setSelectedTimeSlots(prev => {
       if (prev.includes(slotId)) {
         return prev.filter(id => id !== slotId);
@@ -130,37 +140,47 @@ function TutorListPage() {
 
   const handleSubmit = async () => {
     try {
+
       if (selectedTimeSlots.length === 0) {
         alert("Please select at least one time slot.");
         return;
       }
 
       const selectedSlots = timeSlots
-        .filter(slot => selectedTimeSlots.includes(Number(slot.id)))
+        .filter(slot => selectedTimeSlots.includes(slot.id||""))
         .map(slot => ({
           dayOfWeek: Number(slot.dayOfWeek),
           startTime: slot.startTime,
           endTime: slot.endTime
         }));
 
-      await submitInterest({
-        userId: userEmail,
-        subjectId: selectedSubjectId!,
-        availableTimeSlots: selectedSlots
+      submitInterest({
+        subjectName: interestedSubject!,
+        slotId: selectedTimeSlots,
+        studentEmail: userEmail,
+        numberOfBooking: selectedTimeSlots.length,
+        tutorId: selectedTutorId!,
+        bookingDate: new Date().toISOString().split('T')[0], // Use current
       });
       
+      alert("Tutor booked successfully!");
+      
+      console.log("Booking submitted successfully");
       setShowDialog(false);
-      setSelectedSubjectId(null);
-      setSelectedTimeSlots([]); // Reset selected slots
-      alert("Interest submitted successfully!");
-    } catch (err) {
-      alert("Failed to submit interest. Please try again.");
-      console.error(err);
+      navigate("/booking");
+    } catch (error) {
+      console.error("Error submitting booking:", error);
+      alert("Failed to book tutor." + (error instanceof Error ? error.message : ""));
     }
+   
   };
 
   const handleSubjectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedSubject(event.target.value);
+  };
+
+   const handleInterestSubjectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    setinterestedSubject(event.target.value);
   };
 
   return (
@@ -297,10 +317,10 @@ function TutorListPage() {
         )}
 
         <Dialog open={showDialog} onClose={() => setShowDialog(false)} maxWidth="sm" fullWidth>
-          <DialogTitle>Express Your Interest</DialogTitle>
+          <DialogTitle><h1>Booking Tutor</h1></DialogTitle>
           <DialogContent sx={{ width: 400, minHeight: 300 }}>
             <Typography variant="h6" sx={{ mb: 2 }}>
-              Available Time Slots
+              {selectedTutorName} - Available Time Slots
             </Typography>
             <Box sx={{ mb: 2 }}>
               <List sx={{ 
@@ -326,13 +346,14 @@ function TutorListPage() {
                     <ListItemIcon>
                       <Checkbox
                         edge="start"
-                        checked={selectedTimeSlots.includes(Number(slot.id))}
-                        onChange={() => handleTimeSlotToggle(Number(slot.id))}
+                        checked={selectedTimeSlots.includes(slot.id||"")}
+                        onChange={() => handleTimeSlotToggle(slot.id||"")}
+                        disableRipple
                         tabIndex={-1}
                       />
                     </ListItemIcon>
                     <ListItemText
-                      primary={`${slot.dayOfWeek}`}
+                      primary={slot.dayOfWeek}
                       secondary={`${slot.startTime} - ${slot.endTime}`}
                       sx={{
                         '& .MuiListItemText-primary': {
@@ -343,10 +364,20 @@ function TutorListPage() {
                   </ListItem>
                 ))}
               </List>
+              <InputLabel>Subject</InputLabel>
+              <Select fullWidth
+                value={interestedSubject}
+                label="Filter by Subject"
+                onChange={(e) => handleInterestSubjectChange(e as any)}
+              >
+                {SUBJECTS.map((subject) => (
+                  <MenuItem key={subject} value={subject}>
+                    {subject}
+                  </MenuItem>
+                ))}
+              </Select>
             </Box>
-            <Typography sx={{ mb: 2 }}>
-              Would you like to express interest in this tutor?
-            </Typography>
+        
           </DialogContent>
           <DialogActions>
             <Button onClick={() => setShowDialog(false)}>Cancel</Button>

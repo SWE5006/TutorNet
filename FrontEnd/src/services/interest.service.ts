@@ -2,22 +2,22 @@ import { RootState } from '../state/store';
 import { selectAuthSlice } from '../state/auth/slice';
 import store from '../state/store';
 
-export interface TimeSlotDto {
-  startTime: string;
-  endTime: string;
-  dayOfWeek: number;
-}
+
 
 export interface InterestRequestDto {
-  userId: string;
+  studentEmail:string;
+  subjectName: string;
+  slotId: string[];
+  numberOfBooking: number;
   tutorId: string;
-  availableTimeSlots: TimeSlotDto[];
+  bookingDate: String;
 }
+
 
 export const submitInterest = async (data: InterestRequestDto) => {
   const state: RootState = store.getState();
   const token = state.auth.userInfo?.access_token;
-  const response = await fetch(`${process.env.GATSBY_BACKEND_API_URL}/api/interest`, {
+  const response = await fetch(`${process.env.GATSBY_BACKEND_API_URL}/api/booking/create`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -26,6 +26,9 @@ export const submitInterest = async (data: InterestRequestDto) => {
     credentials: 'include',
     body: JSON.stringify(data),
   });
-  if (!response.ok) throw new Error('Failed to submit interest');
+  if (!response.ok) {
+    console.error('Failed to submit interest:', response.statusText);
+    throw new Error(`HTTP error! status: ${response.status}`);
+  }
   return response.json();
 }; 

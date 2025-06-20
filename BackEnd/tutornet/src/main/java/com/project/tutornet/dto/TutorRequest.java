@@ -6,7 +6,6 @@ import java.util.UUID;
 import com.project.tutornet.component.EncryptAttributeConverter;
 
 import jakarta.persistence.Convert;
-import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;

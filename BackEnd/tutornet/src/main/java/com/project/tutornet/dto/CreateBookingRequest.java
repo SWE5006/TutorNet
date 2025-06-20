@@ -1,43 +1,45 @@
 package com.project.tutornet.dto;
 
-import java.util.Date;
-import java.util.UUID;
 
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+
+@NoArgsConstructor
+@AllArgsConstructor
 public class CreateBookingRequest {
-    private UUID studentId;
-    private Date scheduleStart;
-    private Date scheduleEnd;
+    private String studentEmail;
+   
+    
     private String subjectName;
-
-    public UUID getStudentId() {
-        return studentId;
+    private String[] slotId;
+    private int numberOfBooking;
+    
+    public String getStudentEmail() {
+        return studentEmail;
     }
-
-    public void setStudentId(UUID studentId) {
-        this.studentId = studentId;
+    
+    public void setStudentEmail(String studentEmail) {
+        this.studentEmail = studentEmail;
     }
-
-    public Date getScheduleStart() {
-        return scheduleStart;
-    }
-
-    public void setScheduleStart(Date scheduleStart) {
-        this.scheduleStart = scheduleStart;
-    }
-
-    public Date getScheduleEnd() {
-        return scheduleEnd;
-    }
-
-    public void setScheduleEnd(Date scheduleEnd) {
-        this.scheduleEnd = scheduleEnd;
-    }
-
-    public String getSubjectName() {
-        return subjectName;
-    }
-
+    
     public void setSubjectName(String subjectName) {
         this.subjectName = subjectName;
     }
+    public void setSlotId(String[] slotId) {
+        this.slotId = slotId;
+    }
+    public void setNumberOfBooking(int numberOfBooking) {
+        this.numberOfBooking = numberOfBooking;
+    }
+   
+    public String getSubjectName() {
+        return subjectName;
+    }
+    public String[] getSlotId() {
+        return slotId;
+    }
+    public int getNumberOfBooking() {
+        return numberOfBooking;
+    }
+
 }

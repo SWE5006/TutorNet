@@ -9,21 +9,38 @@ import {
   ListItem,
   ListItemText,
   Divider,
+  IconButton,
 } from "@mui/material";
+import AddIcon from "@mui/icons-material/Add";
+import DeleteIcon from "@mui/icons-material/Delete";
 import Layout from "../components/Layout";
-import { useGetTutorTimeSlotsQuery } from "../services/tutor.service";
+import {
+  useGetTutorTimeSlotsByUserIdQuery,
+  useAddTimeSlotMutation,
+  useDeleteTimeSlotMutation,
+} from "../services/tutor.service";
 import { useSelector } from "react-redux";
-import { RootState } from "../state/store";
+import { selectAuthSlice } from "../state/auth/slice";
+import AddTimeslotModal from "../components/AddTimeSlot";
 
 function TutorDashboard() {
-  const userInfo = useSelector((state: RootState) => state.auth.userInfo);
-  
-  const { data: timeSlots, isLoading } = useGetTutorTimeSlotsQuery(
-    userInfo?.email_address ?? '', 
+  const { userInfo } = useSelector((state) => selectAuthSlice(state));
+  const [timeslotOpen, setTimeSlotOpen] = useState(false);
+
+  const { data: timeSlots, isLoading } = useGetTutorTimeSlotsByUserIdQuery(
+    userInfo?.email_address ?? "",
     {
       skip: !userInfo?.email_address,
     }
   );
+  const [addTimeSlot, addResult] = useAddTimeSlotMutation();
+  const [deleteTimeSlot, deleteResult] = useDeleteTimeSlotMutation();
+
+  useEffect(() => {
+    if (addResult.isSuccess) {
+      setTimeSlotOpen(false);
+    }
+  }, [addResult]);
 
   return (
     <Layout isLoading={isLoading}>
@@ -34,14 +51,28 @@ function TutorDashboard() {
             <Paper
               sx={{
                 p: 2,
-                display: 'flex',
-                flexDirection: 'column',
+                display: "flex",
+                flexDirection: "column",
                 minHeight: 240,
               }}
             >
-              <Typography variant="h6" sx={{ mb: 2 }}>
-                Time Slots
-              </Typography>
+              <Box
+                sx={{
+                  display: "flex",
+                  "justify-content": "space-between",
+                  "align-items": "center",
+                }}
+              >
+                <Typography variant="h6">Time Slots</Typography>
+                <IconButton
+                  aria-label="add"
+                  onClick={() => {
+                    setTimeSlotOpen(true);
+                  }}
+                >
+                  <AddIcon />
+                </IconButton>
+              </Box>
               <List>
                 {timeSlots?.map((slot, index) => (
                   <React.Fragment key={index}>
@@ -50,6 +81,14 @@ function TutorDashboard() {
                         primary={`${slot.dayOfWeek}`}
                         secondary={`${slot.startTime} - ${slot.endTime} (${slot.status})`}
                       />
+                      <IconButton
+                        aria-label="delete"
+                        onClick={() => {
+                          deleteTimeSlot(slot.id || "");
+                        }}
+                      >
+                        <DeleteIcon />
+                      </IconButton>
                     </ListItem>
                     {index < timeSlots.length - 1 && <Divider />}
                   </React.Fragment>
@@ -71,8 +110,8 @@ function TutorDashboard() {
             <Paper
               sx={{
                 p: 2,
-                display: 'flex',
-                flexDirection: 'column',
+                display: "flex",
+                flexDirection: "column",
                 minHeight: 240,
               }}
             >
@@ -97,8 +136,8 @@ function TutorDashboard() {
             <Paper
               sx={{
                 p: 2,
-                display: 'flex',
-                flexDirection: 'column',
+                display: "flex",
+                flexDirection: "column",
                 minHeight: 240,
               }}
             >
@@ -106,7 +145,6 @@ function TutorDashboard() {
                 Confirmed Students
               </Typography>
               <List>
-               
                 <ListItem>
                   <ListItemText
                     primary="Alice Smith"
@@ -117,6 +155,15 @@ function TutorDashboard() {
               </List>
             </Paper>
           </Grid>
+          <AddTimeslotModal
+            open={timeslotOpen}
+            onClose={() => {
+              setTimeSlotOpen(false);
+            }}
+            onSave={(v) => {
+              addTimeSlot(v);
+            }}
+          />
         </Grid>
       </Container>
     </Layout>

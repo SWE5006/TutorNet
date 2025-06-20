@@ -9,20 +9,17 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @Entity
 @Table
-@Getter
-@Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Data
 
 public class Booking {
     @Id
@@ -31,17 +28,15 @@ public class Booking {
     
   
     private Date bookingDate;
-    private Date scheduleStart;
-    private Date scheduleEnd;
     private String bookingStatus;
     private String subjectName;
+    private int numberOfBooking;
 
    
     @OneToOne
     @JoinColumn(name = "slot_id")
     private TimeSlot slot;
 
-    @ManyToOne
-    @JoinColumn(name = "student_id")
-    private Student student;
+    private String studentName;
+    private String studentId;
 }

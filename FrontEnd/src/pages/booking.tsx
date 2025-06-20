@@ -1,242 +1,146 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import { useSelector } from "react-redux";
 import {
   Container,
+  Paper,
   Typography,
+  List,
+  ListItem,
+  ListItemText,
   Box,
-  Card,
-  CardContent,
-  Grid,
-  Button,
   Chip,
-  Stack,
   Divider,
   Alert,
+  Button,
   CircularProgress,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
 } from "@mui/material";
 import { selectAuthSlice } from "../state/auth/slice";
 import Layout from "../components/Layout";
-import { createBooking } from "../services/booking.service";
+import { useGetBookingByEmailQuery } from "../services/tutor.service";
 
-interface Match {
+
+import { Add as AddIcon, Delete as DeleteIcon, Edit as EditIcon } from "@mui/icons-material";
+
+// Define the Booking type to match the booking object structure
+interface Booking {
   id: string;
-  student: {
-    id: string;
-    name: string;
-    email: string;
-    subjects: string[];
-    availability: TimeSlot[];
-  };
-  tutor: {
-    id: string;
-    name: string;
-    email: string;
-    subjects: string[];
-    availability: TimeSlot[];
-  };
-  commonSubjects: string[];
-  commonTimeSlots: TimeSlot[];
+  bookingDate: string;
+  bookingStatus: string;
+  subjectName: string;
+  numberOfSession: number;
+  studentName: string;
+  timeslots: string;
+  tutorName: string;
 }
 
-interface TimeSlot {
-  slotId: string; // Add a unique slotId for each time slot
-  dayOfWeek: number;
-  startTime: string;
-  endTime: string;
-}
 
-const DAYS_OF_WEEK = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+const handleCancelBooking = async (bookingId: string) => {
+  console.log(`Cancel booking with ID: ${bookingId}`);
+};
 
-export default function Booking() {
-  const { isLoggedIn, userInfo } = useSelector((state) => selectAuthSlice(state));
-  const [matches, setMatches] = useState<Match[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string>("");
-  const [selectedMatch, setSelectedMatch] = useState<Match | null>(null);
-  const [showConfirmDialog, setShowConfirmDialog] = useState(false);
+const BookingPage: React.FC = () => {
+  const { userInfo, isLoggedIn } = useSelector((state) => selectAuthSlice(state));
+  const {
+    data: bookings,
+    error,
+    isLoading,
+    refetch
+  } = useGetBookingByEmailQuery(userInfo?.email_address ?? "", {
+    skip: !isLoggedIn || !userInfo?.email_address,
+    refetchOnMountOrArgChange:true
+  });
 
-  // Mock data for demonstration
+  // Refetch data when component mounts or page is navigated to
   useEffect(() => {
-    const mockMatches: Match[] = [
-      {
-        id: "1",
-        student: {
-          id: "student1",
-          name: "John Doe",
-          email: "john@example.com",
-          availability: [
-            { slotId: "student1-slot1", dayOfWeek: 1, startTime: "09:00", endTime: "11:00" },
-            { slotId: "student1-slot2", dayOfWeek: 3, startTime: "14:00", endTime: "16:00" }
-          ],
-          subjects: []
-        },
-        tutor: {
-          id: "tutor1",
-          name: "Alice Smith",
-          email: "alice@example.com",
-          availability: [
-            { slotId: "tutor1-slot1", dayOfWeek: 1, startTime: "09:00", endTime: "12:00" },
-            { slotId: "tutor1-slot2", dayOfWeek: 3, startTime: "13:00", endTime: "17:00" }
-          ],
-          subjects: []
-        },
-        commonSubjects: [],
-        commonTimeSlots: [
-          { slotId: "common-slot1", dayOfWeek: 1, startTime: "09:00", endTime: "11:00" },
-          { slotId: "common-slot2", dayOfWeek: 3, startTime: "14:00", endTime: "16:00" }
-        ]
-      },
-      // Add more mock matches as needed
-    ];
-
-    setMatches(mockMatches);
-    setLoading(false);
-  }, []);
-
-  const handleConfirmMatch = async (match: Match) => {
-    setSelectedMatch(match);
-    setShowConfirmDialog(true);
-  };
-
-  const handleConfirmBooking = async () => {
-    if (!selectedMatch) return;
-
-    try {
-      // Create booking for each common time slot
-      if (!selectedMatch) return;
-      for (const slot of selectedMatch.commonTimeSlots) {
-        await createBooking({
-          studentId: selectedMatch.student.id,
-          slotId: slot.slotId, // Make sure slotId exists in your slot object
-          subjectName: selectedMatch.commonSubjects ? selectedMatch.commonSubjects[0] : "" // Use first common subject
-        });
-      }
-
-      // Remove the confirmed match from the list
-      setMatches(matches.filter(m => m.id !== selectedMatch.id));
-      setShowConfirmDialog(false);
-      setSelectedMatch(null);
-    } catch (err: any) {
-      setError(err.message || "Failed to create booking");
+    if (userInfo?.email_address) {
+      // refetch();
     }
-  };
+  }, [userInfo?.email_address, refetch]);
 
-  if (loading) {
+  if (isLoading) {
     return (
-      <Layout isLoading={true}>
-        <Container maxWidth="lg" sx={{ py: 4 }}>
+      <Container maxWidth="lg">
+        <Paper elevation={3} sx={{ p: 3, my: 2, textAlign: 'center' }}>
           <CircularProgress />
-        </Container>
-      </Layout>
+          <Typography variant="h6" sx={{ mt: 2 }}>
+            Loading bookings...
+          </Typography>
+        </Paper>
+      </Container>
+    );
+  }
+
+  if (error) {
+    return (
+      <Container maxWidth="lg">
+        <Paper elevation={3} sx={{ p: 3, my: 2 }}>
+          <Alert severity="error">
+            Error loading bookings. Please try again.
+          </Alert>
+        </Paper>
+      </Container>
     );
   }
 
   return (
-    <Layout isLoading={false}>
-     
-      <Container maxWidth="lg" sx={{ py: 4, ml: '240px' }}>
-        <Typography variant="h4" gutterBottom>
-          Booking List
-        </Typography>
-        
-        {error && (
-          <Alert severity="error" sx={{ mb: 2 }}>
-            {error}
-          </Alert>
-        )}
-
-        <Grid container spacing={3}>
-          {matches.map((match) => (
-            <Grid key={match.id}>
-              <Card>
-                <CardContent>
-                  <Grid container spacing={2}>
-                    <Grid>
-                      <Typography variant="h6" gutterBottom>
-                        Student
-                      </Typography>
-                      <Typography>Name: {match.student.name}</Typography>
-                      <Typography>Email: {match.student.email}</Typography>
-                      <Box sx={{ mt: 1 }}>
-                        <Typography variant="subtitle2">Subjects:</Typography>
-                        <Stack direction="row" spacing={1} sx={{ mt: 1 }}>
-                          {match.student.subjects.map((subject) => (
-                            <Chip key={subject} label={subject} size="small" />
-                          ))}
-                        </Stack>
-                      </Box>
-                    </Grid>
-
-                    <Grid>
-                      <Typography variant="h6" gutterBottom>
-                        Tutor
-                      </Typography>
-                      <Typography>Name: {match.tutor.name}</Typography>
-                      <Typography>Email: {match.tutor.email}</Typography>
-                      <Box sx={{ mt: 1 }}>
-                        <Typography variant="subtitle2">Subjects:</Typography>
-                        <Stack direction="row" spacing={1} sx={{ mt: 1 }}>
-                          {match.tutor.subjects.map((subject) => (
-                            <Chip key={subject} label={subject} size="small" />
-                          ))}
-                        </Stack>
-                      </Box>
-                    </Grid>
-
-                    <Grid>
-                      <Divider sx={{ my: 2 }} />
-                      <Typography variant="h6" gutterBottom>
-                        Common Time Slots
-                      </Typography>
-                      <Stack direction="row" spacing={1} sx={{ mt: 1 }}>
-                        {match.commonTimeSlots.map((slot: { dayOfWeek: string | number; startTime: any; endTime: any; }, index: React.Key | null | undefined) => (
+    <Layout isLoading={isLoading}>
+      <Container
+        sx={{ mt: 4, mb: 4}} // Set a custom large width
+      >
+        <Paper
+          sx={{
+            width: "600px", // Ensure Paper takes full width of Container
+            maxWidth: "none", // Remove maxWidth restriction
+            padding: "24px",
+          }}
+          elevation={3}
+        >
+          <Typography variant="h5" gutterBottom>
+            My Bookings
+          </Typography>
+          <List>
+            {!bookings || bookings.length === 0 ? (
+              <Typography variant="body1" color="textSecondary" align="center">
+                No bookings found
+              </Typography>
+            ) : (
+              bookings.map((booking: Booking) => (
+                 <React.Fragment key={booking.id}>
+                  <ListItem>
+                    <ListItemText
+                      primary={
+                        <Box display="flex" justifyContent="space-between" alignItems="center">
+                          <Typography variant="subtitle1">
+                            Booking with Tutor {booking.tutorName}
+                          </Typography>
                           <Chip
-                            key={index}
-                            label={`${DAYS_OF_WEEK[Number(slot.dayOfWeek)]} ${slot.startTime}-${slot.endTime}`}
-                            color="primary"
-                            variant="outlined"
+                            label={booking.bookingStatus}
+                            color={booking.bookingStatus === "Confirmed" ? "success" : "default"}
+                            size="small"
                           />
-                        ))}
-                      </Stack>
-                    </Grid>
-
-                    <Grid>
-                      <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 2 }}>
-                        <Button
-                          variant="contained"
-                          color="primary"
-                          onClick={() => handleConfirmMatch(match)}
-                        >
-                          Accept Booking
-                        </Button>
-                      </Box>
-                    </Grid>
-                  </Grid>
-                </CardContent>
-              </Card>
-            </Grid>
-          ))}
-        </Grid>
-
-        <Dialog open={showConfirmDialog} onClose={() => setShowConfirmDialog(false)}>
-          <DialogTitle>Confirm Match</DialogTitle>
-          <DialogContent>
-            <Typography>
-              Are you sure you want to confirm this match? This will create a booking for all common time slots.
-            </Typography>
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={() => setShowConfirmDialog(false)}>Cancel</Button>
-            <Button onClick={handleConfirmBooking} variant="contained" color="primary">
-              Confirm
-            </Button>
-          </DialogActions>
-        </Dialog>
+                          <Button
+                            variant="outlined"
+                            color="error"
+                            size="small"
+                            startIcon={<DeleteIcon />}
+                            onClick={() => handleCancelBooking(booking.id)}
+                          >
+                            Cancel
+                          </Button>
+                        </Box>
+                      }
+                      secondary={`Date: ${new Date(booking.bookingDate).toLocaleDateString()}, Subject: ${booking.subjectName}`}
+                    />
+                  </ListItem>
+                  <Divider />
+                </React.Fragment>
+              ))
+            )}
+          </List>
+        </Paper>
       </Container>
     </Layout>
   );
-}
+};
+
+export default BookingPage;

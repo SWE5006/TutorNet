@@ -30,11 +30,11 @@ interface LoginResponse {
 }
 
 export interface TutorTimeSlot {
-  id:string;
+  id?: string;
   dayOfWeek: string;
   startTime: string;
   endTime: string;
-  status: string;
+  status: "AVAILABLE" | "BOOKED";
 }
 
 interface SignupRequest {
@@ -71,6 +71,27 @@ interface SignupRequestTutor {
   teachingSubjects?: string[];
 }
 
+interface BookingResponse{
+ id: string;
+  bookingDate: string;
+  bookingStatus: string;
+  subjectName: string;
+  numberOfSession:number;
+  studentName: string;
+  timeslots: string;
+  tutorName: string;
+}
+
+interface BookingRequest{
+   id: string;
+  studentId: string;
+  tutorId: string;
+  timeSlotId: string;
+  bookingDate: string;
+  status: string;
+  
+}
+
 interface Tutor {
   id: string;           // UUID from backend
   username: string;     // Changed from name
@@ -81,3 +102,12 @@ interface Tutor {
   subjects: string;     // Changed from subject array to string
 }
 
+interface Tutor {
+  id: string; // UUID from backend
+  username: string; // Changed from name
+  bio: string;
+  education: string; // Added new field
+  experience: string; // Added new field
+  hourlyRate: number; // Added new field as number type for Double
+  subjects: string; // Changed from subject array to string
+}

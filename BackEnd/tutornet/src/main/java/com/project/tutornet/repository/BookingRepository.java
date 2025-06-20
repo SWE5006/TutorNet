@@ -10,6 +10,6 @@ import com.project.tutornet.entity.Booking;
 @Repository
 public interface BookingRepository extends JpaRepository<Booking, UUID>  {
    boolean existsByBookingId(UUID bookingId);
-   List<Booking> findByStudent_Id(UUID studentId);
-   List<Booking> findByStudent_IdAndBookingStatus(UUID studentId, String status);
+   List<Booking> findByStudentId(String studentId);
+   
 }
