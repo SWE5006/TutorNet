@@ -4,12 +4,13 @@ import { commonHeader } from "../utils";
 import { BookingResponse, BookingRequest, Tutor, TutorTimeSlot } from "../types/types";
 
 
-export const bookingReducerName = "bookingApi";
+
+export const tutorReducerName = "bookingApi";
 
 export const bookingApi = createApi({
-  reducerPath: bookingReducerName,
+  reducerPath: tutorReducerName,
   baseQuery: fetchBaseQuery({
-    baseUrl: process.env.GATSBY_BACKEND_API_URL + "/api/booking",
+    baseUrl: process.env.GATSBY_BACKEND_API_URL + "/api/bookings",
     credentials: "include",
     prepareHeaders: commonHeader,
   }),
@@ -17,8 +18,9 @@ export const bookingApi = createApi({
   endpoints: (builder) => ({
     getBookingByEmail: builder.query<BookingResponse[], string>({
       query: (email) => ({
-        url: `/${email}`,
-        method: 'GET'
+        url: `/booking`,
+        method: 'POST',
+        body:email
       }),
       providesTags: ['Booking']
     }),

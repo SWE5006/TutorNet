@@ -1,6 +1,11 @@
 package com.project.tutornet.dto;
 
 
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+
+@NoArgsConstructor
+@AllArgsConstructor
 public class CreateBookingRequest {
     private String studentEmail;
    

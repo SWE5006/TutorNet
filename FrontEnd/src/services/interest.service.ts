@@ -17,7 +17,7 @@ export interface InterestRequestDto {
 export const submitInterest = async (data: InterestRequestDto) => {
   const state: RootState = store.getState();
   const token = state.auth.userInfo?.access_token;
-  const response = await fetch(`${process.env.GATSBY_BACKEND_API_URL}/api/booking`, {
+  const response = await fetch(`${process.env.GATSBY_BACKEND_API_URL}/api/booking/create`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

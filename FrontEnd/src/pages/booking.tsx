@@ -2,25 +2,21 @@ import React, { useEffect } from "react";
 import { useSelector } from "react-redux";
 import {
   Container,
-  Typography,
-  Box,
-  Card,
-  CardContent,
-  Grid,
-  Button,
-  Chip,
-  Stack,
-  Divider,
-  Alert,
-  CircularProgress,
   Paper,
+  Typography,
   List,
   ListItem,
   ListItemText,
+  Box,
+  Chip,
+  Divider,
+  Alert,
+  Button,
+  CircularProgress,
 } from "@mui/material";
 import { selectAuthSlice } from "../state/auth/slice";
 import Layout from "../components/Layout";
-import { useGetBookingByEmailQuery } from "../services/booking.service";
+import { useGetBookingByEmailQuery } from "../services/tutor.service";
 
 
 import { Add as AddIcon, Delete as DeleteIcon, Edit as EditIcon } from "@mui/icons-material";
@@ -51,12 +47,13 @@ const BookingPage: React.FC = () => {
     refetch
   } = useGetBookingByEmailQuery(userInfo?.email_address ?? "", {
     skip: !isLoggedIn || !userInfo?.email_address,
+    refetchOnMountOrArgChange:true
   });
 
   // Refetch data when component mounts or page is navigated to
   useEffect(() => {
     if (userInfo?.email_address) {
-      refetch();
+      // refetch();
     }
   }, [userInfo?.email_address, refetch]);
 

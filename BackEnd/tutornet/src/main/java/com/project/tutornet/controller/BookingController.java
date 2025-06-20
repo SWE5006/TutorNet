@@ -20,14 +20,13 @@ public class BookingController {
      @Autowired
     private BookingService bookingService;
 
-    @PostMapping
+    @PostMapping(path = "/create")
     public  ResponseEntity<?> createBooking(@RequestBody CreateBookingRequest request) {
        bookingService.createBooking(request);
         return ResponseEntity.ok("Booking created successfully");
        
     }
-
-    @GetMapping("/{email}")
+    @GetMapping(path= "/{email}/booking")
     public ResponseEntity<List<BookingResponseDto>> getBookingsByEmail(@PathVariable("email") String email) {
         List<BookingResponseDto> bookings = bookingService.getBookingsByEmail(email);
         return ResponseEntity.ok(bookings);

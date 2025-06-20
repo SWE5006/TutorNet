@@ -147,7 +147,7 @@ function TutorListPage() {
       }
 
       const selectedSlots = timeSlots
-        .filter(slot => selectedTimeSlots.includes(slot.id))
+        .filter(slot => selectedTimeSlots.includes(slot.id||""))
         .map(slot => ({
           dayOfWeek: Number(slot.dayOfWeek),
           startTime: slot.startTime,
@@ -346,8 +346,8 @@ function TutorListPage() {
                     <ListItemIcon>
                       <Checkbox
                         edge="start"
-                        checked={selectedTimeSlots.includes(slot.id)}
-                        onChange={() => handleTimeSlotToggle(slot.id)}
+                        checked={selectedTimeSlots.includes(slot.id||"")}
+                        onChange={() => handleTimeSlotToggle(slot.id||"")}
                         disableRipple
                         tabIndex={-1}
                       />
